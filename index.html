@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#1E293B">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Bharat Wellness Club - Multi-User System</title>
+  <title>Bharat Wellness Club - Multi-Device System</title>
 
   <!-- WEB APP MANIFEST -->
   <link rel="manifest" href="data:application/manifest+json;utf-8,%7B%22name%22%3A%22Bharat%20Wellness%20Club%22%2C%22short_name%22%3A%22BWC%20App%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23FFF8F6%22%2C%22theme_color%22%3A%22%231E293B%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Butf-8%2C%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Crect%20width%3D'100'%20height%3D'100'%20fill%3D'%23FF8A50'%2F%3E%3Ccircle%20cx%3D'50'%20cy%3D'50'%20r%3D'38'%20fill%3D'%23FFFFFF'%2F%3E%3Ctext%20x%3D'50'%20y%3D'58'%20font-size%3D'24'%20text-anchor%3D'middle'%20fill%3D'%231E293B'%20font-weight%3D'bold'%3EBWC%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
@@ -32,28 +32,28 @@
       --bg: #FFF8F6;
     }
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
-    body { background-color: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+    body { background-color: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; position: relative; }
 
     /* AUTH / LOGIN OVERLAY */
     #loginOverlay {
       position: fixed; inset: 0; background: linear-gradient(135deg, #0F172A, #1E293B); z-index: 10000;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: center; justify-content: center; padding: 15px;
     }
     .login-box {
-      background: #FFF; width: 380px; max-width: 90%; border-radius: 12px; padding: 35px 25px;
+      background: #FFF; width: 380px; max-width: 100%; border-radius: 12px; padding: 30px 20px;
       box-shadow: 0 15px 35px rgba(0,0,0,0.4); text-align: center; border-top: 5px solid var(--primary);
     }
     .login-box h2 { font-size: 19px; color: #0F172A; margin-top: 10px; margin-bottom: 4px; }
-    .login-box p { font-size: 12px; color: #64748B; margin-bottom: 22px; }
-    .login-form-group { text-align: left; margin-bottom: 16px; }
+    .login-box p { font-size: 12px; color: #64748B; margin-bottom: 20px; }
+    .login-form-group { text-align: left; margin-bottom: 14px; }
     .login-form-group label { font-size: 12px; font-weight: bold; color: #475569; display: block; margin-bottom: 5px; }
     .login-form-group input { width: 100%; height: 40px; border-radius: 6px; border: 1px solid var(--border); padding: 0 12px; font-size: 13px; }
     .login-form-group input:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
 
     /* LOGO SQUARE CONTAINER */
     .bwc-logo-sq {
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       background: #FF8A50;
       border-radius: 6px;
       overflow: hidden;
@@ -65,8 +65,14 @@
     }
     .bwc-logo-sq svg { width: 100%; height: 100%; display: block; }
 
-    /* LEFT SIDEBAR */
-    .sidebar { width: 270px; background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; flex-shrink: 0; }
+    /* SIDEBAR & OVERLAY */
+    .sidebar-backdrop {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 998;
+    }
+    .sidebar { 
+      width: 270px; background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; flex-shrink: 0;
+      transition: transform 0.25s ease; z-index: 999;
+    }
     .sidebar-header { padding: 16px 18px; background: #0F172A; display: flex; align-items: center; gap: 12px; border-bottom: 2px solid var(--primary); }
     .sidebar-header h2 { font-size: 15px; font-weight: 700; color: #FFF; line-height: 1.2; }
     .sidebar-header h2 span { color: var(--primary); font-size: 11px; font-weight: normal; display: block; }
@@ -91,37 +97,36 @@
     .sidebar-footer p { font-size: 11px; color: #94A3B8; margin-bottom: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
 
     /* MAIN CONTENT */
-    .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; }
-    .top-header { background: #fff; padding: 12px 30px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; }
-    .top-header h1 { font-size: 20px; color: var(--primary-dark); display: flex; align-items: center; gap: 10px; }
-    .content-area { padding: 25px 30px; }
+    .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; width: 100%; }
+    .top-header { background: #fff; padding: 10px 20px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .top-header h1 { font-size: 18px; color: var(--primary-dark); display: flex; align-items: center; gap: 10px; }
+    .menu-toggle-btn { display: none; background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 16px; font-weight: bold; }
+    .content-area { padding: 18px 20px; }
 
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
     /* USER BADGE & LOGOUT */
-    .user-pill { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: bold; padding: 4px 12px; border-radius: 20px; background: #EFF6FF; border: 1px solid #BFDBFE; }
-    .btn-logout { background: #EF4444; color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; }
+    .user-pill { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 20px; background: #EFF6FF; border: 1px solid #BFDBFE; }
+    .btn-logout { background: #EF4444; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; }
     .btn-logout:hover { background: #DC2626; }
 
     /* SYNC STATUS BADGE */
-    .sync-badge { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; background: #F1F5F9; }
-    .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+    .sync-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 20px; background: #F1F5F9; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
     .dot.online { background: #22C55E; box-shadow: 0 0 6px #22C55E; }
     .dot.offline { background: #EAB308; }
     .dot.local { background: #94A3B8; }
 
     /* CARDS & DASHBOARD TILES */
-    .card { background: var(--card-bg); padding: 22px; border-radius: 10px; border: 1px solid #FFE0B2; box-shadow: 0 2px 6px rgba(255, 112, 67, 0.08); margin-bottom: 25px; }
+    .card { background: var(--card-bg); padding: 18px; border-radius: 10px; border: 1px solid #FFE0B2; box-shadow: 0 2px 6px rgba(255, 112, 67, 0.08); margin-bottom: 20px; }
     
-    .dash-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 25px; }
-    @media (max-width: 1200px) { .dash-grid-5 { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 800px) { .dash-grid-5 { grid-template-columns: repeat(2, 1fr); } }
+    .dash-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
     
-    .tile { background: #fff; padding: 16px; border-radius: 10px; border: 1px solid #FFE0B2; box-shadow: 0 2px 5px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
-    .tile:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.08); }
+    .tile { background: #fff; padding: 14px; border-radius: 10px; border: 1px solid #FFE0B2; box-shadow: 0 2px 5px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.15s ease; }
+    .tile:hover { transform: translateY(-3px); }
     .tile h4 { font-size: 11px; color: #64748B; text-transform: uppercase; font-weight: 700; margin-bottom: 6px; }
-    .tile p { font-size: 22px; font-weight: 800; color: #0F172A; }
+    .tile p { font-size: 20px; font-weight: 800; color: #0F172A; }
     .tile.sales { border-left: 5px solid var(--primary); }
     .tile.udhaar { border-left: 5px solid #EF4444; }
     .tile.vp { border-left: 5px solid #10B981; }
@@ -129,12 +134,9 @@
     .tile.cost { border-left: 5px solid #3B82F6; }
 
     /* FORM ROW GRID */
-    .form-row { display: grid; gap: 12px 18px; margin-bottom: 14px; }
+    .form-row { display: grid; gap: 12px 16px; margin-bottom: 12px; }
     .row-1-cust { grid-template-columns: 2fr 1.3fr 0.9fr 1.2fr; }
     .row-2-prod { grid-template-columns: 2.2fr 0.8fr 0.8fr 1fr 1.2fr; }
-    @media (max-width: 1100px) { 
-      .row-1-cust, .row-2-prod { grid-template-columns: repeat(2, 1fr); } 
-    }
     
     .form-group { display: flex; flex-direction: column; justify-content: flex-end; }
     label { font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 5px; }
@@ -143,41 +145,29 @@
     input[readonly] { background: #F8FAFC; cursor: not-allowed; }
 
     /* BUTTONS */
-    button.btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; box-shadow: 0 2px 4px rgba(230, 74, 25, 0.2); }
-    button.btn-primary:hover { opacity: 0.95; }
+    button.btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 9px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
     button.btn-add { background: #00ACC1; color: white; padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; width: 100%; height: 40px; }
     button.btn-add:hover { background: #00838F; }
-    button.btn-secondary { background: #64748B; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; }
-    button.btn-secondary:hover { background: #475569; }
-    button.btn-outline { background: transparent; border: 1px solid var(--border); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; }
-    button.btn-outline:hover { background: #F1F5F9; }
-    button.btn-pdf { background: #0F172A; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-    button.btn-pdf:hover { background: #1E293B; }
-    button.btn-pending-slip { background: #EA580C; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-    button.btn-pending-slip:hover { background: #C2410C; }
+    button.btn-secondary { background: #64748B; color: white; padding: 9px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
+    button.btn-outline { background: transparent; border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+    button.btn-pdf { background: #0F172A; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+    button.btn-pending-slip { background: #EA580C; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
     
     button.btn-backup { background: #334155; color: white; border: 1px solid #475569; width: 100%; padding: 8px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    button.btn-backup:hover { background: #475569; }
     button.btn-sync-setting { background: #0284C7; color: white; border: none; width: 100%; padding: 8px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 700; margin-bottom: 6px; }
-    button.btn-sync-setting:hover { background: #0369A1; }
     button.btn-adv-settings { background: #475569; color: #F1F5F9; border: 1px solid #64748B; width: 100%; padding: 8px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 600; }
-    button.btn-adv-settings:hover { background: #334155; color: #fff; }
-    button.btn-del { background: #EF4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-    button.btn-edit { background: #3B82F6; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-    button.btn-reprint { background: #0284C7; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    button.btn-del { background: #EF4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+    button.btn-edit { background: #3B82F6; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+    button.btn-reprint { background: #0284C7; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; }
 
-    /* EDIT NOTICE BANNER */
     .edit-banner { background: #EFF6FF; border: 1px solid #93C5FD; color: #1E40AF; padding: 10px 15px; border-radius: 6px; margin-bottom: 15px; display: none; justify-content: space-between; align-items: center; }
 
-    /* MODAL POPUP */
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 999; align-items: center; justify-content: center; }
-    .modal-card { background: #fff; padding: 25px; border-radius: 10px; width: 480px; max-width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 9999; align-items: center; justify-content: center; padding: 15px; }
+    .modal-card { background: #fff; padding: 22px; border-radius: 10px; width: 480px; max-width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
 
-    /* CART BOX */
     .cart-section { margin-top: 15px; border-top: 2px dashed #FFCCBC; padding-top: 15px; }
-    .cart-total-bar { display: flex; justify-content: space-between; align-items: center; background: #FFF3E0; padding: 12px 18px; border-radius: 8px; margin-top: 15px; border: 1px solid #FFE0B2; }
+    .cart-total-bar { display: flex; justify-content: space-between; align-items: center; background: #FFF3E0; padding: 12px 18px; border-radius: 8px; margin-top: 15px; border: 1px solid #FFE0B2; flex-wrap: wrap; gap: 12px; }
 
-    /* TWO PANE LEDGER VIEW */
     .ledger-container { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
     .ledger-list-card { background: #fff; border-radius: 8px; border: 1px solid #FFE0B2; height: calc(100vh - 180px); display: flex; flex-direction: column; }
     .ledger-list-header { padding: 15px; border-bottom: 1px solid #FFE0B2; font-weight: bold; background: #FFF3E0; display: flex; flex-direction: column; gap: 10px; }
@@ -192,20 +182,53 @@
     .stat-box h4 { font-size: 11px; color: #64748B; margin-bottom: 4px; }
     .stat-box p { font-size: 16px; font-weight: bold; color: #0F172A; }
 
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
     th, td { border: 1px solid #E2E8F0; padding: 8px 10px; text-align: left; font-size: 13px; }
     th { background: #FFF3E0; color: #E64A19; font-weight: 700; }
-    .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+    .badge { padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; }
     .badge-cash { background: #E8F5E9; color: #2E7D32; }
     .badge-credit { background: #FFEBEE; color: #C62828; }
     .badge-quote { background: #E0F2FE; color: #0369A1; }
     .badge-pay { background: #FEF3C7; color: #D97706; }
 
-    /* SINGLE BILL / QUOTATION RECEIPT STYLES */
-    #printReceipt { display: none; width: 320px; padding: 15px; border: 1px dashed #333; font-family: monospace; font-size: 12px; }
-    #printPayReceipt { display: none; width: 320px; padding: 15px; border: 1px dashed #333; font-family: monospace; font-size: 12px; }
+    #printReceipt, #printPayReceipt { display: none; width: 320px; padding: 15px; border: 1px dashed #333; font-family: monospace; font-size: 12px; }
     
-    /* PRINT MEDIA ENGINE */
+    /* RESPONSIVE MOBILE UI RULES */
+    @media (max-width: 900px) {
+      body { flex-direction: column; overflow-y: auto; height: auto; min-height: 100vh; }
+      .sidebar {
+        position: fixed; top: 0; left: 0; bottom: 0; transform: translateX(-100%);
+        box-shadow: 2px 0 15px rgba(0,0,0,0.5); width: 280px;
+      }
+      .sidebar.mobile-open { transform: translateX(0); }
+      .sidebar-backdrop.active { display: block; }
+      .menu-toggle-btn { display: inline-block; }
+      
+      .main-wrapper { height: auto; overflow: visible; }
+      .content-area { padding: 12px 10px; }
+      .top-header { padding: 10px 12px; }
+      .top-header h1 { font-size: 16px; }
+
+      .dash-grid-5 { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .row-1-cust, .row-2-prod { grid-template-columns: 1fr !important; }
+      
+      .ledger-container { grid-template-columns: 1fr; height: auto; }
+      .ledger-list-card, .ledger-detail-card { height: auto; max-height: 500px; }
+      .stat-row { grid-template-columns: repeat(2, 1fr); }
+      
+      /* Make tables horizontally swipeable */
+      .card, .ledger-detail-card, #stockMasterCard, #linearViewTable {
+        overflow-x: auto; -webkit-overflow-scrolling: touch;
+      }
+      table { min-width: 600px; }
+    }
+
+    @media (max-width: 500px) {
+      .dash-grid-5 { grid-template-columns: 1fr; }
+      .stat-row { grid-template-columns: 1fr; }
+    }
+
+    /* PRINT MEDIA */
     @media print {
       body * { visibility: hidden; }
       body { background: #fff !important; }
@@ -226,6 +249,9 @@
   </style>
 </head>
 <body>
+
+  <!-- MOBILE SIDEBAR BACKDROP -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleMobileSidebar(false)"></div>
 
   <!-- LOGIN OVERLAY SCREEN -->
   <div id="loginOverlay">
@@ -307,7 +333,7 @@
   </div>
 
   <!-- LEFT SIDEBAR -->
-  <div class="sidebar">
+  <div class="sidebar" id="sidebarNav">
     <div class="sidebar-header">
       <div class="bwc-logo-sq">
         <svg viewBox="0 0 100 100">
@@ -377,18 +403,21 @@
   <!-- MAIN WRAPPER -->
   <div class="main-wrapper">
     <div class="top-header">
-      <h1 id="pageTitle">Main Dashboard</h1>
-      <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button class="menu-toggle-btn" onclick="toggleMobileSidebar(true)" title="Open Menu">☰</button>
+        <h1 id="pageTitle">Main Dashboard</h1>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
         <div class="user-pill">
           <span id="userRoleIcon">👑</span>
           <span id="currentUserDisplay">Admin</span>
         </div>
-        <button class="btn-logout" onclick="logoutUser()">Logout ➔</button>
+        <button class="btn-logout" onclick="logoutUser()">Logout</button>
         <div class="sync-badge" id="syncStatusBadge">
           <span class="dot local" id="syncDot"></span>
-          <span id="syncStatusText">Local Storage Mode</span>
+          <span id="syncStatusText">Local</span>
         </div>
-        <span id="dateDisplay" style="font-weight: 600; color: #64748B;"></span>
+        <span id="dateDisplay" style="font-weight: 600; color: #64748B; font-size: 12px;"></span>
       </div>
     </div>
 
@@ -410,7 +439,7 @@
           <div class="tile vp" onclick="goToStockMaster()" title="Click to view stock Volume Points">
             <h4>Total Stock VP ↗</h4>
             <p id="dashStockVP" style="color: #10B981;">0.00</p>
-            <span style="font-size: 11px; color: #64748B; margin-top: 4px;">Total Volume Points</span>
+            <span style="font-size: 11px; color: #64748B; margin-top: 4px;">Total VP</span>
           </div>
           <div class="tile stock" onclick="goToStockMaster()" title="Click to view stock MRP">
             <h4>Stock MRP Value ↗</h4>
@@ -420,29 +449,31 @@
           <div class="tile cost" onclick="goToStockMaster()" title="Click to view 50% cost">
             <h4>Stock 50% Cost ↗</h4>
             <p id="dashStockCost" style="color: #3B82F6;">₹0</p>
-            <span style="font-size: 11px; color: #64748B; margin-top: 4px;">Supervisor Inv.</span>
+            <span style="font-size: 11px; color: #64748B; margin-top: 4px;">50% Inv.</span>
           </div>
         </div>
 
         <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <h3 style="color: var(--sidebar-bg);">Recent Customer Bills & Orders</h3>
-            <button class="btn-outline" onclick="goToBillingTab()">➕ New Billing Entry</button>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <h3 style="color: var(--sidebar-bg); font-size: 15px;">Recent Customer Bills & Orders</h3>
+            <button class="btn-outline" onclick="goToBillingTab()">➕ New Bill</button>
           </div>
-          <table id="dashRecentSalesTable">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Customer</th>
-                <th>Product Items</th>
-                <th>Qty</th>
-                <th>Volume Points (VP)</th>
-                <th>Total (₹)</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <div style="overflow-x: auto;">
+            <table id="dashRecentSalesTable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Customer</th>
+                  <th>Product Items</th>
+                  <th>Qty</th>
+                  <th>Volume Points (VP)</th>
+                  <th>Total (₹)</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -450,9 +481,9 @@
       <div id="billing" class="tab-content">
         <div id="editingBanner" class="edit-banner">
           <div>
-            <strong>✏️ Editing Existing Bill:</strong> Aap ek purane bill ko edit kar rahe hain. Naya total save hone par purana stock revert hokar update ho jayega.
+            <strong>✏️ Editing Existing Bill:</strong> Purana stock revert hokar naya save ho jayega.
           </div>
-          <button class="btn-outline" onclick="cancelBillEditing()" style="background: white; border-color: #93C5FD; color: #1E40AF;">Cancel Edit</button>
+          <button class="btn-outline" onclick="cancelBillEditing()" style="background: white; border-color: #93C5FD; color: #1E40AF;">Cancel</button>
         </div>
 
         <div class="card">
@@ -463,7 +494,7 @@
               <datalist id="customerList"></datalist>
             </div>
             <div class="form-group">
-              <label>2. Discount Slab (Exact PDF Column Price)</label>
+              <label>2. Discount Slab</label>
               <select id="billTier" onchange="applyDiscountTier()" onkeydown="handleDiscountKey(event, 'billTier', applyDiscountTier)">
                 <option value="custom" selected>Custom (% on MRP)</option>
                 <option value="0">Retail MRP (0%)</option>
@@ -517,32 +548,34 @@
 
           <div class="cart-section">
             <h4 style="color: var(--sidebar-bg); margin-bottom: 8px;">Items Added in Current Bill:</h4>
-            <table id="customerCartTable">
-              <thead>
-                <tr>
-                  <th>SKU</th>
-                  <th>Product</th>
-                  <th>MRP</th>
-                  <th>Qty</th>
-                  <th>Volume Points (VP)</th>
-                  <th>Price Tier / Rate</th>
-                  <th>Total (₹)</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td colspan="8" style="text-align: center; color: #94A3B8;">No items added yet. Product select karke 'Add Item' karein.</td></tr>
-              </tbody>
-            </table>
+            <div style="overflow-x: auto;">
+              <table id="customerCartTable">
+                <thead>
+                  <tr>
+                    <th>SKU</th>
+                    <th>Product</th>
+                    <th>MRP</th>
+                    <th>Qty</th>
+                    <th>VP</th>
+                    <th>Slab</th>
+                    <th>Total (₹)</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="8" style="text-align: center; color: #94A3B8;">No items added yet.</td></tr>
+                </tbody>
+              </table>
+            </div>
 
             <div class="cart-total-bar">
-              <div style="display: flex; gap: 20px;">
-                <span style="font-size: 14px; font-weight: bold; color: #475569;">Total Items: <span id="cartItemCount" style="color: var(--primary-dark);">0</span></span>
-                <span style="font-size: 14px; font-weight: bold; color: #15803D;">Total VP: <span id="cartGrandVP">0.00</span></span>
+              <div style="display: flex; gap: 15px;">
+                <span style="font-size: 13px; font-weight: bold; color: #475569;">Items: <span id="cartItemCount" style="color: var(--primary-dark);">0</span></span>
+                <span style="font-size: 13px; font-weight: bold; color: #15803D;">Total VP: <span id="cartGrandVP">0.00</span></span>
               </div>
-              <div style="display: flex; align-items: center; gap: 20px;">
-                <h3 style="font-size: 18px; color: var(--primary-dark);">Grand Total: ₹<span id="cartGrandTotal">0</span></h3>
-                <button class="btn-primary" id="btnFinalSaveBill" onclick="checkoutCustomerBill()">🖨️ Final Print & Save Bill</button>
+              <div style="display: flex; align-items: center; gap: 15px;">
+                <h3 style="font-size: 16px; color: var(--primary-dark);">Total: ₹<span id="cartGrandTotal">0</span></h3>
+                <button class="btn-primary" id="btnFinalSaveBill" onclick="checkoutCustomerBill()">🖨️ Print & Save</button>
               </div>
             </div>
           </div>
@@ -552,18 +585,18 @@
       <!-- TAB 1.5: PROFORMA INVOICE / QUOTATION -->
       <div id="quotation" class="tab-content">
         <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
             <div>
-              <h3 style="color: var(--primary-dark);">📑 Proforma Invoice / Price Quotation Generator</h3>
-              <p style="font-size: 12px; color: #64748B; margin-top: 2px;">Stock na hone par bhi aap customer ko price estimate de sakte hain (Stock Minus nahi hoga).</p>
+              <h3 style="color: var(--primary-dark); font-size: 16px;">📑 Proforma / Quotation Generator</h3>
+              <p style="font-size: 12px; color: #64748B;">Stock na hone par bhi price estimate de sakte hain.</p>
             </div>
-            <span class="badge badge-quote">Stock Free Mode</span>
+            <span class="badge badge-quote">Stock Free</span>
           </div>
           <hr style="margin: 0 0 15px 0; border: 0; border-top: 1px solid #FFE0B2;">
 
           <div class="form-row row-1-cust">
             <div class="form-group">
-              <label>Customer / Client Name</label>
+              <label>Customer Name</label>
               <input list="customerList" id="quoteCustName" placeholder="Type customer name..." autocomplete="off" onkeydown="handleCustomerCoachTab(event, 'quoteCustName', 'customerList')">
             </div>
             <div class="form-group">
@@ -612,75 +645,79 @@
           </div>
 
           <div style="margin-bottom: 15px;">
-            <button class="btn-add" onclick="addItemToQuoteCart()">➕ Add Product to Quotation</button>
+            <button class="btn-add" onclick="addItemToQuoteCart()">➕ Add to Quotation</button>
           </div>
 
           <div class="cart-section">
             <h4 style="color: var(--sidebar-bg); margin-bottom: 8px;">Products in Current Quotation:</h4>
-            <table id="quoteCartTable">
-              <thead>
-                <tr>
-                  <th>SKU</th>
-                  <th>Product</th>
-                  <th>MRP</th>
-                  <th>Qty</th>
-                  <th>Volume Points (VP)</th>
-                  <th>Price Tier / Rate</th>
-                  <th>Estimated Price (₹)</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td colspan="8" style="text-align: center; color: #94A3B8;">No items added to quotation yet.</td></tr>
-              </tbody>
-            </table>
+            <div style="overflow-x: auto;">
+              <table id="quoteCartTable">
+                <thead>
+                  <tr>
+                    <th>SKU</th>
+                    <th>Product</th>
+                    <th>MRP</th>
+                    <th>Qty</th>
+                    <th>VP</th>
+                    <th>Slab</th>
+                    <th>Est. Price (₹)</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="8" style="text-align: center; color: #94A3B8;">No items in quotation.</td></tr>
+                </tbody>
+              </table>
+            </div>
 
             <div class="cart-total-bar">
-              <div style="display: flex; gap: 20px;">
-                <span style="font-size: 14px; font-weight: bold; color: #475569;">Total Items: <span id="quoteCartItemCount" style="color: var(--primary-dark);">0</span></span>
-                <span style="font-size: 14px; font-weight: bold; color: #15803D;">Total VP: <span id="quoteGrandVP">0.00</span></span>
+              <div style="display: flex; gap: 15px;">
+                <span style="font-size: 13px; font-weight: bold; color: #475569;">Items: <span id="quoteCartItemCount" style="color: var(--primary-dark);">0</span></span>
+                <span style="font-size: 13px; font-weight: bold; color: #15803D;">Total VP: <span id="quoteGrandVP">0.00</span></span>
               </div>
-              <div style="display: flex; align-items: center; gap: 20px;">
-                <h3 style="font-size: 18px; color: var(--primary-dark);">Estimated Total: ₹<span id="quoteGrandTotal">0</span></h3>
-                <button class="btn-primary" onclick="printAndSaveQuotation()">🖨️ Print & Save Quotation</button>
+              <div style="display: flex; align-items: center; gap: 15px;">
+                <h3 style="font-size: 16px; color: var(--primary-dark);">Est. Total: ₹<span id="quoteGrandTotal">0</span></h3>
+                <button class="btn-primary" onclick="printAndSaveQuotation()">🖨️ Print Quote</button>
               </div>
             </div>
           </div>
         </div>
 
         <div class="card">
-          <h3 style="margin-bottom: 12px; color: var(--sidebar-bg);">📜 Saved Quotations & Proforma Invoices</h3>
-          <table id="quotesTable">
-            <thead>
-              <tr>
-                <th>Quote ID</th>
-                <th>Date</th>
-                <th>Customer</th>
-                <th>Items Summary</th>
-                <th>Qty</th>
-                <th>Total VP</th>
-                <th>Estimated Total (₹)</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <h3 style="margin-bottom: 12px; color: var(--sidebar-bg); font-size: 15px;">📜 Saved Quotations</h3>
+          <div style="overflow-x: auto;">
+            <table id="quotesTable">
+              <thead>
+                <tr>
+                  <th>Quote ID</th>
+                  <th>Date</th>
+                  <th>Customer</th>
+                  <th>Items Summary</th>
+                  <th>Qty</th>
+                  <th>Total VP</th>
+                  <th>Est. Total (₹)</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- TAB 1.75: PAYMENT RECEIPT MODULE -->
       <div id="payment-receipt" class="tab-content">
         <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
             <div>
-              <h3 style="color: var(--primary-dark);">💳 Customer Payment Receipt Entry</h3>
-              <p style="font-size: 12px; color: #64748B; margin-top: 2px;">Customer se prapt payment ki entry karein. Yeh amount seedhe Customer Ledger me reflect hoga.</p>
+              <h3 style="color: var(--primary-dark); font-size: 16px;">💳 Customer Payment Receipt Entry</h3>
+              <p style="font-size: 12px; color: #64748B;">Customer se prapt payment ki entry karein.</p>
             </div>
             <span class="badge badge-cash">Ledger Linked</span>
           </div>
           <hr style="margin: 0 0 15px 0; border: 0; border-top: 1px solid #FFE0B2;">
 
-          <div class="form-row" style="grid-template-columns: 2fr 1.2fr 1.2fr;">
+          <div class="form-row row-1-cust">
             <div class="form-group">
               <label>Customer Name</label>
               <input list="customerList" id="payCustName" placeholder="Search customer name..." autocomplete="off" onkeydown="handleCustomerCoachTab(event, 'payCustName', 'customerList')" oninput="updateCustPendingNotice()">
@@ -694,37 +731,37 @@
               <label>Amount Received (₹)</label>
               <input type="number" id="payAmount" placeholder="e.g. 2000" min="1">
             </div>
-          </div>
-
-          <div class="form-row" style="grid-template-columns: 1.5fr 1.5fr 2fr;">
             <div class="form-group">
               <label>Payment Mode</label>
               <select id="payMode">
                 <option value="Cash" selected>Cash</option>
                 <option value="GooglePay / PhonePe / UPI">GooglePay / PhonePe / UPI</option>
-                <option value="Bank Transfer (NEFT/RTGS)">Bank Transfer (NEFT/RTGS)</option>
+                <option value="Bank Transfer (NEFT/RTGS)">Bank Transfer</option>
                 <option value="Cheque">Cheque</option>
               </select>
             </div>
+          </div>
+
+          <div class="form-row" style="grid-template-columns: 1fr 1fr;">
             <div class="form-group">
               <label>Ref / Transaction ID (Optional)</label>
-              <input type="text" id="payRefNo" placeholder="UPI Ref / UTR / Cheque No.">
+              <input type="text" id="payRefNo" placeholder="UPI Ref / UTR No.">
             </div>
             <div class="form-group">
               <label>Remarks / Notes</label>
-              <input type="text" id="payRemarks" placeholder="e.g. Part payment for order">
+              <input type="text" id="payRemarks" placeholder="e.g. Part payment">
             </div>
           </div>
 
-          <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 15px;">
+          <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 15px; flex-wrap: wrap;">
             <button class="btn-secondary" onclick="clearPaymentForm()">Clear</button>
-            <button class="btn-primary" onclick="saveAndPrintPaymentReceipt(true)">🖨️ Save & Print Receipt</button>
-            <button class="btn-primary" style="background: #15803D;" onclick="saveAndPrintPaymentReceipt(false)">💾 Save Payment Only</button>
+            <button class="btn-primary" onclick="saveAndPrintPaymentReceipt(true)">🖨️ Save & Print</button>
+            <button class="btn-primary" style="background: #15803D;" onclick="saveAndPrintPaymentReceipt(false)">💾 Save Only</button>
           </div>
         </div>
 
         <div class="card">
-          <h3 style="margin-bottom: 12px; color: var(--sidebar-bg);">📜 Payment Receipts History</h3>
+          <h3 style="margin-bottom: 12px; color: var(--sidebar-bg); font-size: 15px;">📜 Payment Receipts History</h3>
           <div style="overflow-x: auto;">
             <table id="paymentReceiptsTable">
               <thead>
@@ -733,8 +770,8 @@
                   <th>Date</th>
                   <th>Customer</th>
                   <th>Amount (₹)</th>
-                  <th>Payment Mode</th>
-                  <th>Ref / Txn No.</th>
+                  <th>Mode</th>
+                  <th>Ref No.</th>
                   <th>Remarks</th>
                   <th>Actions</th>
                 </tr>
@@ -752,18 +789,18 @@
             <div class="ledger-list-header">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span>All Customers</span>
-                <span id="custFilterStatusText" style="font-size: 11px; color: #EF4444; font-weight: bold; display: none;">[Only Udhaar Filtered]</span>
+                <span id="custFilterStatusText" style="font-size: 11px; color: #EF4444; font-weight: bold; display: none;">[Udhaar Only]</span>
               </div>
               <input type="text" id="custSearchInput" placeholder="🔍 Search Customer..." oninput="filterCustomerList()" style="height: 32px; font-size: 13px;">
             </div>
             <ul class="ledger-items" id="custLedgerList"></ul>
           </div>
           <div class="ledger-detail-card" id="custLedgerDetail">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-              <h3 id="selectedCustName">Select a customer from the left list</h3>
-              <div id="custActionButtons" style="display: none; gap: 8px; align-items: center;">
-                <button class="btn-pdf" onclick="downloadCustomerReportPDF()">📥 Download Statement (PDF)</button>
-                <button class="btn-outline" onclick="resetCustomerLedgerView()">⬅ Close Statement</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 8px;">
+              <h3 id="selectedCustName" style="font-size: 15px;">Select a customer from the left list</h3>
+              <div id="custActionButtons" style="display: none; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <button class="btn-pdf" onclick="downloadCustomerReportPDF()">📥 Statement (PDF)</button>
+                <button class="btn-outline" onclick="resetCustomerLedgerView()">⬅ Close</button>
               </div>
             </div>
             <div id="custLedgerBody" style="display: none;">
@@ -774,39 +811,41 @@
                 <div class="stat-box" style="border-left: 4px solid var(--accent-green);"><h4>Total Paid</h4><p id="custStatPaid" style="color: var(--accent-green);">₹0</p></div>
               </div>
 
-              <!-- TRANSACTION BILLS -->
               <h4 style="margin-top: 10px; color: #1E293B;">Transaction Bills History</h4>
-              <table id="custHistoryTable">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Product Items Summary</th>
-                    <th>Qty</th>
-                    <th>Total VP</th>
-                    <th>Total (₹)</th>
-                    <th>Payment</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
+              <div style="overflow-x: auto;">
+                <table id="custHistoryTable">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Items</th>
+                      <th>Qty</th>
+                      <th>VP</th>
+                      <th>Total (₹)</th>
+                      <th>Payment</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
 
-              <!-- PAYMENT RECEIPTS LIST FOR THIS CUSTOMER -->
-              <h4 style="margin-top: 25px; color: #1E293B;">💳 Payment Receipts Received</h4>
-              <table id="custPayReceiptsTable">
-                <thead>
-                  <tr>
-                    <th>Receipt No.</th>
-                    <th>Date</th>
-                    <th>Amount (₹)</th>
-                    <th>Mode</th>
-                    <th>Ref / Txn No.</th>
-                    <th>Remarks</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
+              <h4 style="margin-top: 25px; color: #1E293B;">💳 Payment Receipts</h4>
+              <div style="overflow-x: auto;">
+                <table id="custPayReceiptsTable">
+                  <thead>
+                    <tr>
+                      <th>Receipt No.</th>
+                      <th>Date</th>
+                      <th>Amount (₹)</th>
+                      <th>Mode</th>
+                      <th>Ref No.</th>
+                      <th>Remarks</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -815,13 +854,13 @@
       <!-- TAB 3: COACH LEDGER -->
       <div id="coach-ledger" class="tab-content">
         <div class="card">
-          <div style="margin-bottom: 15px; border-bottom: 1px solid #FFE0B2; padding-bottom: 12px; display: flex; gap: 20px; align-items: flex-end;">
-            <div style="flex: 1;">
+          <div style="margin-bottom: 15px; border-bottom: 1px solid #FFE0B2; padding-bottom: 12px; display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
               <label style="font-size: 13px; font-weight: bold; color: var(--primary-dark);">Coach Name</label>
               <input list="coachNamesList" id="coachName" placeholder="Type coach name..." autocomplete="off" onkeydown="handleCustomerCoachTab(event, 'coachName', 'coachNamesList')">
               <datalist id="coachNamesList"></datalist>
             </div>
-            <div style="width: 240px;">
+            <div style="width: 220px;">
               <label style="font-size: 13px; font-weight: bold; color: var(--primary-dark);">Action Type</label>
               <select id="coachAction">
                 <option value="Lend">Lend to Coach (Stock Minus)</option>
@@ -830,7 +869,7 @@
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 2.5fr 1fr; gap: 12px 18px; margin-bottom: 14px;">
+          <div class="form-row" style="grid-template-columns: 2.5fr 1fr;">
             <div class="form-group">
               <label>Product Name / SKU</label>
               <input list="coachProductList" id="coachProductInput" placeholder="e.g. afresh / shake..." onkeydown="handleProductTab(event, 'coachProductInput')" autocomplete="off">
@@ -847,29 +886,31 @@
           </div>
 
           <div class="cart-section">
-            <h4 style="color: var(--sidebar-bg); margin-bottom: 8px;">Items to Process in Transaction:</h4>
-            <table id="coachCartTable">
-              <thead>
-                <tr>
-                  <th>SKU</th>
-                  <th>Product Name</th>
-                  <th>Unit VP</th>
-                  <th>Quantity</th>
-                  <th>Total VP</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td colspan="6" style="text-align: center; color: #94A3B8;">No items added yet.</td></tr>
-              </tbody>
-            </table>
+            <h4 style="color: var(--sidebar-bg); margin-bottom: 8px;">Items in Transaction:</h4>
+            <div style="overflow-x: auto;">
+              <table id="coachCartTable">
+                <thead>
+                  <tr>
+                    <th>SKU</th>
+                    <th>Product Name</th>
+                    <th>Unit VP</th>
+                    <th>Quantity</th>
+                    <th>Total VP</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="6" style="text-align: center; color: #94A3B8;">No items added yet.</td></tr>
+                </tbody>
+              </table>
+            </div>
 
             <div class="cart-total-bar">
-              <div style="display: flex; gap: 20px;">
-                <span style="font-size: 14px; font-weight: bold; color: #475569;">Total Units: <span id="coachCartUnitCount" style="color: var(--primary-dark);">0</span></span>
-                <span style="font-size: 14px; font-weight: bold; color: #10B981;">Total VP: <span id="coachCartVPCount">0.00</span></span>
+              <div style="display: flex; gap: 15px;">
+                <span style="font-size: 13px; font-weight: bold; color: #475569;">Units: <span id="coachCartUnitCount" style="color: var(--primary-dark);">0</span></span>
+                <span style="font-size: 13px; font-weight: bold; color: #10B981;">Total VP: <span id="coachCartVPCount">0.00</span></span>
               </div>
-              <button class="btn-primary" onclick="checkoutCoachTransaction()">💾 Save Complete Coach Transaction</button>
+              <button class="btn-primary" onclick="checkoutCoachTransaction()">💾 Save Transaction</button>
             </div>
           </div>
         </div>
@@ -883,54 +924,58 @@
             <ul class="ledger-items" id="coachLedgerList"></ul>
           </div>
           <div class="ledger-detail-card" id="coachLedgerDetail">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
-              <h3 id="selectedCoachTitle">Select a coach to view ledger</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 8px;">
+              <h3 id="selectedCoachTitle" style="font-size: 15px;">Select a coach to view ledger</h3>
               <div id="coachActionButtons" style="display: none; gap: 8px; align-items: center; flex-wrap: wrap;">
-                <button class="btn-pending-slip" onclick="downloadCoachPendingReportPDF()">⚠️ Download Pending Slip (PDF)</button>
-                <button class="btn-pdf" onclick="downloadCoachReportPDF()">📥 Full Statement (PDF)</button>
+                <button class="btn-pending-slip" onclick="downloadCoachPendingReportPDF()">⚠️ Due Slip (PDF)</button>
+                <button class="btn-pdf" onclick="downloadCoachReportPDF()">📥 Full Statement</button>
                 <button class="btn-outline" onclick="resetCoachLedgerView()">⬅ Close</button>
               </div>
             </div>
             
             <div id="coachLedgerBody" style="display: none;">
-              <div style="display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #E2E8F0; padding-bottom: 10px;">
-                <button id="btnCoachFullView" class="btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="setCoachViewMode('full')">📋 Full History Statement</button>
-                <button id="btnCoachPendingView" class="btn-outline" style="padding: 6px 14px; font-size: 12px; border-color: #EA580C; color: #EA580C; font-weight: bold;" onclick="setCoachViewMode('pending')">⚠️ View Pending Items Only</button>
+              <div style="display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #E2E8F0; padding-bottom: 10px; flex-wrap: wrap;">
+                <button id="btnCoachFullView" class="btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="setCoachViewMode('full')">📋 Full History</button>
+                <button id="btnCoachPendingView" class="btn-outline" style="padding: 6px 12px; font-size: 12px; border-color: #EA580C; color: #EA580C; font-weight: bold;" onclick="setCoachViewMode('pending')">⚠️ Pending Items Only</button>
               </div>
 
               <div id="coachFullViewArea">
                 <h4 style="margin-bottom: 8px; color: #334155;">Coach Transaction Statement History</h4>
-                <table id="coachDetailTable">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Product Items</th>
-                      <th>Qty</th>
-                      <th>Total VP</th>
-                      <th>Action Type</th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
+                <div style="overflow-x: auto;">
+                  <table id="coachDetailTable">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Product Items</th>
+                        <th>Qty</th>
+                        <th>Total VP</th>
+                        <th>Action Type</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
               </div>
 
               <div id="coachPendingViewArea" style="display: none;">
                 <div style="background: #FFF7ED; border: 1px solid #FFEDD5; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
-                  <h4 style="color: #C2410C; margin-bottom: 2px;">⚠️ Pending Stock to be Returned / Recovered</h4>
-                  <p style="font-size: 12px; color: #9A3412;">Neeche diye gaye items is coach ko diye gaye hain aur unka aana baki hai.</p>
+                  <h4 style="color: #C2410C; margin-bottom: 2px;">⚠️ Pending Stock to be Recovered</h4>
+                  <p style="font-size: 12px; color: #9A3412;">Is coach se aana baki stock.</p>
                 </div>
-                <table id="coachPendingTable">
-                  <thead>
-                    <tr>
-                      <th>Product Name</th>
-                      <th>Total Issued (Lend)</th>
-                      <th>Total Returned</th>
-                      <th>Net Pending Qty</th>
-                      <th>Pending VP</th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
+                <div style="overflow-x: auto;">
+                  <table id="coachPendingTable">
+                    <thead>
+                      <tr>
+                        <th>Product Name</th>
+                        <th>Issued</th>
+                        <th>Returned</th>
+                        <th>Net Pending</th>
+                        <th>Pending VP</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
               </div>
 
             </div>
@@ -941,26 +986,26 @@
       <!-- TAB 4: STOCK -->
       <div id="stock" class="tab-content">
         <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <h3 style="color: var(--primary-dark);">📦 Add Purchase Invoice (Stock Plus)</h3>
-            <div style="display: flex; gap: 10px;">
-              <button class="btn-secondary admin-only" onclick="resetMasterToDefault()">Reload Master Price List</button>
-              <button class="btn-pdf" onclick="downloadStockReportPDF()">📥 Download Stock Report (PDF)</button>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <h3 style="color: var(--primary-dark); font-size: 16px;">📦 Add Purchase Invoice (Stock Plus)</h3>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button class="btn-secondary admin-only" onclick="resetMasterToDefault()">Reload Master</button>
+              <button class="btn-pdf" onclick="downloadStockReportPDF()">📥 Stock PDF</button>
             </div>
           </div>
           <hr style="margin: 0 0 15px 0; border: 0; border-top: 1px solid #FFE0B2;">
 
-          <div class="form-row" style="grid-template-columns: 1.2fr 2fr 1.2fr;">
+          <div class="form-row row-1-cust">
             <div class="form-group">
               <label>Invoice Date</label>
               <input type="date" id="purchDate">
             </div>
             <div class="form-group">
-              <label>Supplier / Order Bill No.</label>
-              <input type="text" id="purchSupplier" placeholder="e.g. Herbalife Official / Bill #9842">
+              <label>Supplier / Bill No.</label>
+              <input type="text" id="purchSupplier" placeholder="e.g. Herbalife Official / #9842">
             </div>
             <div class="form-group">
-              <label>Purchase Discount Tier</label>
+              <label>Discount Tier</label>
               <select id="purchTier" onchange="onPurchaseTierChange()">
                 <option value="50" selected>50% (Supervisor Tier)</option>
                 <option value="42">42% (Qualified Producer)</option>
@@ -972,7 +1017,7 @@
             </div>
           </div>
 
-          <div class="form-row" style="grid-template-columns: 2.2fr 0.8fr 0.8fr 1fr 1fr;">
+          <div class="form-row row-2-prod">
             <div class="form-group">
               <label>Product (Name / SKU)</label>
               <input list="stockQuickList" id="purchProductInput" placeholder="Select or type product..." onkeydown="handleProductTab(event, 'purchProductInput', onPurchaseProductSelect)" oninput="onPurchaseProductSelect()" autocomplete="off">
@@ -991,58 +1036,60 @@
               <input type="number" id="purchRate" placeholder="0" oninput="calcPurchItemTotal()">
             </div>
             <div class="form-group">
-              <label>Item Subtotal (₹)</label>
+              <label>Subtotal (₹)</label>
               <input type="number" id="purchItemTotal" readonly placeholder="0" style="font-weight: bold; color: var(--primary-dark);">
             </div>
           </div>
 
           <div style="margin-bottom: 15px;">
-            <button class="btn-add" onclick="addItemToPurchaseCart()">➕ Add Product to Purchase Invoice</button>
+            <button class="btn-add" onclick="addItemToPurchaseCart()">➕ Add Product to Purchase</button>
           </div>
 
           <div class="cart-section">
-            <h4 style="color: var(--sidebar-bg); margin-bottom: 8px;">Products in Current Purchase Invoice:</h4>
-            <table id="purchaseCartTable">
-              <thead>
-                <tr>
-                  <th>SKU</th>
-                  <th>Product Name</th>
-                  <th>MRP (₹)</th>
-                  <th>Purchase Rate (₹)</th>
-                  <th>Quantity</th>
-                  <th>Total VP</th>
-                  <th>Total Cost (₹)</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td colspan="8" style="text-align: center; color: #94A3B8;">No purchase items added yet.</td></tr>
-              </tbody>
-            </table>
+            <h4 style="color: var(--sidebar-bg); margin-bottom: 8px;">Products in Current Purchase:</h4>
+            <div style="overflow-x: auto;">
+              <table id="purchaseCartTable">
+                <thead>
+                  <tr>
+                    <th>SKU</th>
+                    <th>Product Name</th>
+                    <th>MRP (₹)</th>
+                    <th>Rate (₹)</th>
+                    <th>Qty</th>
+                    <th>Total VP</th>
+                    <th>Cost (₹)</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="8" style="text-align: center; color: #94A3B8;">No items in purchase invoice.</td></tr>
+                </tbody>
+              </table>
+            </div>
 
             <div class="cart-total-bar">
-              <div style="display: flex; gap: 20px;">
-                <span style="font-size: 14px; font-weight: bold; color: #475569;">Total Units: <span id="purchCartUnits" style="color: var(--primary-dark);">0</span></span>
-                <span style="font-size: 14px; font-weight: bold; color: #15803D;">Total Invoice VP: <span id="purchCartTotalVP">0.00</span></span>
+              <div style="display: flex; gap: 15px;">
+                <span style="font-size: 13px; font-weight: bold; color: #475569;">Units: <span id="purchCartUnits" style="color: var(--primary-dark);">0</span></span>
+                <span style="font-size: 13px; font-weight: bold; color: #15803D;">Invoice VP: <span id="purchCartTotalVP">0.00</span></span>
               </div>
-              <div style="display: flex; align-items: center; gap: 20px;">
-                <h3 style="font-size: 18px; color: var(--primary-dark);">Total Purchase: ₹<span id="purchCartGrandTotal">0</span></h3>
-                <button class="btn-primary" onclick="checkoutPurchaseInvoice()">💾 Save & Add Purchase to Stock</button>
+              <div style="display: flex; align-items: center; gap: 15px;">
+                <h3 style="font-size: 16px; color: var(--primary-dark);">Total: ₹<span id="purchCartGrandTotal">0</span></h3>
+                <button class="btn-primary" onclick="checkoutPurchaseInvoice()">💾 Save to Stock</button>
               </div>
             </div>
           </div>
         </div>
 
         <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 15px;">
-            <h3 style="color: var(--sidebar-bg);">📜 Date-wise Purchase Invoice History</h3>
-            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-              <input type="date" id="purchFilterFrom" style="height: 34px; font-size: 12px;" title="From Date">
-              <span style="font-size: 12px; font-weight: bold;">to</span>
-              <input type="date" id="purchFilterTo" style="height: 34px; font-size: 12px;" title="To Date">
-              <button class="btn-outline" onclick="filterPurchaseHistory()">🔍 Filter</button>
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
+            <h3 style="color: var(--sidebar-bg); font-size: 15px;">📜 Purchase Invoice History</h3>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <input type="date" id="purchFilterFrom" style="height: 32px; font-size: 11px;">
+              <span style="font-size: 11px;">to</span>
+              <input type="date" id="purchFilterTo" style="height: 32px; font-size: 11px;">
+              <button class="btn-outline" onclick="filterPurchaseHistory()">Filter</button>
               <button class="btn-outline" onclick="resetPurchaseFilter()">Reset</button>
-              <button class="btn-pdf" onclick="downloadPurchaseReportPDF()">📥 Download Purchase Report (PDF)</button>
+              <button class="btn-pdf" onclick="downloadPurchaseReportPDF()">PDF</button>
             </div>
           </div>
           <div style="overflow-x: auto;">
@@ -1052,9 +1099,9 @@
                   <th>Date</th>
                   <th>Bill / Supplier</th>
                   <th>Products Purchased</th>
-                  <th>Total Units</th>
+                  <th>Units</th>
                   <th>Total VP</th>
-                  <th>Total Purchase (₹)</th>
+                  <th>Total (₹)</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -1064,42 +1111,37 @@
         </div>
 
         <div class="card" id="stockMasterCard">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 12px;">
-            <h3 style="color: var(--sidebar-bg);">📊 Complete Stock Inventory Master (Live Stock & Volume Points)</h3>
-          </div>
+          <h3 style="color: var(--sidebar-bg); margin-bottom: 12px; font-size: 15px;">📊 Stock Inventory Master (Live Stock & VP)</h3>
 
           <!-- SMART STOCK FILTER BAR -->
-          <div style="background: #FFF7ED; border: 1px solid #FFEDD5; padding: 14px 18px; border-radius: 8px; margin-bottom: 18px; display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end;">
-            <div style="flex: 1.5; min-width: 180px;">
-              <label style="font-size: 12px; font-weight: bold; color: #9A3412; display: block; margin-bottom: 4px;">🔍 Search Product Name / SKU</label>
-              <input type="text" id="stockSearchInput" placeholder="Type name or SKU..." oninput="applyStockFilters()" style="height: 36px; font-size: 13px;">
+          <div style="background: #FFF7ED; border: 1px solid #FFEDD5; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
+            <div style="flex: 1.5; min-width: 160px;">
+              <label style="font-size: 11px; font-weight: bold; color: #9A3412; display: block; margin-bottom: 4px;">🔍 Search Product Name / SKU</label>
+              <input type="text" id="stockSearchInput" placeholder="Type name or SKU..." oninput="applyStockFilters()" style="height: 34px; font-size: 12px;">
             </div>
             
-            <div style="flex: 1.5; min-width: 200px;">
-              <label style="font-size: 12px; font-weight: bold; color: #9A3412; display: block; margin-bottom: 4px;">🎯 Stock Left Condition Filter</label>
-              <select id="stockConditionSelect" onchange="onStockConditionChange()" style="height: 36px; font-size: 13px; font-weight: 600;">
-                <option value="all" selected>All Items (No Filter)</option>
-                <option value="zero" style="color: red; font-weight: bold;">🔴 Out of Stock (= 0 Units)</option>
-                <option value="low" style="color: #EA580C; font-weight: bold;">🟠 Low Stock (≤ 5 Units)</option>
-                <option value="available" style="color: green; font-weight: bold;">🟢 In Stock (> 0 Units)</option>
+            <div style="flex: 1.5; min-width: 160px;">
+              <label style="font-size: 11px; font-weight: bold; color: #9A3412; display: block; margin-bottom: 4px;">🎯 Condition Filter</label>
+              <select id="stockConditionSelect" onchange="onStockConditionChange()" style="height: 34px; font-size: 12px; font-weight: 600;">
+                <option value="all" selected>All Items</option>
+                <option value="zero" style="color: red; font-weight: bold;">🔴 Out of Stock (= 0)</option>
+                <option value="low" style="color: #EA580C; font-weight: bold;">🟠 Low Stock (≤ 5)</option>
+                <option value="available" style="color: green; font-weight: bold;">🟢 In Stock (> 0)</option>
                 <option value="lt">Custom: Less Than (&lt;)</option>
                 <option value="eq">Custom: Equal To (=)</option>
                 <option value="gt">Custom: Greater Than (&gt;)</option>
               </select>
             </div>
 
-            <div id="stockCustomQtyBox" style="width: 130px; display: none;">
-              <label style="font-size: 12px; font-weight: bold; color: #9A3412; display: block; margin-bottom: 4px;">Quantity (Units)</label>
-              <input type="number" id="stockCustomQtyInput" value="5" min="0" oninput="applyStockFilters()" style="height: 36px; font-size: 13px;">
+            <div id="stockCustomQtyBox" style="width: 100px; display: none;">
+              <label style="font-size: 11px; font-weight: bold; color: #9A3412; display: block; margin-bottom: 4px;">Units</label>
+              <input type="number" id="stockCustomQtyInput" value="5" min="0" oninput="applyStockFilters()" style="height: 34px; font-size: 12px;">
             </div>
 
-            <div style="display: flex; gap: 8px;">
-              <button class="btn-outline" onclick="resetStockFilters()" style="height: 36px; font-size: 12px; padding: 0 16px;">Reset Filter</button>
-            </div>
+            <button class="btn-outline" onclick="resetStockFilters()" style="height: 34px; font-size: 11px;">Reset</button>
           </div>
 
-          <!-- ACTIVE FILTER SUMMARY BADGE -->
-          <div id="stockFilterSummary" style="font-size: 12px; font-weight: bold; color: #475569; margin-bottom: 10px; display: flex; justify-content: space-between;">
+          <div id="stockFilterSummary" style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 8px;">
             <span id="stockFilterCountText">Showing all items</span>
           </div>
 
@@ -1109,15 +1151,15 @@
                 <tr>
                   <th>SKU</th>
                   <th>Product Name</th>
-                  <th>VP / Unit</th>
-                  <th>MRP (₹)</th>
-                  <th>15% (PC)</th>
-                  <th>25% (Assoc)</th>
-                  <th>35% (SC)</th>
-                  <th>42% (QP)</th>
-                  <th>50% (Sup)</th>
-                  <th>Stock Left</th>
-                  <th>Total Stock VP</th>
+                  <th>VP</th>
+                  <th>MRP</th>
+                  <th>15%</th>
+                  <th>25%</th>
+                  <th>35%</th>
+                  <th>42%</th>
+                  <th>50%</th>
+                  <th>Stock</th>
+                  <th>Total VP</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -1129,33 +1171,31 @@
       <!-- TAB 4.5: LINEAR VIEW PLUS REPORT -->
       <div id="linear-view" class="tab-content">
         <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
             <div>
-              <h3 style="color: var(--primary-dark);">🌳 Linear View Plus Report</h3>
-              <p style="font-size: 12px; color: #64748B; margin-top: 2px;">Team lineage, supervisor hierarchy aur contact report ka live searchable database.</p>
+              <h3 style="color: var(--primary-dark); font-size: 16px;">🌳 Linear View Plus Report</h3>
+              <p style="font-size: 12px; color: #64748B;">Team lineage & contact database.</p>
             </div>
             
-            <!-- EXCEL UPLOAD (ADMIN ONLY) -->
-            <div class="admin-only" style="display: flex; gap: 10px; align-items: center;">
+            <div class="admin-only" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
               <input type="file" id="linearExcelFileInput" accept=".xlsx, .xls, .csv" style="display: none;" onchange="handleLinearExcelUpload(event)">
-              <button class="btn-primary" style="display: flex; align-items: center; gap: 6px;" onclick="document.getElementById('linearExcelFileInput').click()">
-                📂 Upload New Excel Report
+              <button class="btn-primary" style="display: inline-flex; align-items: center; gap: 4px;" onclick="document.getElementById('linearExcelFileInput').click()">
+                📂 Upload Excel
               </button>
-              <button class="btn-del" onclick="clearLinearReportData()" title="Clear report data">Clear Data</button>
+              <button class="btn-del" onclick="clearLinearReportData()">Clear Data</button>
             </div>
           </div>
           <hr style="margin: 0 0 15px 0; border: 0; border-top: 1px solid #FFE0B2;">
 
-          <!-- SEARCH & COLUMN FILTER BAR -->
-          <div style="background: #F8FAFC; border: 1px solid #CBD5E1; padding: 14px 18px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;">
-            <div style="flex: 2; min-width: 220px;">
-              <label style="font-size: 12px; font-weight: bold; color: #334155; display: block; margin-bottom: 4px;">🔍 Global Search (Any Field)</label>
-              <input type="text" id="linearGlobalSearch" placeholder="Type Name, ID, Sponsor, Phone, Email, TAB, etc..." oninput="applyLinearFilter()" style="height: 38px; font-size: 13px;">
+          <div style="background: #F8FAFC; border: 1px solid #CBD5E1; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
+            <div style="flex: 2; min-width: 180px;">
+              <label style="font-size: 11px; font-weight: bold; color: #334155; display: block; margin-bottom: 4px;">🔍 Global Search</label>
+              <input type="text" id="linearGlobalSearch" placeholder="Type Name, ID, Sponsor, Phone, Email..." oninput="applyLinearFilter()" style="height: 36px; font-size: 12px;">
             </div>
 
-            <div style="flex: 1.2; min-width: 160px;">
-              <label style="font-size: 12px; font-weight: bold; color: #334155; display: block; margin-bottom: 4px;">🎯 Filter By Column</label>
-              <select id="linearColSelect" onchange="applyLinearFilter()" style="height: 38px; font-size: 13px;">
+            <div style="flex: 1.2; min-width: 140px;">
+              <label style="font-size: 11px; font-weight: bold; color: #334155; display: block; margin-bottom: 4px;">🎯 Filter By Column</label>
+              <select id="linearColSelect" onchange="applyLinearFilter()" style="height: 36px; font-size: 12px;">
                 <option value="all">All Columns</option>
                 <option value="ID">ID</option>
                 <option value="Name">Name</option>
@@ -1163,38 +1203,37 @@
                 <option value="Supervisor Level">Supervisor Level</option>
                 <option value="Lineage Level">Lineage Level</option>
                 <option value="Sponsor Name">Sponsor Name</option>
-                <option value="1st Upline TAB Name">1st Upline TAB Name</option>
-                <option value="Primary Phone">Primary Phone</option>
+                <option value="1st Upline TAB Name">1st Upline TAB</option>
+                <option value="Primary Phone">Phone</option>
                 <option value="Email">Email</option>
               </select>
             </div>
 
-            <button class="btn-outline" onclick="resetLinearFilter()" style="height: 38px; padding: 0 16px;">Reset</button>
+            <button class="btn-outline" onclick="resetLinearFilter()" style="height: 36px;">Reset</button>
           </div>
 
-          <!-- SUMMARY BADGE -->
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 12px; color: #64748B; font-weight: bold;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 11px; color: #64748B; font-weight: bold;">
             <span id="linearStatsDisplay">Total Records: 0</span>
             <span id="linearLastUpdated" style="color: #94A3B8; font-weight: normal;"></span>
           </div>
 
-          <div style="overflow-x: auto; max-height: calc(100vh - 360px);">
+          <div style="overflow-x: auto; max-height: calc(100vh - 350px);">
             <table id="linearViewTable">
               <thead>
                 <tr>
-                  <th style="width: 80px;">Lineage</th>
-                  <th style="width: 90px;">Sup. Level</th>
-                  <th style="width: 110px;">Herbalife ID</th>
+                  <th style="width: 70px;">Lineage</th>
+                  <th style="width: 80px;">Sup. Level</th>
+                  <th style="width: 100px;">ID</th>
                   <th>Full Name</th>
-                  <th style="width: 90px;">Team</th>
+                  <th style="width: 80px;">Team</th>
                   <th>Sponsor Name</th>
                   <th>1st Upline TAB</th>
                   <th>Email</th>
-                  <th>Primary Phone</th>
+                  <th>Phone</th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td colspan="9" style="text-align: center; color: #94A3B8; padding: 25px;">No Linear View Report uploaded yet. Admin upar diye gaye button se Excel file upload karein.</td></tr>
+                <tr><td colspan="9" style="text-align: center; color: #94A3B8; padding: 25px;">No Linear View Report data loaded yet.</td></tr>
               </tbody>
             </table>
           </div>
@@ -1204,38 +1243,40 @@
       <!-- TAB 5: ALL SALES -->
       <div id="all-sales" class="tab-content">
         <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h3>Overall Billing & Sales Log</h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 8px;">
+            <h3 style="font-size: 15px;">Overall Billing & Sales Log</h3>
             <button class="btn-outline" onclick="goToBillingTab()">➕ New Invoice</button>
           </div>
-          <table id="salesTable">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Customer</th>
-                <th>Product Items</th>
-                <th>Qty</th>
-                <th>Volume Points (VP)</th>
-                <th>Total (₹)</th>
-                <th>Payment</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <div style="overflow-x: auto;">
+            <table id="salesTable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Customer</th>
+                  <th>Product Items</th>
+                  <th>Qty</th>
+                  <th>Volume Points (VP)</th>
+                  <th>Total (₹)</th>
+                  <th>Payment</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- TAB 6: USER MANAGEMENT (ADMIN ONLY) -->
       <div id="users-manage" class="tab-content admin-only">
         <div class="card">
-          <h3 style="color: var(--primary-dark); margin-bottom: 8px;">👥 Staff & User Account Management</h3>
-          <p style="font-size: 12px; color: #64748B; margin-bottom: 15px;">Aap apne office staff ke liye user ID aur password manage kar sakte hain.</p>
+          <h3 style="color: var(--primary-dark); margin-bottom: 8px; font-size: 16px;">👥 Staff & User Account Management</h3>
+          <p style="font-size: 12px; color: #64748B; margin-bottom: 15px;">Office staff ke user ID aur password manage karein.</p>
           <hr style="margin: 0 0 15px 0; border: 0; border-top: 1px solid #FFE0B2;">
 
-          <div class="form-row" style="grid-template-columns: 1.5fr 1.5fr 1.5fr 1fr;">
+          <div class="form-row" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
             <div class="form-group">
-              <label>User ID / Username</label>
+              <label>User ID</label>
               <input type="text" id="newUserIdInput" placeholder="e.g. staff_rahul">
             </div>
             <div class="form-group">
@@ -1250,32 +1291,34 @@
               </select>
             </div>
             <div class="form-group">
-              <button class="btn-primary" style="height: 38px; padding: 0;" onclick="addUserAccount()">➕ Add / Update User</button>
+              <button class="btn-primary" style="height: 38px; width: 100%;" onclick="addUserAccount()">➕ Save User</button>
             </div>
           </div>
         </div>
 
         <div class="card">
-          <h3 style="margin-bottom: 12px; color: var(--sidebar-bg);">Registered User Accounts</h3>
-          <table id="usersTable">
-            <thead>
-              <tr>
-                <th>Username</th>
-                <th>Password</th>
-                <th>Role</th>
-                <th>Permissions Summary</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <h3 style="margin-bottom: 12px; color: var(--sidebar-bg); font-size: 15px;">Registered User Accounts</h3>
+          <div style="overflow-x: auto;">
+            <table id="usersTable">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Password</th>
+                  <th>Role</th>
+                  <th>Permissions Summary</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
     </div>
   </div>
 
-  <!-- SINGLE BILL / QUOTATION RECEIPT TEMPLATE -->
+  <!-- RECEIPT TEMPLATES -->
   <div id="printReceipt">
     <div style="text-align: center; margin-bottom: 8px;">
       <div class="bwc-logo-sq" style="width: 50px; height: 50px; margin: 0 auto 5px auto;">
@@ -1332,7 +1375,6 @@
     </div>
   </div>
 
-  <!-- PAYMENT RECEIPT THERMAL PRINT TEMPLATE -->
   <div id="printPayReceipt">
     <div style="text-align: center; margin-bottom: 8px;">
       <div class="bwc-logo-sq" style="width: 48px; height: 48px; margin: 0 auto 5px auto;">
@@ -1376,7 +1418,6 @@
     </div>
   </div>
 
-  <!-- FULL PDF REPORT TEMPLATE -->
   <div id="printReportArea">
     <div style="border-bottom: 3px solid #FF7043; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end;">
       <div style="display: flex; align-items: center; gap: 15px;">
@@ -1427,6 +1468,19 @@
     document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('en-IN');
     document.getElementById('purchDate').value = new Date().toISOString().split('T')[0];
     document.getElementById('payDate').value = new Date().toISOString().split('T')[0];
+
+    // MOBILE DRAWER TOGGLE
+    function toggleMobileSidebar(open) {
+      const sb = document.getElementById('sidebarNav');
+      const bd = document.getElementById('sidebarBackdrop');
+      if (open) {
+        sb.classList.add('mobile-open');
+        bd.classList.add('active');
+      } else {
+        sb.classList.remove('mobile-open');
+        bd.classList.remove('active');
+      }
+    }
 
     // DEFAULT USERS CREDENTIALS (SAVED LOCALLY)
     const defaultUsers = [
@@ -1755,7 +1809,7 @@
       }
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #94A3B8; padding: 25px;">${linearData.length === 0 ? 'No Linear View Report uploaded yet. Admin upar diye gaye button se Excel file upload karein.' : 'Is search query ke anusar koi record nahi mila.'}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #94A3B8; padding: 25px;">${linearData.length === 0 ? 'No Linear View Report uploaded yet.' : 'Is search query ke anusar koi record nahi mila.'}</td></tr>`;
         return;
       }
 
@@ -1852,10 +1906,10 @@
           firebase.database().ref('.info/connected').on('value', snap => {
             if (snap.val() === true) {
               document.getElementById('syncDot').className = 'dot online';
-              document.getElementById('syncStatusText').innerText = '🟢 Cloud Synced (Live)';
+              document.getElementById('syncStatusText').innerText = '🟢 Cloud Live';
             } else {
               document.getElementById('syncDot').className = 'dot offline';
-              document.getElementById('syncStatusText').innerText = '🟡 Offline (Auto-Syncing)';
+              document.getElementById('syncStatusText').innerText = '🟡 Offline';
             }
           });
         } catch (e) {
@@ -1863,7 +1917,7 @@
         }
       } else {
         document.getElementById('syncDot').className = 'dot local';
-        document.getElementById('syncStatusText').innerText = 'Local Storage Mode';
+        document.getElementById('syncStatusText').innerText = 'Local';
       }
     }
 
@@ -1950,7 +2004,6 @@
         savedCustomers = [];
         savedCoaches = [];
         
-        // Zero all quantities in catalog
         inventory = defaultCatalog.map(item => ({ ...item, qty: 0 }));
 
         localStorage.removeItem('bwc_sales');
@@ -1962,7 +2015,6 @@
         localStorage.removeItem('bwc_saved_coaches');
         localStorage.setItem('bwc_inventory', JSON.stringify(inventory));
 
-        // Force complete wipe to Cloud Firebase
         if (isFirebaseActive && dbRef) {
           isInternalUpdate = true;
           dbRef.set({
@@ -1985,7 +2037,6 @@
         closeAdvSettingsModal();
         alert('Master Reset Successful! Sabhi bills clear ho gaye aur sara Stock 0 Units par reset ho gaya.');
         
-        // Reset filters & views
         resetStockFilters();
         renderDatalists();
         renderTables();
@@ -1998,6 +2049,9 @@
       if (tabId === 'users-manage' && currentUser && currentUser.role !== 'Admin') {
         return alert('Is page ka access sirf Admin ke paas hai!');
       }
+
+      // Close mobile drawer on navigation
+      toggleMobileSidebar(false);
 
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.sidebar-menu li, .submenu li').forEach(l => l.classList.remove('active'));
@@ -2122,7 +2176,7 @@
     function exportDataBackup() {
       const fullBackupData = {
         app: "BharatWellnessClub",
-        version: "3.5",
+        version: "3.6",
         backupDate: new Date().toISOString(),
         inventory: inventory,
         sales: sales,
@@ -2393,7 +2447,7 @@
     function renderCustomerCart() {
       const tbody = document.querySelector('#customerCartTable tbody');
       if (customerCart.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #94A3B8;">No items added yet. Product select karke 'Add Item' karein.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #94A3B8;">No items added yet.</td></tr>`;
         document.getElementById('cartItemCount').innerText = '0';
         document.getElementById('cartGrandVP').innerText = '0.00';
         document.getElementById('cartGrandTotal').innerText = '0';
@@ -2422,7 +2476,7 @@
         `;
       }).join('');
 
-      document.getElementById('cartItemCount').innerText = `${totalItems} units (${customerCart.length} types)`;
+      document.getElementById('cartItemCount').innerText = `${totalItems} units`;
       document.getElementById('cartGrandVP').innerText = grandVP.toFixed(2);
       document.getElementById('cartGrandTotal').innerText = grandTotal;
     }
@@ -2598,7 +2652,7 @@
 
       editingSaleIndex = index;
       document.getElementById('editingBanner').style.display = 'flex';
-      document.getElementById('btnFinalSaveBill').innerText = '💾 Update & Save Bill';
+      document.getElementById('btnFinalSaveBill').innerText = '💾 Update Bill';
 
       document.getElementById('custName').value = sale.customer;
       document.getElementById('billPayType').value = sale.paymentType || (sale.status === 'Pending' ? 'Udhaar' : 'Cash');
@@ -2623,7 +2677,7 @@
       customerCart = [];
       renderCustomerCart();
       document.getElementById('editingBanner').style.display = 'none';
-      document.getElementById('btnFinalSaveBill').innerText = '🖨️ Final Print & Save Bill';
+      document.getElementById('btnFinalSaveBill').innerText = '🖨️ Print & Save Bill';
       document.getElementById('custName').value = '';
     }
 
@@ -2665,10 +2719,10 @@
       }
       const bal = getCustomerBalanceData(cust);
       if (bal.netPending > 0) {
-        notice.innerText = `Current Pending Udhaar Balance: ₹${bal.netPending}`;
+        notice.innerText = `Pending: ₹${bal.netPending}`;
         notice.style.color = '#DC2626';
       } else {
-        notice.innerText = `Current Udhaar Balance: ₹0 (Clear)`;
+        notice.innerText = `Balance: ₹0 (Clear)`;
         notice.style.color = '#15803D';
       }
     }
@@ -2691,7 +2745,7 @@
       const remarks = document.getElementById('payRemarks').value.trim() || 'Payment Received';
 
       if (!cust) return alert('Kripya Customer Name dalein!');
-      if (amount <= 0) return alert('Kripya valid Amount dalein (0 se jyada hona chahiye)!');
+      if (amount <= 0) return alert('Kripya valid Amount dalein!');
 
       if (!savedCustomers.includes(cust)) {
         savedCustomers.push(cust);
@@ -2764,8 +2818,8 @@
           <td>${p.refNo || '—'}</td>
           <td>${p.remarks || '—'}</td>
           <td style="display: flex; gap: 4px;">
-            <button class="btn-reprint" onclick="reprintPayReceipt(${idx})">🖨️ Print</button>
-            <button class="btn-del admin-only" onclick="deletePayReceipt(${idx})">Delete</button>
+            <button class="btn-reprint" onclick="reprintPayReceipt(${idx})">🖨️</button>
+            <button class="btn-del admin-only" onclick="deletePayReceipt(${idx})">✕</button>
           </td>
         </tr>
       `).join('');
@@ -2897,7 +2951,7 @@
     function renderQuoteCart() {
       const tbody = document.querySelector('#quoteCartTable tbody');
       if (quoteCart.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #94A3B8;">No items added to quotation yet.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #94A3B8;">No items in quotation.</td></tr>`;
         document.getElementById('quoteCartItemCount').innerText = '0';
         document.getElementById('quoteGrandVP').innerText = '0.00';
         document.getElementById('quoteGrandTotal').innerText = '0';
@@ -2926,7 +2980,7 @@
         `;
       }).join('');
 
-      document.getElementById('quoteCartItemCount').innerText = `${totalItems} units (${quoteCart.length} types)`;
+      document.getElementById('quoteCartItemCount').innerText = `${totalItems} units`;
       document.getElementById('quoteGrandVP').innerText = grandVP.toFixed(2);
       document.getElementById('quoteGrandTotal').innerText = grandTotal;
     }
@@ -2937,8 +2991,8 @@
       const quoteTier = document.getElementById('quoteTier').value;
       const customDisc = parseFloat(document.getElementById('quoteDiscount').value) || 0;
 
-      if (!cust) return alert('Kripya Customer / Client Name dalein!');
-      if (quoteCart.length === 0) return alert('Quotation banane ke liye kam se kam ek product add karein!');
+      if (!cust) return alert('Kripya Customer Name dalein!');
+      if (quoteCart.length === 0) return alert('Quotation banane ke liye product add karein!');
 
       if (!savedCustomers.includes(cust)) {
         savedCustomers.push(cust);
@@ -3030,8 +3084,8 @@
           <td><strong style="color: #10B981;">${(parseFloat(q.totalVP) || 0).toFixed(2)} VP</strong></td>
           <td><strong style="color: var(--primary-dark);">₹${q.total}</strong></td>
           <td style="display: flex; gap: 4px;">
-            <button class="btn-pdf" style="padding: 4px 8px; font-size: 11px;" onclick="printSavedQuotation(${index})">🖨️ Print</button>
-            <button class="btn-del admin-only" onclick="deleteQuotation(${index})">Delete</button>
+            <button class="btn-pdf" style="padding: 4px 8px; font-size: 11px;" onclick="printSavedQuotation(${index})">🖨️</button>
+            <button class="btn-del admin-only" onclick="deleteQuotation(${index})">✕</button>
           </td>
         </tr>
       `).join('');
@@ -3105,7 +3159,7 @@
       if (action === 'Lend') {
         const alreadyInCart = coachCart.filter(i => i.sku === item.sku).reduce((sum, i) => sum + i.qty, 0);
         if (item.qty < (alreadyInCart + qty)) {
-          return alert(`Stock me utna maal nahi hai! Total Stock: ${item.qty}, Cart: ${alreadyInCart}`);
+          return alert(`Stock me utna maal nahi hai! Total Stock: ${item.qty}`);
         }
       }
 
@@ -3157,7 +3211,7 @@
         `;
       }).join('');
 
-      document.getElementById('coachCartUnitCount').innerText = `${totalQty} units (${coachCart.length} types)`;
+      document.getElementById('coachCartUnitCount').innerText = `${totalQty} units`;
       document.getElementById('coachCartVPCount').innerText = totalVP.toFixed(2);
     }
 
@@ -3166,7 +3220,7 @@
       const action = document.getElementById('coachAction').value;
 
       if (!coach) return alert('Kripya Coach Name dalein!');
-      if (coachCart.length === 0) return alert('List me kam se kam ek product add karein!');
+      if (coachCart.length === 0) return alert('List me product add karein!');
 
       if (!savedCoaches.includes(coach)) {
         savedCoaches.push(coach);
@@ -3195,7 +3249,7 @@
       localStorage.setItem('bwc_coach_logs', JSON.stringify(coachLogs));
 
       pushDataToCloud();
-      alert(`Coach transaction saved! Stock ${action === 'Lend' ? 'Minus' : 'Plus'} ho gaya.`);
+      alert(`Coach transaction saved!`);
 
       coachCart = [];
       renderCoachCart();
@@ -3269,7 +3323,7 @@
     function renderPurchaseCart() {
       const tbody = document.querySelector('#purchaseCartTable tbody');
       if (purchaseCart.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #94A3B8;">No purchase items added yet.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #94A3B8;">No items in purchase invoice.</td></tr>`;
         document.getElementById('purchCartUnits').innerText = '0';
         document.getElementById('purchCartTotalVP').innerText = '0.00';
         document.getElementById('purchCartGrandTotal').innerText = '0';
@@ -3298,7 +3352,7 @@
         `;
       }).join('');
 
-      document.getElementById('purchCartUnits').innerText = `${totalUnits} units (${purchaseCart.length} types)`;
+      document.getElementById('purchCartUnits').innerText = `${totalUnits} units`;
       document.getElementById('purchCartTotalVP').innerText = grandVP.toFixed(2);
       document.getElementById('purchCartGrandTotal').innerText = grandTotal;
     }
@@ -3553,9 +3607,9 @@
             <td>₹${s.total}</td>
             <td><span class="badge ${s.status === 'Paid' ? 'badge-cash' : 'badge-credit'}">${s.status === 'Pending' ? 'Udhaar' : 'Paid'}</span></td>
             <td style="display: flex; gap: 4px; align-items: center;">
-              <button class="btn-reprint" onclick="reprintCustomerBill(${originalIndex})">🖨️ Print</button>
+              <button class="btn-reprint" onclick="reprintCustomerBill(${originalIndex})">🖨️</button>
               <button class="btn-edit" onclick="editCustomerSale(${originalIndex})">Edit</button>
-              <button class="btn-del admin-only" onclick="deleteCustomerSale(${originalIndex})">Delete</button>
+              <button class="btn-del admin-only" onclick="deleteCustomerSale(${originalIndex})">✕</button>
             </td>
           </tr>
         `;
@@ -3577,7 +3631,7 @@
               <td>${p.refNo || '—'}</td>
               <td>${p.remarks || '—'}</td>
               <td>
-                <button class="btn-reprint" onclick="reprintPayReceipt(${originalPayIndex})">🖨️ Print</button>
+                <button class="btn-reprint" onclick="reprintPayReceipt(${originalPayIndex})">🖨️</button>
               </td>
             </tr>
           `;
@@ -3987,7 +4041,7 @@
 
       const summaryEl = document.getElementById('stockFilterCountText');
       if (summaryEl) {
-        summaryEl.innerHTML = `Showing: <strong style="color:var(--primary-dark);">${filtered.length}</strong> products &nbsp;|&nbsp; Total Stock: <strong style="color:var(--primary-dark);">${totalFilteredUnits} Units</strong> &nbsp;|&nbsp; Total VP: <strong style="color:#10B981;">${totalFilteredVP.toFixed(2)} VP</strong>`;
+        summaryEl.innerHTML = `Showing: <strong style="color:var(--primary-dark);">${filtered.length}</strong> products &nbsp;|&nbsp; Stock: <strong style="color:var(--primary-dark);">${totalFilteredUnits} Units</strong> &nbsp;|&nbsp; VP: <strong style="color:#10B981;">${totalFilteredVP.toFixed(2)}</strong>`;
       }
 
       if (filtered.length === 0) {
@@ -4101,9 +4155,9 @@
             <td><strong>₹${sale.total}</strong></td>
             <td><span class="badge ${sale.status === 'Paid' ? 'badge-cash' : 'badge-credit'}">${sale.status === 'Pending' ? 'Udhaar' : 'Paid'}</span></td>
             <td style="display: flex; gap: 4px; align-items: center;">
-              <button class="btn-reprint" onclick="reprintCustomerBill(${i})">🖨️ Print</button>
+              <button class="btn-reprint" onclick="reprintCustomerBill(${i})">🖨️</button>
               <button class="btn-edit" onclick="editCustomerSale(${i})">Edit</button>
-              <button class="btn-del admin-only" onclick="deleteCustomerSale(${i})">Delete</button>
+              <button class="btn-del admin-only" onclick="deleteCustomerSale(${i})">✕</button>
             </td>
           </tr>
         `).join('');
