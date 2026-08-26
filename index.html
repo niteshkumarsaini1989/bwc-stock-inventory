@@ -191,8 +191,8 @@
     .badge-quote { background: #E0F2FE; color: #0369A1; }
     .badge-pay { background: #FEF3C7; color: #D97706; }
 
-    #printReceipt, #printPayReceipt { display: none; width: 320px; padding: 15px; border: 1px dashed #333; font-family: monospace; font-size: 12px; }
-    
+    #printReceipt, #printPayReceipt, #printReportArea { display: none; }
+
     /* RESPONSIVE MOBILE UI RULES */
     @media (max-width: 900px) {
       body { flex-direction: column; overflow-y: auto; height: auto; min-height: 100vh; }
@@ -216,7 +216,6 @@
       .ledger-list-card, .ledger-detail-card { height: auto; max-height: 500px; }
       .stat-row { grid-template-columns: repeat(2, 1fr); }
       
-      /* Make tables horizontally swipeable */
       .card, .ledger-detail-card, #stockMasterCard, #linearViewTable {
         overflow-x: auto; -webkit-overflow-scrolling: touch;
       }
@@ -228,24 +227,51 @@
       .stat-row { grid-template-columns: 1fr; }
     }
 
-    /* PRINT MEDIA */
+    /* WEBKIT & MOBILE SAFE PRINT STYLES */
     @media print {
-      body * { visibility: hidden; }
-      body { background: #fff !important; }
+      html, body {
+        height: auto !important;
+        overflow: visible !important;
+        position: static !important;
+        background: #fff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        color: #000 !important;
+      }
+      .sidebar, .main-wrapper, .modal-overlay, #loginOverlay, .sidebar-backdrop {
+        display: none !important;
+      }
       
-      body.printing-receipt #printReceipt, 
-      body.printing-receipt #printReceipt * { visibility: visible; }
-      body.printing-receipt #printReceipt { display: block; position: absolute; left: 0; top: 0; width: 100%; }
+      body.printing-report #printReportArea {
+        display: block !important;
+        position: static !important;
+        width: 100% !important;
+        padding: 10px !important;
+      }
+      body.printing-report #printReportArea * {
+        visibility: visible !important;
+      }
 
-      body.printing-pay-receipt #printPayReceipt, 
-      body.printing-pay-receipt #printPayReceipt * { visibility: visible; }
-      body.printing-pay-receipt #printPayReceipt { display: block; position: absolute; left: 0; top: 0; width: 100%; }
+      body.printing-receipt #printReceipt {
+        display: block !important;
+        position: static !important;
+        width: 100% !important;
+      }
+      body.printing-receipt #printReceipt * {
+        visibility: visible !important;
+      }
 
-      body.printing-report #printReportArea,
-      body.printing-report #printReportArea * { visibility: visible; }
-      body.printing-report #printReportArea { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 20px; }
+      body.printing-pay-receipt #printPayReceipt {
+        display: block !important;
+        position: static !important;
+        width: 100% !important;
+      }
+      body.printing-pay-receipt #printPayReceipt * {
+        visibility: visible !important;
+      }
+
+      table { min-width: 100% !important; }
     }
-    #printReportArea { display: none; }
   </style>
 </head>
 <body>
@@ -1482,6 +1508,23 @@
       }
     }
 
+    // ROBUST PRINT ENGINE FOR MOBILE & DESKTOP
+    function executeCleanPrint(printClassName) {
+      document.body.className = printClassName;
+      
+      // Delay print slightly for DOM styles to settle on mobile WebKit
+      setTimeout(() => {
+        window.print();
+      }, 250);
+
+      // Clean up body class safely after print finishes or cancels
+      const cleanup = () => {
+        document.body.className = '';
+      };
+      window.addEventListener('afterprint', cleanup, { once: true });
+      setTimeout(cleanup, 4000);
+    }
+
     // DEFAULT USERS CREDENTIALS (SAVED LOCALLY)
     const defaultUsers = [
       { username: 'admin', password: 'admin123', role: 'Admin' },
@@ -1494,7 +1537,7 @@
     let linearData = JSON.parse(localStorage.getItem('bwc_linear_data')) || [];
     let linearLastUpdated = localStorage.getItem('bwc_linear_updated') || '';
 
-    // HARD ZERO ZERO ZERO QUANTITY TEMPLATE FOR TRUE FRESH START
+    // HARD ZERO QUANTITY TEMPLATE
     const defaultCatalog = [
       { sku: '1291', name: 'Afresh Energy Drink Mix - Ginger - 50 gms', vp: 7.80, mrp: 812, p15: 707, p25: 638, p35: 568, p42: 520, p50: 464, qty: 0 },
       { sku: '1294', name: 'Afresh Energy Drink Mix - Elaichi - 50 gms', vp: 7.80, mrp: 812, p15: 707, p25: 638, p35: 568, p42: 520, p50: 464, qty: 0 },
@@ -2050,7 +2093,6 @@
         return alert('Is page ka access sirf Admin ke paas hai!');
       }
 
-      // Close mobile drawer on navigation
       toggleMobileSidebar(false);
 
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -2176,7 +2218,7 @@
     function exportDataBackup() {
       const fullBackupData = {
         app: "BharatWellnessClub",
-        version: "3.6",
+        version: "3.7",
         backupDate: new Date().toISOString(),
         inventory: inventory,
         sales: sales,
@@ -2488,7 +2530,7 @@
       const customDisc = parseFloat(document.getElementById('billDiscount').value) || 0;
 
       if (!cust) return alert('Kripya Customer Name dalein!');
-      if (customerCart.length === 0) return alert('Bill banane ke liye kam se kam ek product add karein!');
+      if (customerCart.length === 0) return alert('Bill banane ke liye product add karein!');
 
       if (!savedCustomers.includes(cust)) {
         savedCustomers.push(cust);
@@ -2562,11 +2604,7 @@
         </tr>
       `).join('');
 
-      document.body.className = 'printing-receipt';
-      setTimeout(() => {
-        window.print();
-        document.body.className = '';
-      }, 150);
+      executeCleanPrint('printing-receipt');
 
       customerCart = [];
       renderCustomerCart();
@@ -2584,7 +2622,6 @@
       if (!sale) return;
 
       const grandVP = (parseFloat(sale.totalVP) || 0).toFixed(2);
-      
       let totalMRPVal = 0;
       let discLabel = sale.discountLabel || '0%';
 
@@ -2629,11 +2666,7 @@
         `;
       }
 
-      document.body.className = 'printing-receipt';
-      setTimeout(() => {
-        window.print();
-        document.body.className = '';
-      }, 150);
+      executeCleanPrint('printing-receipt');
     }
 
     /* INVOICE EDIT & DELETE SYSTEM */
@@ -2783,11 +2816,7 @@
         document.getElementById('prAmount').innerText = receiptRecord.amount;
         document.getElementById('prBalance').innerText = updatedBal.netPending;
 
-        document.body.className = 'printing-pay-receipt';
-        setTimeout(() => {
-          window.print();
-          document.body.className = '';
-        }, 150);
+        executeCleanPrint('printing-pay-receipt');
       } else {
         alert(`Payment Receipt (${receiptRecord.receiptNo}) of ₹${amount} successfully save ho gayi!`);
       }
@@ -2842,11 +2871,7 @@
       document.getElementById('prAmount').innerText = p.amount;
       document.getElementById('prBalance').innerText = bal.netPending;
 
-      document.body.className = 'printing-pay-receipt';
-      setTimeout(() => {
-        window.print();
-        document.body.className = '';
-      }, 150);
+      executeCleanPrint('printing-pay-receipt');
     }
 
     function deletePayReceipt(index) {
@@ -3052,11 +3077,7 @@
         </tr>
       `).join('');
 
-      document.body.className = 'printing-receipt';
-      setTimeout(() => {
-        window.print();
-        document.body.className = '';
-      }, 150);
+      executeCleanPrint('printing-receipt');
 
       quoteCart = [];
       renderQuoteCart();
@@ -3131,11 +3152,7 @@
         </tr>
       `).join('');
 
-      document.body.className = 'printing-receipt';
-      setTimeout(() => {
-        window.print();
-        document.body.className = '';
-      }, 150);
+      executeCleanPrint('printing-receipt');
     }
 
     function deleteQuotation(index) {
@@ -3539,11 +3556,7 @@
       `).join('');
 
       document.querySelector('#rptTable tfoot').innerHTML = '';
-      document.body.className = 'printing-report';
-      setTimeout(() => {
-        window.print();
-        document.body.className = '';
-      }, 150);
+      executeCleanPrint('printing-report');
     }
 
     function filterCustomerList() {
@@ -3737,11 +3750,7 @@
 
       tbody.innerHTML = tableRows;
       document.querySelector('#rptTable tfoot').innerHTML = '';
-      document.body.className = 'printing-report';
-      setTimeout(() => {
-        window.print();
-        document.body.className = '';
-      }, 150);
+      executeCleanPrint('printing-report');
     }
 
     function filterCoachList() {
@@ -3923,11 +3932,7 @@
       `).join('');
 
       document.querySelector('#rptTable tfoot').innerHTML = '';
-      document.body.className = 'printing-report';
-      setTimeout(() => {
-        window.print();
-        document.body.className = '';
-      }, 150);
+      executeCleanPrint('printing-report');
     }
 
     /* DOWNLOAD FULL STATEMENT PDF */
@@ -3975,11 +3980,7 @@
       `).join('');
 
       document.querySelector('#rptTable tfoot').innerHTML = '';
-      document.body.className = 'printing-report';
-      setTimeout(() => {
-        window.print();
-        document.body.className = '';
-      }, 150);
+      executeCleanPrint('printing-report');
     }
 
     /* STOCK FILTER CONTROLS */
@@ -4132,11 +4133,7 @@
       }).join('');
 
       document.querySelector('#rptTable tfoot').innerHTML = '';
-      document.body.className = 'printing-report';
-      setTimeout(() => {
-        window.print();
-        document.body.className = '';
-      }, 150);
+      executeCleanPrint('printing-report');
     }
 
     function renderTables() {
