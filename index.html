@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#1E293B">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Bharat Wellness Club - Multi-Device System</title>
+  <title>Bharat Wellness Club - Direct Access System</title>
 
   <!-- WEB APP MANIFEST -->
   <link rel="manifest" href="data:application/manifest+json;utf-8,%7B%22name%22%3A%22Bharat%20Wellness%20Club%22%2C%22short_name%22%3A%22BWC%20App%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23FFF8F6%22%2C%22theme_color%22%3A%22%231E293B%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Butf-8%2C%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Crect%20width%3D'100'%20height%3D'100'%20fill%3D'%23FF8A50'%2F%3E%3Ccircle%20cx%3D'50'%20cy%3D'50'%20r%3D'38'%20fill%3D'%23FFFFFF'%2F%3E%3Ctext%20x%3D'50'%20y%3D'58'%20font-size%3D'24'%20text-anchor%3D'middle'%20fill%3D'%231E293B'%20font-weight%3D'bold'%3EBWC%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
@@ -33,22 +33,6 @@
     }
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
     body { background-color: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; position: relative; }
-
-    /* AUTH / LOGIN OVERLAY */
-    #loginOverlay {
-      position: fixed; inset: 0; background: linear-gradient(135deg, #0F172A, #1E293B); z-index: 10000;
-      display: flex; align-items: center; justify-content: center; padding: 15px;
-    }
-    .login-box {
-      background: #FFF; width: 380px; max-width: 100%; border-radius: 12px; padding: 30px 20px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.4); text-align: center; border-top: 5px solid var(--primary);
-    }
-    .login-box h2 { font-size: 19px; color: #0F172A; margin-top: 10px; margin-bottom: 4px; }
-    .login-box p { font-size: 12px; color: #64748B; margin-bottom: 20px; }
-    .login-form-group { text-align: left; margin-bottom: 14px; }
-    .login-form-group label { font-size: 12px; font-weight: bold; color: #475569; display: block; margin-bottom: 5px; }
-    .login-form-group input { width: 100%; height: 40px; border-radius: 6px; border: 1px solid var(--border); padding: 0 12px; font-size: 13px; }
-    .login-form-group input:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
 
     /* LOGO SQUARE CONTAINER */
     .bwc-logo-sq {
@@ -106,10 +90,8 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    /* USER BADGE & LOGOUT */
+    /* USER BADGE */
     .user-pill { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 20px; background: #EFF6FF; border: 1px solid #BFDBFE; }
-    .btn-logout { background: #EF4444; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; }
-    .btn-logout:hover { background: #DC2626; }
 
     /* SYNC STATUS BADGE */
     .sync-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 20px; background: #F1F5F9; }
@@ -118,7 +100,7 @@
     .dot.offline { background: #EAB308; }
     .dot.local { background: #94A3B8; }
 
-    /* CARDS & DASHBOARD TILES */
+    /* CARDS & TILES */
     .card { background: var(--card-bg); padding: 18px; border-radius: 10px; border: 1px solid #FFE0B2; box-shadow: 0 2px 6px rgba(255, 112, 67, 0.08); margin-bottom: 20px; }
     
     .dash-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
@@ -133,7 +115,7 @@
     .tile.stock { border-left: 5px solid var(--accent-green); }
     .tile.cost { border-left: 5px solid #3B82F6; }
 
-    /* FORM ROW GRID */
+    /* FORM GRID */
     .form-row { display: grid; gap: 12px 16px; margin-bottom: 12px; }
     .row-1-cust { grid-template-columns: 2fr 1.3fr 0.9fr 1.2fr; }
     .row-2-prod { grid-template-columns: 2.2fr 0.8fr 0.8fr 1fr 1.2fr; }
@@ -193,7 +175,7 @@
 
     #printReceipt, #printPayReceipt { display: none; width: 320px; padding: 15px; border: 1px dashed #333; font-family: monospace; font-size: 12px; }
     
-    /* RESPONSIVE MOBILE UI RULES */
+    /* RESPONSIVE MOBILE */
     @media (max-width: 900px) {
       body { flex-direction: column; overflow-y: auto; height: auto; min-height: 100vh; }
       .sidebar {
@@ -216,7 +198,6 @@
       .ledger-list-card, .ledger-detail-card { height: auto; max-height: 500px; }
       .stat-row { grid-template-columns: repeat(2, 1fr); }
       
-      /* Make tables horizontally swipeable */
       .card, .ledger-detail-card, #stockMasterCard, #linearViewTable {
         overflow-x: auto; -webkit-overflow-scrolling: touch;
       }
@@ -253,42 +234,7 @@
   <!-- MOBILE SIDEBAR BACKDROP -->
   <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleMobileSidebar(false)"></div>
 
-  <!-- LOGIN OVERLAY SCREEN -->
-  <div id="loginOverlay">
-    <div class="login-box">
-      <div class="bwc-logo-sq" style="width: 55px; height: 55px; margin: 0 auto 10px auto;">
-        <svg viewBox="0 0 100 100">
-          <rect width="100" height="100" fill="#FF8A50" />
-          <circle cx="50" cy="50" r="38" fill="#FFFFFF" />
-          <path d="M 43 38 Q 38 24 43 14 Q 54 22 47 36 Z" fill="#388E3C" />
-          <path d="M 47 37 Q 60 33 53 26 Q 45 30 46 37 Z" fill="#4CAF50" />
-          <circle cx="51.5" cy="33" r="3.2" fill="#E65100" />
-          <path d="M 47 37 Q 54 41 55 49 Q 49 43 47 37 Z" fill="#FF9800" />
-          <ellipse cx="50" cy="48" rx="10" ry="2.8" fill="none" stroke="#00ACC1" stroke-width="1.8" />
-          <path d="M 23 30 C 20 46 30 68 45 68 C 34 65 28 50 29 40 Z" fill="#1E293B" />
-          <path d="M 77 30 C 80 46 70 68 55 68 C 66 65 72 50 71 40 Z" fill="#1E293B" />
-          <rect x="5" y="67" width="90" height="14" fill="#FF8A50" stroke="#1E293B" stroke-width="2.5" />
-          <text x="50" y="77.5" font-size="6.2" font-weight="900" fill="#1E293B" text-anchor="middle" font-family="Impact, Arial Black, sans-serif">BHARAT WELLNESS CLUB</text>
-        </svg>
-      </div>
-      <h2>Bharat Wellness Club</h2>
-      <p>Secure System Login</p>
-
-      <form onsubmit="handleUserLogin(event)">
-        <div class="login-form-group">
-          <label>User ID</label>
-          <input type="text" id="loginUserId" placeholder="Enter User ID..." required autofocus autocomplete="username">
-        </div>
-        <div class="login-form-group">
-          <label>Password</label>
-          <input type="password" id="loginPassword" placeholder="Enter Password..." required autocomplete="current-password">
-        </div>
-        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px; height: 42px;">🔐 Log In</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- CLOUD SYNC CONFIGURATION MODAL (ADMIN ONLY) -->
+  <!-- CLOUD SYNC CONFIGURATION MODAL -->
   <div id="syncModal" class="modal-overlay">
     <div class="modal-card">
       <h3 style="color: var(--primary-dark); margin-bottom: 8px;">☁️ Multi-Device Live Sync Setup</h3>
@@ -311,7 +257,7 @@
     </div>
   </div>
 
-  <!-- ADVANCED SETTINGS & SECURE RESET MODAL (ADMIN ONLY) -->
+  <!-- ADVANCED SETTINGS & SECURE RESET MODAL -->
   <div id="advSettingsModal" class="modal-overlay">
     <div class="modal-card" style="border-top: 5px solid #DC2626;">
       <h3 style="color: #991B1B; margin-bottom: 8px;">⚙️ Advanced System Settings (Master Reset)</h3>
@@ -319,7 +265,7 @@
       
       <div style="background: #FEF2F2; border: 1px solid #FCA5A5; padding: 14px; border-radius: 6px; margin-bottom: 18px;">
         <h4 style="color: #991B1B; font-size: 13px; margin-bottom: 4px;">⚠️ Danger Zone: Complete Factory Reset</h4>
-        <p style="font-size: 11px; color: #7F1D1D; margin-bottom: 10px;">Yeh action sabhi customer ledgers, sales bills, payment receipts, quotations, purchase invoices aur **Stock Units (0 Units)** ko reset kar dega.</p>
+        <p style="font-size: 11px; color: #7F1D1D; margin-bottom: 10px;">Yeh action sabhi customer ledgers, sales bills, payment receipts, quotations, purchase invoices aur Stock Units (0 Units) ko reset kar dega.</p>
         
         <label style="font-size: 11px; font-weight: bold; color: #7F1D1D; display: block; margin-bottom: 4px;">Confirm karne ke liye neeche capital me <strong>RESET</strong> type karein:</label>
         <input type="text" id="resetPasscodeInput" placeholder="Type RESET to confirm..." style="border-color: #F87171; height: 34px; font-size: 12px;">
@@ -384,19 +330,16 @@
       <li id="menu-all-sales" onclick="switchNav('all-sales', this)">
         <span>📑 All Sales History</span>
       </li>
-      <li id="menu-users" class="admin-only" onclick="switchNav('users-manage', this)">
-        <span>👥 User Management</span>
-      </li>
     </ul>
 
-    <!-- DATA BACKUP & CLOUD FOOTER (ADMIN ONLY POWER) -->
+    <!-- DATA BACKUP & CLOUD FOOTER -->
     <div class="sidebar-footer">
       <p>Cloud Sync & Data</p>
-      <button class="btn-sync-setting admin-only" onclick="openSyncModal()">☁️ Cloud Sync Settings</button>
+      <button class="btn-sync-setting" onclick="openSyncModal()">☁️ Cloud Sync Settings</button>
       <button class="btn-backup" onclick="exportDataBackup()">💾 Backup Data (Download)</button>
-      <button class="btn-backup admin-only" onclick="document.getElementById('importFileInput').click()">📂 Restore Data (Upload)</button>
+      <button class="btn-backup" onclick="document.getElementById('importFileInput').click()">📂 Restore Data (Upload)</button>
       <input type="file" id="importFileInput" style="display: none;" accept=".json" onchange="importDataBackup(event)">
-      <button class="btn-adv-settings admin-only" onclick="openAdvSettingsModal()">⚙️ Advanced Settings</button>
+      <button class="btn-adv-settings" onclick="openAdvSettingsModal()">⚙️ Advanced Settings</button>
     </div>
   </div>
 
@@ -409,10 +352,9 @@
       </div>
       <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
         <div class="user-pill">
-          <span id="userRoleIcon">👑</span>
-          <span id="currentUserDisplay">Admin</span>
+          <span>👑</span>
+          <span>Admin (Full Access)</span>
         </div>
-        <button class="btn-logout" onclick="logoutUser()">Logout</button>
         <div class="sync-badge" id="syncStatusBadge">
           <span class="dot local" id="syncDot"></span>
           <span id="syncStatusText">Local</span>
@@ -989,7 +931,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
             <h3 style="color: var(--primary-dark); font-size: 16px;">📦 Add Purchase Invoice (Stock Plus)</h3>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <button class="btn-secondary admin-only" onclick="resetMasterToDefault()">Reload Master</button>
+              <button class="btn-secondary" onclick="resetMasterToDefault()">Reload Master</button>
               <button class="btn-pdf" onclick="downloadStockReportPDF()">📥 Stock PDF</button>
             </div>
           </div>
@@ -1177,7 +1119,7 @@
               <p style="font-size: 12px; color: #64748B;">Team lineage & contact database.</p>
             </div>
             
-            <div class="admin-only" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
               <input type="file" id="linearExcelFileInput" accept=".xlsx, .xls, .csv" style="display: none;" onchange="handleLinearExcelUpload(event)">
               <button class="btn-primary" style="display: inline-flex; align-items: center; gap: 4px;" onclick="document.getElementById('linearExcelFileInput').click()">
                 📂 Upload Excel
@@ -1258,54 +1200,6 @@
                   <th>Volume Points (VP)</th>
                   <th>Total (₹)</th>
                   <th>Payment</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 6: USER MANAGEMENT (ADMIN ONLY) -->
-      <div id="users-manage" class="tab-content admin-only">
-        <div class="card">
-          <h3 style="color: var(--primary-dark); margin-bottom: 8px; font-size: 16px;">👥 Staff & User Account Management</h3>
-          <p style="font-size: 12px; color: #64748B; margin-bottom: 15px;">Office staff ke user ID aur password manage karein.</p>
-          <hr style="margin: 0 0 15px 0; border: 0; border-top: 1px solid #FFE0B2;">
-
-          <div class="form-row" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
-            <div class="form-group">
-              <label>User ID</label>
-              <input type="text" id="newUserIdInput" placeholder="e.g. staff_rahul">
-            </div>
-            <div class="form-group">
-              <label>Password</label>
-              <input type="text" id="newUserPassInput" placeholder="Enter password">
-            </div>
-            <div class="form-group">
-              <label>Role</label>
-              <select id="newUserRoleSelect">
-                <option value="Staff" selected>Staff (Standard Operator)</option>
-                <option value="Admin">Admin (Full Control)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <button class="btn-primary" style="height: 38px; width: 100%;" onclick="addUserAccount()">➕ Save User</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3 style="margin-bottom: 12px; color: var(--sidebar-bg); font-size: 15px;">Registered User Accounts</h3>
-          <div style="overflow-x: auto;">
-            <table id="usersTable">
-              <thead>
-                <tr>
-                  <th>Username</th>
-                  <th>Password</th>
-                  <th>Role</th>
-                  <th>Permissions Summary</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -1482,15 +1376,6 @@
       }
     }
 
-    // DEFAULT USERS CREDENTIALS (SAVED LOCALLY)
-    const defaultUsers = [
-      { username: 'admin', password: 'admin123', role: 'Admin' },
-      { username: 'staff', password: 'staff123', role: 'Staff' }
-    ];
-
-    let appUsers = JSON.parse(localStorage.getItem('bwc_users')) || defaultUsers;
-    let currentUser = JSON.parse(sessionStorage.getItem('bwc_current_user')) || null;
-
     let linearData = JSON.parse(localStorage.getItem('bwc_linear_data')) || [];
     let linearLastUpdated = localStorage.getItem('bwc_linear_updated') || '';
 
@@ -1577,125 +1462,8 @@
     let isFirebaseActive = false;
     let isInternalUpdate = false;
 
-    /* AUTHENTICATION SYSTEM */
-    function checkAuthStatus() {
-      if (!currentUser) {
-        document.getElementById('loginOverlay').style.display = 'flex';
-      } else {
-        document.getElementById('loginOverlay').style.display = 'none';
-        applyUserRolePermissions();
-      }
-    }
-
-    function handleUserLogin(event) {
-      event.preventDefault();
-      const u = document.getElementById('loginUserId').value.trim();
-      const p = document.getElementById('loginPassword').value.trim();
-
-      const matched = appUsers.find(user => user.username.toLowerCase() === u.toLowerCase() && user.password === p);
-      if (matched) {
-        currentUser = matched;
-        sessionStorage.setItem('bwc_current_user', JSON.stringify(currentUser));
-        document.getElementById('loginOverlay').style.display = 'none';
-        applyUserRolePermissions();
-        renderTables();
-        renderDashboard();
-      } else {
-        alert('Galat User ID ya Password! Kripya sahi credentials dalein.');
-      }
-    }
-
-    function logoutUser() {
-      if (confirm('Kya aap logout karna chahte hain?')) {
-        currentUser = null;
-        sessionStorage.removeItem('bwc_current_user');
-        document.getElementById('loginUserId').value = '';
-        document.getElementById('loginPassword').value = '';
-        document.getElementById('loginOverlay').style.display = 'flex';
-      }
-    }
-
-    function applyUserRolePermissions() {
-      if (!currentUser) return;
-
-      const isAdmin = currentUser.role === 'Admin';
-      document.getElementById('currentUserDisplay').innerText = `${currentUser.username} (${currentUser.role})`;
-      document.getElementById('userRoleIcon').innerText = isAdmin ? '👑' : '👤';
-
-      document.querySelectorAll('.admin-only').forEach(el => {
-        el.style.display = isAdmin ? '' : 'none';
-      });
-
-      if (!isAdmin) {
-        if (document.getElementById('users-manage').classList.contains('active')) {
-          switchNav('dashboard', document.getElementById('menu-dashboard'));
-        }
-      }
-    }
-
-    function addUserAccount() {
-      if (currentUser.role !== 'Admin') return alert('Sirf Admin naye users add kar sakta hai!');
-
-      const u = document.getElementById('newUserIdInput').value.trim();
-      const p = document.getElementById('newUserPassInput').value.trim();
-      const r = document.getElementById('newUserRoleSelect').value;
-
-      if (!u || !p) return alert('Username aur Password dono required hain!');
-
-      const existingIndex = appUsers.findIndex(user => user.username.toLowerCase() === u.toLowerCase());
-      if (existingIndex >= 0) {
-        if (confirm(`User "${u}" pehle se exist karta hai. Kya aap iska password/role update karna chahte hain?`)) {
-          appUsers[existingIndex] = { username: u, password: p, role: r };
-        }
-      } else {
-        appUsers.push({ username: u, password: p, role: r });
-      }
-
-      localStorage.setItem('bwc_users', JSON.stringify(appUsers));
-      alert(`User "${u}" successfully save ho gaya!`);
-      document.getElementById('newUserIdInput').value = '';
-      document.getElementById('newUserPassInput').value = '';
-      renderUsersTable();
-    }
-
-    function deleteUserAccount(idx) {
-      if (currentUser.role !== 'Admin') return;
-      const targetUser = appUsers[idx];
-      if (targetUser.username.toLowerCase() === 'admin') {
-        return alert('Main Admin account ko delete nahi kiya ja sakta!');
-      }
-      if (confirm(`Kya aap user "${targetUser.username}" ko delete karna chahte hain?`)) {
-        appUsers.splice(idx, 1);
-        localStorage.setItem('bwc_users', JSON.stringify(appUsers));
-        renderUsersTable();
-      }
-    }
-
-    function renderUsersTable() {
-      const tbody = document.querySelector('#usersTable tbody');
-      if (!tbody) return;
-
-      tbody.innerHTML = appUsers.map((u, i) => `
-        <tr>
-          <td><strong>${u.username}</strong></td>
-          <td><code>${u.password}</code></td>
-          <td><span class="badge ${u.role === 'Admin' ? 'badge-credit' : 'badge-cash'}">${u.role}</span></td>
-          <td style="font-size: 12px; color: #64748B;">
-            ${u.role === 'Admin' ? 'Full Control + Excel Upload + Factory Reset + Delete' : 'View Reports + Billing + Ledger + Printing (Upload/Delete/Reset Blocked)'}
-          </td>
-          <td>
-            ${u.username.toLowerCase() !== 'admin' ? `<button class="btn-del" onclick="deleteUserAccount(${i})">Delete</button>` : '<span style="font-size: 11px; color: #64748B;">Protected</span>'}
-          </td>
-        </tr>
-      `).join('');
-    }
-
     /* LINEAR VIEW EXCEL PARSER & SEARCH ENGINE */
     function handleLinearExcelUpload(event) {
-      if (currentUser && currentUser.role !== 'Admin') {
-        return alert('Sirf Admin nayi Excel report upload kar sakta hai!');
-      }
-
       const file = event.target.files[0];
       if (!file) return;
 
@@ -1740,7 +1508,6 @@
     }
 
     function clearLinearReportData() {
-      if (currentUser && currentUser.role !== 'Admin') return alert('Sirf Admin Linear Report clear kar sakta hai!');
       if (confirm('Kya aap Linear View Report ka data clear karna chahte hain?')) {
         linearData = [];
         linearLastUpdated = '';
@@ -1946,9 +1713,6 @@
     }
 
     function openSyncModal() {
-      if (currentUser && currentUser.role !== 'Admin') {
-        return alert('Cloud Sync Settings sirf Admin open kar sakta hai!');
-      }
       document.getElementById('firebaseDbUrlInput').value = localStorage.getItem('bwc_fb_url') || '';
       document.getElementById('firebaseChannelInput').value = localStorage.getItem('bwc_fb_channel') || 'bwc_main_shop';
       document.getElementById('syncModal').style.display = 'flex';
@@ -1959,7 +1723,6 @@
     }
 
     function saveFirebaseSyncConfig() {
-      if (currentUser && currentUser.role !== 'Admin') return;
       const url = document.getElementById('firebaseDbUrlInput').value.trim();
       const channel = document.getElementById('firebaseChannelInput').value.trim() || 'bwc_main_shop';
 
@@ -1976,9 +1739,6 @@
 
     /* COMPLETE FACTORY RESET (CLEANS LOCAL + PURGES CLOUD DB) */
     function openAdvSettingsModal() {
-      if (currentUser && currentUser.role !== 'Admin') {
-        return alert('Master Reset ka access sirf Admin ke paas hai!');
-      }
       document.getElementById('resetPasscodeInput').value = '';
       document.getElementById('advSettingsModal').style.display = 'flex';
     }
@@ -1988,8 +1748,6 @@
     }
 
     function executeFactoryResetSecure() {
-      if (currentUser && currentUser.role !== 'Admin') return alert('Unauthorized!');
-
       const typed = document.getElementById('resetPasscodeInput').value.trim();
       if (typed !== 'RESET') {
         return alert('Security Passcode galat hai! Reset karne ke liye box me capital me RESET type karein.');
@@ -2046,11 +1804,6 @@
     }
 
     function switchNav(tabId, el) {
-      if (tabId === 'users-manage' && currentUser && currentUser.role !== 'Admin') {
-        return alert('Is page ka access sirf Admin ke paas hai!');
-      }
-
-      // Close mobile drawer on navigation
       toggleMobileSidebar(false);
 
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -2075,8 +1828,7 @@
         'coach-ledger': 'Coach Ledger',
         'stock': 'Stock & Inventory',
         'linear-view': 'Linear View Plus Report',
-        'all-sales': 'All Sales History',
-        'users-manage': 'Staff & User Management'
+        'all-sales': 'All Sales History'
       };
       document.getElementById('pageTitle').innerText = titles[tabId] || 'Dashboard';
 
@@ -2087,7 +1839,6 @@
       if(tabId === 'coach-ledger') renderCoachLedgerList();
       if(tabId === 'payment-receipt') renderPaymentReceiptsTable();
       if(tabId === 'linear-view') renderLinearTable();
-      if(tabId === 'users-manage') renderUsersTable();
     }
 
     function goToUdhaarLedgers() {
@@ -2103,7 +1854,7 @@
       if (card) card.scrollIntoView({ behavior: 'smooth' });
     }
 
-    /* DYNAMIC CALCULATIONS FOR CUSTOMER BALANCES INCLUDING PAYMENTS */
+    /* DYNAMIC CALCULATIONS FOR CUSTOMER BALANCES */
     function getCustomerBalanceData(custName) {
       const cleanName = (custName || '').trim().toLowerCase();
       const custSales = sales.filter(s => (s.customer || '').trim().toLowerCase() === cleanName);
@@ -2176,7 +1927,7 @@
     function exportDataBackup() {
       const fullBackupData = {
         app: "BharatWellnessClub",
-        version: "3.6",
+        version: "3.7",
         backupDate: new Date().toISOString(),
         inventory: inventory,
         sales: sales,
@@ -2187,8 +1938,7 @@
         savedCustomers: savedCustomers,
         savedCoaches: savedCoaches,
         linearData: linearData,
-        linearLastUpdated: linearLastUpdated,
-        users: appUsers
+        linearLastUpdated: linearLastUpdated
       };
 
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fullBackupData, null, 2));
@@ -2203,8 +1953,6 @@
     }
 
     function importDataBackup(event) {
-      if (currentUser && currentUser.role !== 'Admin') return alert('Sirf Admin data restore kar sakta hai!');
-
       const file = event.target.files[0];
       if (!file) return;
 
@@ -2224,10 +1972,6 @@
               savedCoaches = imported.savedCoaches || [];
               linearData = imported.linearData || [];
               linearLastUpdated = imported.linearLastUpdated || '';
-              if (imported.users) {
-                appUsers = imported.users;
-                localStorage.setItem('bwc_users', JSON.stringify(appUsers));
-              }
 
               localStorage.setItem('bwc_inventory', JSON.stringify(inventory));
               localStorage.setItem('bwc_sales', JSON.stringify(sales));
@@ -2258,7 +2002,6 @@
     }
 
     function resetMasterToDefault() {
-      if (currentUser && currentUser.role !== 'Admin') return alert('Sirf Admin master price list reload kar sakta hai!');
       if (confirm('Kya aap sabhi products ko standard price list ke according reload karna chahte hain? (Stock 0 Units ho jayega)')) {
         inventory = defaultCatalog.map(item => ({ ...item, qty: 0 }));
         localStorage.setItem('bwc_inventory', JSON.stringify(inventory));
@@ -2682,10 +2425,6 @@
     }
 
     function deleteCustomerSale(index) {
-      if (currentUser && currentUser.role !== 'Admin') {
-        return alert('Bill delete karne ki permission sirf Admin ke paas hai!');
-      }
-
       const sale = sales[index];
       if (!sale) return;
 
@@ -2819,12 +2558,10 @@
           <td>${p.remarks || '—'}</td>
           <td style="display: flex; gap: 4px;">
             <button class="btn-reprint" onclick="reprintPayReceipt(${idx})">🖨️</button>
-            <button class="btn-del admin-only" onclick="deletePayReceipt(${idx})">✕</button>
+            <button class="btn-del" onclick="deletePayReceipt(${idx})">✕</button>
           </td>
         </tr>
       `).join('');
-
-      applyUserRolePermissions();
     }
 
     function reprintPayReceipt(index) {
@@ -2850,10 +2587,6 @@
     }
 
     function deletePayReceipt(index) {
-      if (currentUser && currentUser.role !== 'Admin') {
-        return alert('Payment delete karne ki permission sirf Admin ke paas hai!');
-      }
-
       const p = payments[index];
       if (!p) return;
 
@@ -3085,12 +2818,10 @@
           <td><strong style="color: var(--primary-dark);">₹${q.total}</strong></td>
           <td style="display: flex; gap: 4px;">
             <button class="btn-pdf" style="padding: 4px 8px; font-size: 11px;" onclick="printSavedQuotation(${index})">🖨️</button>
-            <button class="btn-del admin-only" onclick="deleteQuotation(${index})">✕</button>
+            <button class="btn-del" onclick="deleteQuotation(${index})">✕</button>
           </td>
         </tr>
       `).join('');
-
-      applyUserRolePermissions();
     }
 
     function printSavedQuotation(index) {
@@ -3139,7 +2870,6 @@
     }
 
     function deleteQuotation(index) {
-      if (currentUser && currentUser.role !== 'Admin') return alert('Sirf Admin quotation delete kar sakta hai!');
       if (confirm('Kya aap is quotation ko delete karna chahte hain?')) {
         quotations.splice(index, 1);
         localStorage.setItem('bwc_quotations', JSON.stringify(quotations));
@@ -3439,7 +3169,6 @@
     }
 
     function deletePurchaseInvoice(index) {
-      if (currentUser && currentUser.role !== 'Admin') return alert('Purchase invoice delete karne ki permission sirf Admin ke paas hai!');
       if (confirm('Kya aap is purchase invoice record ko delete karna chahte hain?')) {
         purchases.splice(index, 1);
         localStorage.setItem('bwc_purchases', JSON.stringify(purchases));
@@ -3488,11 +3217,9 @@
           <td><strong>${p.totalUnits} units</strong></td>
           <td><strong style="color:#10B981;">${(parseFloat(p.totalVP) || 0).toFixed(2)} VP</strong></td>
           <td><strong style="color: var(--primary-dark);">₹${p.grandTotal}</strong></td>
-          <td><button class="btn-del admin-only" onclick="deletePurchaseInvoice(${i})">Delete</button></td>
+          <td><button class="btn-del" onclick="deletePurchaseInvoice(${i})">Delete</button></td>
         </tr>
       `).join('');
-
-      applyUserRolePermissions();
     }
 
     function downloadPurchaseReportPDF() {
@@ -3609,7 +3336,7 @@
             <td style="display: flex; gap: 4px; align-items: center;">
               <button class="btn-reprint" onclick="reprintCustomerBill(${originalIndex})">🖨️</button>
               <button class="btn-edit" onclick="editCustomerSale(${originalIndex})">Edit</button>
-              <button class="btn-del admin-only" onclick="deleteCustomerSale(${originalIndex})">✕</button>
+              <button class="btn-del" onclick="deleteCustomerSale(${originalIndex})">✕</button>
             </td>
           </tr>
         `;
@@ -3641,8 +3368,6 @@
       document.querySelectorAll('#custLedgerList li').forEach(li => {
         li.classList.toggle('active', li.innerText.includes(custName));
       });
-
-      applyUserRolePermissions();
     }
 
     function resetCustomerLedgerView() {
@@ -4157,7 +3882,7 @@
             <td style="display: flex; gap: 4px; align-items: center;">
               <button class="btn-reprint" onclick="reprintCustomerBill(${i})">🖨️</button>
               <button class="btn-edit" onclick="editCustomerSale(${i})">Edit</button>
-              <button class="btn-del admin-only" onclick="deleteCustomerSale(${i})">✕</button>
+              <button class="btn-del" onclick="deleteCustomerSale(${i})">✕</button>
             </td>
           </tr>
         `).join('');
@@ -4166,11 +3891,9 @@
       renderPurchaseLogTable();
       renderQuotesTable();
       renderPaymentReceiptsTable();
-      applyUserRolePermissions();
     }
 
-    // INITIALIZE local, cloud & Auth
-    checkAuthStatus();
+    // INITIALIZE local & cloud
     initFirebaseSync();
     renderDatalists();
     renderTables();
