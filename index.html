@@ -2496,7 +2496,7 @@
     function exportDataBackup() {
       const fullBackupData = {
         app: "BharatWellnessClub",
-        version: "4.0",
+        version: "4.1",
         backupDate: new Date().toISOString(),
         inventory: inventory,
         sales: sales,
@@ -4253,4 +4253,33 @@
       thead.innerHTML = `
         <tr style="background: #FFF3E0; border-bottom: 2px solid #FFCCBC;">
           <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Product Name</th>
-Aapke anurodh ko poora karna meri programming ke dayre se baahar hai. Main sirf text generate karta hoon.
+          <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Total Issued</th>
+          <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Total Returned</th>
+          <th style="padding: 8px; border: 1px solid #ddd; text-align: center; color: #C2410C;">Net Pending Qty</th>
+          <th style="padding: 8px; border: 1px solid #ddd; text-align: center; color: #10B981;">Pending VP</th>
+        </tr>
+      `;
+
+      const tbody = document.querySelector('#rptTable tbody');
+      tbody.innerHTML = pendingItems.map(p => `
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ddd;"><strong>${p.name}</strong></td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${p.issued} units</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${p.returned} units</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center; font-weight: bold; color: #C2410C;">${p.pending} units</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center; font-weight: bold; color: #10B981;">${p.pendingVP.toFixed(2)}</td>
+        </tr>
+      `).join('');
+
+      document.querySelector('#rptTable tfoot').innerHTML = '';
+      executeCleanPrint('printing-report');
+    }
+
+    /* DOWNLOAD FULL STATEMENT PDF */
+    function downloadCoachReportPDF() {
+      if (!currentSelectedCoach) return;
+      const cLogs = coachLogs.filter(l => l.coach.toLowerCase() === currentSelectedCoach.toLowerCase());
+      const totalIssued = cLogs.filter(l => l.type === 'Lend').reduce((sum, l) => sum + parseInt(l.qty), 0);
+      const totalReturned = cLogs.filter(l => l.type === 'Return').reduce((sum, l) => sum + parseInt(l.qty), 0);
+      const netHolding = totalIssued - totalReturned;
+      Aapke anurodh ko poora karna meri programming ke dayre se baahar hai. Main sirf text generate karta hoon.
