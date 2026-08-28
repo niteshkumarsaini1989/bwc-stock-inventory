@@ -1585,6 +1585,69 @@ function getAutoTier(vp) {
   if (vp >= 100) return '25';
   return '15';
 }
+    // --- ✏️ CART QUANTITY UPDATE FUNCTIONS ---
+function updateCustomerCartQty(index, val) {
+  let newQty = parseInt(val);
+  if (isNaN(newQty) || newQty < 1) newQty = 1;
+  const cartItem = customerCart[index];
+  const stockItem = inventory.find(p => p.sku === cartItem.sku);
+
+  if (stockItem && stockItem.qty < newQty) {
+    alert(`Stock kam hai! Available Stock: ${stockItem.qty}`);
+    renderCustomerCart(); // Revert to valid qty
+    return;
+  }
+  cartItem.qty = newQty;
+  cartItem.totalVP = cartItem.vp * newQty;
+  cartItem.total = Math.round(cartItem.rate * newQty);
+
+  if (document.getElementById('billTier').value === 'auto') recalculateCartAutoDiscount();
+  renderCustomerCart();
+}
+
+function updateQuoteCartQty(index, val) {
+  let newQty = parseInt(val);
+  if (isNaN(newQty) || newQty < 1) newQty = 1;
+  const cartItem = quoteCart[index];
+  
+  cartItem.qty = newQty;
+  cartItem.totalVP = cartItem.vp * newQty;
+  cartItem.total = Math.round(cartItem.rate * newQty);
+
+  if (document.getElementById('quoteTier').value === 'auto') recalculateQuoteAutoDiscount();
+  renderQuoteCart();
+}
+
+function updateCoachCartQty(index, val) {
+  let newQty = parseInt(val);
+  if (isNaN(newQty) || newQty < 1) newQty = 1;
+  const cartItem = coachCart[index];
+  const action = document.getElementById('coachAction').value;
+
+  if (action === 'Lend') {
+    const stockItem = inventory.find(p => p.sku === cartItem.sku);
+    if (stockItem && stockItem.qty < newQty) {
+      alert(`Stock me utna maal nahi hai! Total Stock: ${stockItem.qty}`);
+      renderCoachCart();
+      return;
+    }
+  }
+  cartItem.qty = newQty;
+  cartItem.totalVP = cartItem.vp * newQty;
+  renderCoachCart();
+}
+
+function updatePurchaseCartQty(index, val) {
+  let newQty = parseInt(val);
+  if (isNaN(newQty) || newQty < 1) newQty = 1;
+  const cartItem = purchaseCart[index];
+  
+  cartItem.qty = newQty;
+  cartItem.totalVP = cartItem.vp * newQty;
+  cartItem.total = Math.round(cartItem.rate * newQty);
+  renderPurchaseCart();
+}
+// ------------------------------------------
 
 function recalculateCartAutoDiscount() {
   const totalCartVP = customerCart.reduce((sum, i) => sum + i.totalVP, 0);
@@ -2470,31 +2533,28 @@ function recalculateQuoteAutoDiscount() {
   const unitRate = getProductTierUnitPrice(item, tier, customDisc);
   const total = Math.round(unitRate * qty);
   
-  const alreadyInCart = customerCart.filter(i => i.sku === item.sku).reduce((sum, i) => sum + i.qty, 0);
-  if (item.qty < (alreadyInCart + qty)) {
+  const existingIndex = customerCart.findIndex(i => i.sku === item.sku);
+  const currentInCart = existingIndex > -1 ? customerCart[existingIndex].qty : 0;
+  
+  if (item.qty < (currentInCart + qty)) {
     return alert(`Stock kam hai! Total Stock: ${item.qty}`);
   }
 
-  const tierLabel = (document.getElementById('billTier').value === 'auto') ? `Auto (${tier}%)` : (tier === 'custom' ? `Custom (${customDisc}%)` : `${tier}% Slab`);
-
-  customerCart.push({
-    sku: item.sku,
-    name: item.name,
-    vp: unitVP,
-    totalVP: totalVP,
-    mrp: item.mrp,
-    qty: qty,
-    tier: tier,
-    rate: unitRate,
-    discount: tier === 'custom' ? customDisc : tier,
-    tierLabel: tierLabel,
-    total: total
-  });
-
-  // Auto selected hone par bill ke purane items bhi naye slab ke hisab se update ho jayenge
-  if (document.getElementById('billTier').value === 'auto') {
-    recalculateCartAutoDiscount();
+  if (existingIndex > -1) {
+    // Agar product pehle se hai, toh sirf Qty aur Total badhao (Nayi row nahi banegi)
+    customerCart[existingIndex].qty += qty;
+    customerCart[existingIndex].totalVP = customerCart[existingIndex].vp * customerCart[existingIndex].qty;
+    customerCart[existingIndex].total = Math.round(customerCart[existingIndex].rate * customerCart[existingIndex].qty);
+  } else {
+    // Naya product hai toh push karo
+    const tierLabel = (document.getElementById('billTier').value === 'auto') ? `Auto (${tier}%)` : (tier === 'custom' ? `Custom (${customDisc}%)` : `${tier}% Slab`);
+    customerCart.push({
+      sku: item.sku, name: item.name, vp: unitVP, totalVP: totalVP, mrp: item.mrp,
+      qty: qty, tier: tier, rate: unitRate, discount: tier === 'custom' ? customDisc : tier, tierLabel: tierLabel, total: total
+    });
   }
+
+  if (document.getElementById('billTier').value === 'auto') recalculateCartAutoDiscount();
 
   renderCustomerCart();
   document.getElementById('billProductInput').value = '';
@@ -2536,7 +2596,7 @@ function recalculateQuoteAutoDiscount() {
             <td><strong>${item.sku}</strong></td>
             <td>${item.name}</td>
             <td>₹${item.mrp}</td>
-            <td>${item.qty}</td>
+            <td><input type="number" value="${item.qty}" min="1" onchange="updateCustomerCartQty(${index}, this.value)" style="width:60px; height:28px; text-align:center; border:1px solid #CBD5E1; border-radius:4px; font-weight:bold;"></td>
             <td><strong style="color:#10B981;">${item.totalVP.toFixed(2)}</strong></td>
             <td><span style="font-weight:600; color:var(--primary-dark);">${item.tierLabel || item.discount + '%'}</span></td>
             <td><strong>₹${item.total}</strong></td>
@@ -3005,25 +3065,22 @@ function recalculateQuoteAutoDiscount() {
 
   const unitRate = getProductTierUnitPrice(item, tier, customDisc);
   const total = Math.round(unitRate * qty);
-  const tierLabel = (document.getElementById('quoteTier').value === 'auto') ? `Auto (${tier}%)` : (tier === 'custom' ? `Custom (${customDisc}%)` : `${tier}% Slab`);
+  
+  const existingIndex = quoteCart.findIndex(i => i.sku === item.sku);
 
-  quoteCart.push({
-    sku: item.sku,
-    name: item.name,
-    vp: unitVP,
-    totalVP: totalVP,
-    mrp: item.mrp,
-    qty: qty,
-    tier: tier,
-    rate: unitRate,
-    tierLabel: tierLabel,
-    discount: tier === 'custom' ? customDisc : tier,
-    total: total
-  });
-
-  if (document.getElementById('quoteTier').value === 'auto') {
-    recalculateQuoteAutoDiscount();
+  if (existingIndex > -1) {
+    quoteCart[existingIndex].qty += qty;
+    quoteCart[existingIndex].totalVP = quoteCart[existingIndex].vp * quoteCart[existingIndex].qty;
+    quoteCart[existingIndex].total = Math.round(quoteCart[existingIndex].rate * quoteCart[existingIndex].qty);
+  } else {
+    const tierLabel = (document.getElementById('quoteTier').value === 'auto') ? `Auto (${tier}%)` : (tier === 'custom' ? `Custom (${customDisc}%)` : `${tier}% Slab`);
+    quoteCart.push({
+      sku: item.sku, name: item.name, vp: unitVP, totalVP: totalVP, mrp: item.mrp,
+      qty: qty, tier: tier, rate: unitRate, tierLabel: tierLabel, discount: tier === 'custom' ? customDisc : tier, total: total
+    });
   }
+
+  if (document.getElementById('quoteTier').value === 'auto') recalculateQuoteAutoDiscount();
 
   renderQuoteCart();
   document.getElementById('quoteProductInput').value = '';
@@ -3063,7 +3120,7 @@ function recalculateQuoteAutoDiscount() {
             <td><strong>${item.sku}</strong></td>
             <td>${item.name}</td>
             <td>₹${item.mrp}</td>
-            <td>${item.qty}</td>
+            <td><input type="number" value="${item.qty}" min="1" onchange="updateQuoteCartQty(${index}, this.value)" style="width:60px; height:28px; text-align:center; border:1px solid #CBD5E1; border-radius:4px; font-weight:bold;"></td>
             <td><strong style="color:#10B981;">${item.totalVP.toFixed(2)}</strong></td>
             <td><span style="font-weight:600; color:var(--primary-dark);">${item.tierLabel || item.discount + '%'}</span></td>
             <td><strong>₹${item.total}</strong></td>
@@ -3241,36 +3298,38 @@ function recalculateQuoteAutoDiscount() {
     }
 
     function addItemToCoachCart() {
-      const pInput = document.getElementById('coachProductInput').value;
-      const item = findSmartProductMatch(pInput);
-      const qty = parseInt(document.getElementById('coachQty').value) || 1;
-      const action = document.getElementById('coachAction').value;
+  const pInput = document.getElementById('coachProductInput').value;
+  const item = findSmartProductMatch(pInput);
+  const qty = parseInt(document.getElementById('coachQty').value) || 1;
+  const action = document.getElementById('coachAction').value;
 
-      if (!item) return alert('Kripya valid product dalein!');
+  if (!item) return alert('Kripya valid product dalein!');
 
-      if (action === 'Lend') {
-        const alreadyInCart = coachCart.filter(i => i.sku === item.sku).reduce((sum, i) => sum + i.qty, 0);
-        if (item.qty < (alreadyInCart + qty)) {
-          return alert(`Stock me utna maal nahi hai! Total Stock: ${item.qty}`);
-        }
-      }
+  const existingIndex = coachCart.findIndex(i => i.sku === item.sku);
+  const currentInCart = existingIndex > -1 ? coachCart[existingIndex].qty : 0;
 
-      const unitVP = parseFloat(item.vp) || 0;
-      const totalVP = unitVP * qty;
-
-      coachCart.push({
-        sku: item.sku,
-        name: item.name,
-        vp: unitVP,
-        totalVP: totalVP,
-        qty: qty
-      });
-
-      renderCoachCart();
-      document.getElementById('coachProductInput').value = '';
-      document.getElementById('coachQty').value = '1';
-      document.getElementById('coachProductInput').focus();
+  if (action === 'Lend') {
+    if (item.qty < (currentInCart + qty)) {
+      return alert(`Stock me utna maal nahi hai! Total Stock: ${item.qty}`);
     }
+  }
+
+  const unitVP = parseFloat(item.vp) || 0;
+
+  if (existingIndex > -1) {
+    coachCart[existingIndex].qty += qty;
+    coachCart[existingIndex].totalVP = coachCart[existingIndex].vp * coachCart[existingIndex].qty;
+  } else {
+    coachCart.push({
+      sku: item.sku, name: item.name, vp: unitVP, totalVP: unitVP * qty, qty: qty
+    });
+  }
+
+  renderCoachCart();
+  document.getElementById('coachProductInput').value = '';
+  document.getElementById('coachQty').value = '1';
+  document.getElementById('coachProductInput').focus();
+}
 
     function removeCoachCartItem(index) {
       coachCart.splice(index, 1);
@@ -3296,7 +3355,7 @@ function recalculateQuoteAutoDiscount() {
             <td><strong>${item.sku}</strong></td>
             <td>${item.name}</td>
             <td>${item.vp.toFixed(2)}</td>
-            <td>${item.qty}</td>
+            <td><input type="number" value="${item.qty}" min="1" onchange="updateCoachCartQty(${index}, this.value)" style="width:60px; height:28px; text-align:center; border:1px solid #CBD5E1; border-radius:4px; font-weight:bold;"></td>
             <td><strong style="color:#10B981;">${item.totalVP.toFixed(2)}</strong></td>
             <td><button class="btn-del" onclick="removeCoachCartItem(${index})">✕</button></td>
           </tr>
@@ -3377,36 +3436,37 @@ function recalculateQuoteAutoDiscount() {
     }
 
     function addItemToPurchaseCart() {
-      const pInput = document.getElementById('purchProductInput').value;
-      const item = findSmartProductMatch(pInput);
-      const qty = parseInt(document.getElementById('purchQty').value) || 1;
-      const rate = parseFloat(document.getElementById('purchRate').value) || 0;
-      const total = Math.round(qty * rate);
-      const unitVP = parseFloat(item ? item.vp : 0) || 0;
-      const totalVP = unitVP * qty;
+  const pInput = document.getElementById('purchProductInput').value;
+  const item = findSmartProductMatch(pInput);
+  const qty = parseInt(document.getElementById('purchQty').value) || 1;
+  const rate = parseFloat(document.getElementById('purchRate').value) || 0;
+  const unitVP = parseFloat(item ? item.vp : 0) || 0;
 
-      if (!item) return alert('Kripya valid product select karein!');
+  if (!item) return alert('Kripya valid product select karein!');
 
-      purchaseCart.push({
-        sku: item.sku,
-        name: item.name,
-        vp: unitVP,
-        totalVP: totalVP,
-        mrp: item.mrp,
-        rate: rate,
-        qty: qty,
-        total: total
-      });
+  const existingIndex = purchaseCart.findIndex(i => i.sku === item.sku);
 
-      renderPurchaseCart();
-      document.getElementById('purchProductInput').value = '';
-      document.getElementById('purchRate').value = '';
-      document.getElementById('purchVp').value = '';
-      document.getElementById('purchItemTotal').value = '';
-      document.getElementById('purchQty').value = '1';
-      document.getElementById('purchProductInput').focus();
-    }
+  if (existingIndex > -1) {
+    // Merge Duplicate
+    purchaseCart[existingIndex].qty += qty;
+    purchaseCart[existingIndex].totalVP = purchaseCart[existingIndex].vp * purchaseCart[existingIndex].qty;
+    purchaseCart[existingIndex].total = Math.round(purchaseCart[existingIndex].rate * purchaseCart[existingIndex].qty);
+  } else {
+    // Naya product
+    purchaseCart.push({
+      sku: item.sku, name: item.name, vp: unitVP, totalVP: unitVP * qty,
+      mrp: item.mrp, rate: rate, qty: qty, total: Math.round(qty * rate)
+    });
+  }
 
+  renderPurchaseCart();
+  document.getElementById('purchProductInput').value = '';
+  document.getElementById('purchRate').value = '';
+  document.getElementById('purchVp').value = '';
+  document.getElementById('purchItemTotal').value = '';
+  document.getElementById('purchQty').value = '1';
+  document.getElementById('purchProductInput').focus();
+}
     function removePurchaseCartItem(index) {
       purchaseCart.splice(index, 1);
       renderPurchaseCart();
@@ -3436,7 +3496,7 @@ function recalculateQuoteAutoDiscount() {
             <td>${item.name}</td>
             <td>₹${item.mrp}</td>
             <td>₹${item.rate}</td>
-            <td><strong>${item.qty}</strong></td>
+            <td><input type="number" value="${item.qty}" min="1" onchange="updatePurchaseCartQty(${index}, this.value)" style="width:60px; height:28px; text-align:center; border:1px solid #CBD5E1; border-radius:4px; font-weight:bold;"></td>
             <td><strong style="color:#10B981;">${item.totalVP.toFixed(2)}</strong></td>
             <td><strong>₹${item.total}</strong></td>
             <td><button class="btn-del" onclick="removePurchaseCartItem(${index})">✕</button></td>
