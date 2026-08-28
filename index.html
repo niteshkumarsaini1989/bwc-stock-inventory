@@ -496,14 +496,15 @@
             <div class="form-group">
               <label>2. Discount Slab</label>
               <select id="billTier" onchange="applyDiscountTier()" onkeydown="handleDiscountKey(event, 'billTier', applyDiscountTier)">
-                <option value="custom" selected>Custom (% on MRP)</option>
-                <option value="0">Retail MRP (0%)</option>
-                <option value="15">Preferred Customer Bronze (15%)</option>
-                <option value="25">Associate / Silver PC (25%)</option>
-                <option value="35">Senior Consultant / Gold PC (35%)</option>
-                <option value="42">Qualified Producer (42%)</option>
-                <option value="50">Supervisor (50%)</option>
-              </select>
+  <option value="auto" style="color: #10B981; font-weight: bold;">⚡ Auto (Volume Based)</option>
+  <option value="custom" selected>Custom (% on MRP)</option>
+  <option value="0">Retail MRP (0%)</option>
+  <option value="15">Preferred Customer Bronze (15%)</option>
+  <option value="25">Associate / Silver PC (25%)</option>
+  <option value="35">Senior Consultant / Gold PC (35%)</option>
+  <option value="42">Qualified Producer (42%)</option>
+  <option value="50">Supervisor (50%)</option>
+</select>
             </div>
             <div class="form-group">
               <label>3. Custom Disc %</label>
@@ -602,14 +603,15 @@
             <div class="form-group">
               <label>Discount Slab</label>
               <select id="quoteTier" onchange="applyQuoteDiscountTier()" onkeydown="handleDiscountKey(event, 'quoteTier', applyQuoteDiscountTier)">
-                <option value="custom" selected>Custom (% on MRP)</option>
-                <option value="0">Retail MRP (0%)</option>
-                <option value="15">Preferred Customer Bronze (15%)</option>
-                <option value="25">Associate / Silver PC (25%)</option>
-                <option value="35">Senior Consultant / Gold PC (35%)</option>
-                <option value="42">Qualified Producer (42%)</option>
-                <option value="50">Supervisor (50%)</option>
-              </select>
+  <option value="auto" style="color: #10B981; font-weight: bold;">⚡ Auto (Volume Based)</option>
+  <option value="custom" selected>Custom (% on MRP)</option>
+  <option value="0">Retail MRP (0%)</option>
+  <option value="15">Preferred Customer Bronze (15%)</option>
+  <option value="25">Associate / Silver PC (25%)</option>
+  <option value="35">Senior Consultant / Gold PC (35%)</option>
+  <option value="42">Qualified Producer (42%)</option>
+  <option value="50">Supervisor (50%)</option>
+</select>
             </div>
             <div class="form-group">
               <label>Custom Disc %</label>
@@ -1576,6 +1578,46 @@
     let dbRef = null;
     let isFirebaseActive = false;
     let isInternalUpdate = false;
+    // --- ⚡ AUTO DISCOUNT VP LOGIC ---
+function getAutoTier(vp) {
+  if (vp >= 1000) return '42';
+  if (vp >= 500) return '35';
+  if (vp >= 100) return '25';
+  return '15';
+}
+
+function recalculateCartAutoDiscount() {
+  const totalCartVP = customerCart.reduce((sum, i) => sum + i.totalVP, 0);
+  const autoTier = getAutoTier(totalCartVP);
+
+  customerCart.forEach(cartItem => {
+    const stockItem = inventory.find(p => p.sku === cartItem.sku);
+    if(stockItem) {
+       cartItem.tier = autoTier;
+       cartItem.rate = getProductTierUnitPrice(stockItem, autoTier, 0);
+       cartItem.total = Math.round(cartItem.rate * cartItem.qty);
+       cartItem.tierLabel = `Auto (${autoTier}%)`;
+       cartItem.discount = autoTier;
+    }
+  });
+}
+
+function recalculateQuoteAutoDiscount() {
+  const totalQuoteVP = quoteCart.reduce((sum, i) => sum + i.totalVP, 0);
+  const autoTier = getAutoTier(totalQuoteVP);
+
+  quoteCart.forEach(cartItem => {
+    const stockItem = inventory.find(p => p.sku === cartItem.sku);
+    if(stockItem) {
+       cartItem.tier = autoTier;
+       cartItem.rate = getProductTierUnitPrice(stockItem, autoTier, 0);
+       cartItem.total = Math.round(cartItem.rate * cartItem.qty);
+       cartItem.tierLabel = `Auto (${autoTier}%)`;
+       cartItem.discount = autoTier;
+    }
+  });
+}
+// ----------------------------------
 
     /* AUTHENTICATION SYSTEM */
     function checkAuthStatus() {
@@ -2369,80 +2411,107 @@
     }
 
     function applyDiscountTier() {
-      const tier = document.getElementById('billTier').value;
-      if (tier !== 'custom') {
-        document.getElementById('billDiscount').value = tier;
-      }
-      calculateBillItemSubtotal();
-    }
+  const tier = document.getElementById('billTier').value;
+  if (tier !== 'custom' && tier !== 'auto') {
+    document.getElementById('billDiscount').value = tier;
+  }
+  if (tier === 'auto' && customerCart.length > 0) {
+     recalculateCartAutoDiscount();
+     renderCustomerCart();
+  }
+  calculateBillItemSubtotal();
+}
 
     function calculateBillItemSubtotal() {
-      const pInput = document.getElementById('billProductInput').value;
-      const found = findSmartProductMatch(pInput);
-      const tier = document.getElementById('billTier').value;
-      const qty = parseInt(document.getElementById('billQty').value) || 1;
-      const customDisc = parseFloat(document.getElementById('billDiscount').value) || 0;
+  const pInput = document.getElementById('billProductInput').value;
+  const found = findSmartProductMatch(pInput);
+  let tier = document.getElementById('billTier').value;
+  const qty = parseInt(document.getElementById('billQty').value) || 1;
+  const customDisc = parseFloat(document.getElementById('billDiscount').value) || 0;
 
-      if (found) {
-        document.getElementById('billMrp').value = found.mrp;
-        document.getElementById('billVp').value = (parseFloat(found.vp) || 0).toFixed(2);
-        const unitRate = getProductTierUnitPrice(found, tier, customDisc);
-        document.getElementById('billItemTotal').value = Math.round(unitRate * qty);
-      } else {
-        const mrp = parseFloat(document.getElementById('billMrp').value) || 0;
-        const total = (mrp * qty) - ((mrp * qty * customDisc) / 100);
-        document.getElementById('billItemTotal').value = Math.round(total);
-      }
+  if (found) {
+    document.getElementById('billMrp').value = found.mrp;
+    document.getElementById('billVp').value = (parseFloat(found.vp) || 0).toFixed(2);
+    
+    // Auto Calculation Logic
+    if (tier === 'auto') {
+      const currentCartVP = customerCart.reduce((sum, i) => sum + i.totalVP, 0);
+      const prospectiveVP = currentCartVP + ((parseFloat(found.vp) || 0) * qty);
+      tier = getAutoTier(prospectiveVP);
     }
+
+    const unitRate = getProductTierUnitPrice(found, tier, customDisc);
+    document.getElementById('billItemTotal').value = Math.round(unitRate * qty);
+  } else {
+    const mrp = parseFloat(document.getElementById('billMrp').value) || 0;
+    const total = (mrp * qty) - ((mrp * qty * customDisc) / 100);
+    document.getElementById('billItemTotal').value = Math.round(total);
+  }
+}
 
     function addItemToCustomerCart() {
-      const pInput = document.getElementById('billProductInput').value;
-      const item = findSmartProductMatch(pInput);
-      const tier = document.getElementById('billTier').value;
-      const customDisc = parseFloat(document.getElementById('billDiscount').value) || 0;
-      const qty = parseInt(document.getElementById('billQty').value) || 1;
+  const pInput = document.getElementById('billProductInput').value;
+  const item = findSmartProductMatch(pInput);
+  let tier = document.getElementById('billTier').value;
+  const customDisc = parseFloat(document.getElementById('billDiscount').value) || 0;
+  const qty = parseInt(document.getElementById('billQty').value) || 1;
 
-      if (!item) return alert('Kripya valid product select karein!');
+  if (!item) return alert('Kripya valid product select karein!');
 
-      const unitRate = getProductTierUnitPrice(item, tier, customDisc);
-      const total = Math.round(unitRate * qty);
-      const unitVP = parseFloat(item.vp) || 0;
-      const totalVP = unitVP * qty;
-      
-      const alreadyInCart = customerCart.filter(i => i.sku === item.sku).reduce((sum, i) => sum + i.qty, 0);
-      if (item.qty < (alreadyInCart + qty)) {
-        return alert(`Stock kam hai! Total Stock: ${item.qty}, Cart me: ${alreadyInCart}`);
-      }
+  const unitVP = parseFloat(item.vp) || 0;
+  const totalVP = unitVP * qty;
+  
+  if (tier === 'auto') {
+    const currentCartVP = customerCart.reduce((sum, i) => sum + i.totalVP, 0);
+    const prospectiveVP = currentCartVP + totalVP;
+    tier = getAutoTier(prospectiveVP);
+  }
 
-      const tierLabel = (tier === 'custom') ? `Custom (${customDisc}%)` : `${tier}% Slab`;
+  const unitRate = getProductTierUnitPrice(item, tier, customDisc);
+  const total = Math.round(unitRate * qty);
+  
+  const alreadyInCart = customerCart.filter(i => i.sku === item.sku).reduce((sum, i) => sum + i.qty, 0);
+  if (item.qty < (alreadyInCart + qty)) {
+    return alert(`Stock kam hai! Total Stock: ${item.qty}`);
+  }
 
-      customerCart.push({
-        sku: item.sku,
-        name: item.name,
-        vp: unitVP,
-        totalVP: totalVP,
-        mrp: item.mrp,
-        qty: qty,
-        tier: tier,
-        rate: unitRate,
-        discount: tier === 'custom' ? customDisc : tier,
-        tierLabel: tierLabel,
-        total: total
-      });
+  const tierLabel = (document.getElementById('billTier').value === 'auto') ? `Auto (${tier}%)` : (tier === 'custom' ? `Custom (${customDisc}%)` : `${tier}% Slab`);
 
-      renderCustomerCart();
-      document.getElementById('billProductInput').value = '';
-      document.getElementById('billMrp').value = '';
-      document.getElementById('billVp').value = '';
-      document.getElementById('billItemTotal').value = '';
-      document.getElementById('billQty').value = '1';
-      document.getElementById('billProductInput').focus();
-    }
+  customerCart.push({
+    sku: item.sku,
+    name: item.name,
+    vp: unitVP,
+    totalVP: totalVP,
+    mrp: item.mrp,
+    qty: qty,
+    tier: tier,
+    rate: unitRate,
+    discount: tier === 'custom' ? customDisc : tier,
+    tierLabel: tierLabel,
+    total: total
+  });
+
+  // Auto selected hone par bill ke purane items bhi naye slab ke hisab se update ho jayenge
+  if (document.getElementById('billTier').value === 'auto') {
+    recalculateCartAutoDiscount();
+  }
+
+  renderCustomerCart();
+  document.getElementById('billProductInput').value = '';
+  document.getElementById('billMrp').value = '';
+  document.getElementById('billVp').value = '';
+  document.getElementById('billItemTotal').value = '';
+  document.getElementById('billQty').value = '1';
+  document.getElementById('billProductInput').focus();
+}
 
     function removeCustomerCartItem(index) {
-      customerCart.splice(index, 1);
-      renderCustomerCart();
-    }
+  customerCart.splice(index, 1);
+  if (document.getElementById('billTier').value === 'auto') {
+    recalculateCartAutoDiscount();
+  }
+  renderCustomerCart();
+}
 
     function renderCustomerCart() {
       const tbody = document.querySelector('#customerCartTable tbody');
@@ -2879,75 +2948,98 @@
     }
 
     function applyQuoteDiscountTier() {
-      const tier = document.getElementById('quoteTier').value;
-      if (tier !== 'custom') {
-        document.getElementById('quoteDiscount').value = tier;
-      }
-      calculateQuoteItemSubtotal();
-    }
+  const tier = document.getElementById('quoteTier').value;
+  if (tier !== 'custom' && tier !== 'auto') {
+    document.getElementById('quoteDiscount').value = tier;
+  }
+  if (tier === 'auto' && quoteCart.length > 0) {
+     recalculateQuoteAutoDiscount();
+     renderQuoteCart();
+  }
+  calculateQuoteItemSubtotal();
+}
 
     function calculateQuoteItemSubtotal() {
-      const pInput = document.getElementById('quoteProductInput').value;
-      const found = findSmartProductMatch(pInput);
-      const tier = document.getElementById('quoteTier').value;
-      const qty = parseInt(document.getElementById('quoteQty').value) || 1;
-      const customDisc = parseFloat(document.getElementById('quoteDiscount').value) || 0;
+  const pInput = document.getElementById('quoteProductInput').value;
+  const found = findSmartProductMatch(pInput);
+  let tier = document.getElementById('quoteTier').value;
+  const qty = parseInt(document.getElementById('quoteQty').value) || 1;
+  const customDisc = parseFloat(document.getElementById('quoteDiscount').value) || 0;
 
-      if (found) {
-        document.getElementById('quoteMrp').value = found.mrp;
-        document.getElementById('quoteVp').value = (parseFloat(found.vp) || 0).toFixed(2);
-        const unitRate = getProductTierUnitPrice(found, tier, customDisc);
-        document.getElementById('quoteItemTotal').value = Math.round(unitRate * qty);
-      } else {
-        const mrp = parseFloat(document.getElementById('quoteMrp').value) || 0;
-        const total = (mrp * qty) - ((mrp * qty * customDisc) / 100);
-        document.getElementById('quoteItemTotal').value = Math.round(total);
-      }
+  if (found) {
+    document.getElementById('quoteMrp').value = found.mrp;
+    document.getElementById('quoteVp').value = (parseFloat(found.vp) || 0).toFixed(2);
+    
+    if (tier === 'auto') {
+      const currentCartVP = quoteCart.reduce((sum, i) => sum + i.totalVP, 0);
+      const prospectiveVP = currentCartVP + ((parseFloat(found.vp) || 0) * qty);
+      tier = getAutoTier(prospectiveVP);
     }
+
+    const unitRate = getProductTierUnitPrice(found, tier, customDisc);
+    document.getElementById('quoteItemTotal').value = Math.round(unitRate * qty);
+  } else {
+    const mrp = parseFloat(document.getElementById('quoteMrp').value) || 0;
+    const total = (mrp * qty) - ((mrp * qty * customDisc) / 100);
+    document.getElementById('quoteItemTotal').value = Math.round(total);
+  }
+}
 
     function addItemToQuoteCart() {
-      const pInput = document.getElementById('quoteProductInput').value;
-      const item = findSmartProductMatch(pInput);
-      const tier = document.getElementById('quoteTier').value;
-      const customDisc = parseFloat(document.getElementById('quoteDiscount').value) || 0;
-      const qty = parseInt(document.getElementById('quoteQty').value) || 1;
+  const pInput = document.getElementById('quoteProductInput').value;
+  const item = findSmartProductMatch(pInput);
+  let tier = document.getElementById('quoteTier').value;
+  const customDisc = parseFloat(document.getElementById('quoteDiscount').value) || 0;
+  const qty = parseInt(document.getElementById('quoteQty').value) || 1;
 
-      if (!item) return alert('Kripya valid product select karein!');
+  if (!item) return alert('Kripya valid product select karein!');
 
-      const unitRate = getProductTierUnitPrice(item, tier, customDisc);
-      const total = Math.round(unitRate * qty);
-      const unitVP = parseFloat(item.vp) || 0;
-      const totalVP = unitVP * qty;
-      const tierLabel = (tier === 'custom') ? `Custom (${customDisc}%)` : `${tier}% Slab`;
+  const unitVP = parseFloat(item.vp) || 0;
+  const totalVP = unitVP * qty;
 
-      quoteCart.push({
-        sku: item.sku,
-        name: item.name,
-        vp: unitVP,
-        totalVP: totalVP,
-        mrp: item.mrp,
-        qty: qty,
-        tier: tier,
-        rate: unitRate,
-        tierLabel: tierLabel,
-        discount: tier === 'custom' ? customDisc : tier,
-        total: total
-      });
+  if (tier === 'auto') {
+    const currentCartVP = quoteCart.reduce((sum, i) => sum + i.totalVP, 0);
+    const prospectiveVP = currentCartVP + totalVP;
+    tier = getAutoTier(prospectiveVP);
+  }
 
-      renderQuoteCart();
-      document.getElementById('quoteProductInput').value = '';
-      document.getElementById('quoteMrp').value = '';
-      document.getElementById('quoteVp').value = '';
-      document.getElementById('quoteItemTotal').value = '';
-      document.getElementById('quoteQty').value = '1';
-      document.getElementById('quoteProductInput').focus();
-    }
+  const unitRate = getProductTierUnitPrice(item, tier, customDisc);
+  const total = Math.round(unitRate * qty);
+  const tierLabel = (document.getElementById('quoteTier').value === 'auto') ? `Auto (${tier}%)` : (tier === 'custom' ? `Custom (${customDisc}%)` : `${tier}% Slab`);
 
+  quoteCart.push({
+    sku: item.sku,
+    name: item.name,
+    vp: unitVP,
+    totalVP: totalVP,
+    mrp: item.mrp,
+    qty: qty,
+    tier: tier,
+    rate: unitRate,
+    tierLabel: tierLabel,
+    discount: tier === 'custom' ? customDisc : tier,
+    total: total
+  });
+
+  if (document.getElementById('quoteTier').value === 'auto') {
+    recalculateQuoteAutoDiscount();
+  }
+
+  renderQuoteCart();
+  document.getElementById('quoteProductInput').value = '';
+  document.getElementById('quoteMrp').value = '';
+  document.getElementById('quoteVp').value = '';
+  document.getElementById('quoteItemTotal').value = '';
+  document.getElementById('quoteQty').value = '1';
+  document.getElementById('quoteProductInput').focus();
+}
     function removeQuoteCartItem(index) {
-      quoteCart.splice(index, 1);
-      renderQuoteCart();
-    }
-
+  quoteCart.splice(index, 1);
+  if (document.getElementById('quoteTier').value === 'auto') {
+    recalculateQuoteAutoDiscount();
+  }
+  renderQuoteCart();
+}
     function renderQuoteCart() {
       const tbody = document.querySelector('#quoteCartTable tbody');
       if (quoteCart.length === 0) {
