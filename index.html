@@ -145,7 +145,9 @@
     input[readonly] { background: #F8FAFC; cursor: not-allowed; }
 
     /* BUTTONS */
-    button.btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 9px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
+    button.btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 9px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
+    button.btn-save { background: #10B981; color: white; padding: 9px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s; }
+    button.btn-save:hover { background: #059669; }
     button.btn-add { background: #00ACC1; color: white; padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; width: 100%; height: 40px; }
     button.btn-add:hover { background: #00838F; }
     button.btn-secondary { background: #64748B; color: white; padding: 9px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
@@ -570,13 +572,14 @@
             </div>
 
             <div class="cart-total-bar">
-              <div style="display: flex; gap: 15px;">
+              <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
                 <span style="font-size: 13px; font-weight: bold; color: #475569;">Items: <span id="cartItemCount" style="color: var(--primary-dark);">0</span></span>
                 <span style="font-size: 13px; font-weight: bold; color: #15803D;">Total VP: <span id="cartGrandVP">0.00</span></span>
               </div>
-              <div style="display: flex; align-items: center; gap: 15px;">
-                <h3 style="font-size: 16px; color: var(--primary-dark);">Total: ₹<span id="cartGrandTotal">0</span></h3>
-                <button class="btn-primary" id="btnFinalSaveBill" onclick="checkoutCustomerBill()">🖨️ Print & Save</button>
+              <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <h3 style="font-size: 16px; color: var(--primary-dark); margin-right: 6px;">Total: ₹<span id="cartGrandTotal">0</span></h3>
+                <button class="btn-save" id="btnFinalSaveOnly" onclick="checkoutCustomerBill(false)">💾 Save Bill</button>
+                <button class="btn-primary" id="btnFinalSaveBill" onclick="checkoutCustomerBill(true)">🖨️ Print & Save</button>
               </div>
             </div>
           </div>
@@ -2610,7 +2613,7 @@ function recalculateQuoteAutoDiscount() {
       document.getElementById('cartGrandTotal').innerText = grandTotal;
     }
 
-    function checkoutCustomerBill() {
+    function checkoutCustomerBill(shouldPrint = true) {
       const cust = document.getElementById('custName').value.trim();
       const payType = document.getElementById('billPayType').value;
       const billTier = document.getElementById('billTier').value;
@@ -2642,6 +2645,7 @@ function recalculateQuoteAutoDiscount() {
         discountDisplay = `${billTier}% Slab`;
       }
 
+      const isEditing = (editingSaleIndex !== null);
       const saleRecord = {
         date: new Date().toLocaleDateString('en-IN'),
         customer: cust,
@@ -2657,9 +2661,12 @@ function recalculateQuoteAutoDiscount() {
         status: payType === 'Udhaar' ? 'Pending' : 'Paid'
       };
 
-      if (editingSaleIndex !== null) {
+      if (isEditing) {
         sales[editingSaleIndex] = saleRecord;
-        cancelBillEditing();
+        editingSaleIndex = null;
+        document.getElementById('editingBanner').style.display = 'none';
+        document.getElementById('btnFinalSaveBill').innerText = '🖨️ Print & Save';
+        if (document.getElementById('btnFinalSaveOnly')) document.getElementById('btnFinalSaveOnly').innerText = '💾 Save Bill';
       } else {
         sales.unshift(saleRecord);
       }
@@ -2669,33 +2676,37 @@ function recalculateQuoteAutoDiscount() {
 
       pushDataToCloud();
 
-      // RECEIPT DATA BINDING
-      document.getElementById('rDocTitle').innerText = 'RETAIL INVOICE';
-      document.getElementById('rFooterNote').innerText = 'Thank You! To Your Good Health 🌿';
-      document.getElementById('rDate').innerText = saleRecord.date;
-      document.getElementById('rCust').innerText = saleRecord.customer;
-      document.getElementById('rPayType').innerText = saleRecord.paymentType;
-      document.getElementById('rTotal').innerText = saleRecord.total;
-      document.getElementById('rTotalItems').innerText = `${totalQty} Units`;
-      document.getElementById('rTotalVP').innerText = grandVP.toFixed(2);
-      document.getElementById('rDiscountShow').innerText = discountDisplay;
-      document.getElementById('rSavingsShow').innerText = totalSavings;
-      
-      const rBody = document.getElementById('rItemsBody');
-      rBody.innerHTML = customerCart.map(i => `
-        <tr>
-          <td style="padding: 2px;">${i.name}</td>
-          <td style="padding: 2px; text-align: center;">${i.qty}</td>
-          <td style="padding: 2px; text-align: center;">${i.totalVP.toFixed(2)}</td>
-          <td style="padding: 2px; text-align: right;">₹${i.total}</td>
-        </tr>
-      `).join('');
+      if (shouldPrint) {
+        // RECEIPT DATA BINDING
+        document.getElementById('rDocTitle').innerText = 'RETAIL INVOICE';
+        document.getElementById('rFooterNote').innerText = 'Thank You! To Your Good Health 🌿';
+        document.getElementById('rDate').innerText = saleRecord.date;
+        document.getElementById('rCust').innerText = saleRecord.customer;
+        document.getElementById('rPayType').innerText = saleRecord.paymentType;
+        document.getElementById('rTotal').innerText = saleRecord.total;
+        document.getElementById('rTotalItems').innerText = `${totalQty} Units`;
+        document.getElementById('rTotalVP').innerText = grandVP.toFixed(2);
+        document.getElementById('rDiscountShow').innerText = discountDisplay;
+        document.getElementById('rSavingsShow').innerText = totalSavings;
+        
+        const rBody = document.getElementById('rItemsBody');
+        rBody.innerHTML = customerCart.map(i => `
+          <tr>
+            <td style="padding: 2px;">${i.name}</td>
+            <td style="padding: 2px; text-align: center;">${i.qty}</td>
+            <td style="padding: 2px; text-align: center;">${i.totalVP.toFixed(2)}</td>
+            <td style="padding: 2px; text-align: right;">₹${i.total}</td>
+          </tr>
+        `).join('');
 
-      document.body.className = 'printing-receipt';
-      setTimeout(() => {
-        window.print();
-        document.body.className = '';
-      }, 150);
+        document.body.className = 'printing-receipt';
+        setTimeout(() => {
+          window.print();
+          document.body.className = '';
+        }, 150);
+      } else {
+        alert(isEditing ? '✅ Bill update ho gaya!' : '✅ Bill successfully save ho gaya!');
+      }
 
       customerCart = [];
       renderCustomerCart();
@@ -2781,7 +2792,8 @@ function recalculateQuoteAutoDiscount() {
 
       editingSaleIndex = index;
       document.getElementById('editingBanner').style.display = 'flex';
-      document.getElementById('btnFinalSaveBill').innerText = '💾 Update Bill';
+      document.getElementById('btnFinalSaveBill').innerText = '🖨️ Update & Print';
+      if (document.getElementById('btnFinalSaveOnly')) document.getElementById('btnFinalSaveOnly').innerText = '💾 Update Bill';
 
       document.getElementById('custName').value = sale.customer;
       document.getElementById('billPayType').value = sale.paymentType || (sale.status === 'Pending' ? 'Udhaar' : 'Cash');
@@ -2806,7 +2818,8 @@ function recalculateQuoteAutoDiscount() {
       customerCart = [];
       renderCustomerCart();
       document.getElementById('editingBanner').style.display = 'none';
-      document.getElementById('btnFinalSaveBill').innerText = '🖨️ Print & Save Bill';
+      document.getElementById('btnFinalSaveBill').innerText = '🖨️ Print & Save';
+      if (document.getElementById('btnFinalSaveOnly')) document.getElementById('btnFinalSaveOnly').innerText = '💾 Save Bill';
       document.getElementById('custName').value = '';
     }
 
