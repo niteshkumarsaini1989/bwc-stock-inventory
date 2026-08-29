@@ -370,6 +370,98 @@
     </div>
   </div>
 
+  <!-- BILL PREVIEW MODAL -->
+  <div id="billPreviewModal" class="modal-overlay" style="z-index: 10000;">
+    <div class="modal-card" style="width: 440px; max-width: 95vw; max-height: 92vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.35);">
+      <!-- Modal Header -->
+      <div style="background: #1E293B; color: #FFF; padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 20px;">🧾</span>
+          <div>
+            <h3 style="font-size: 15px; font-weight: 700; color: #FFF; margin: 0;">Bill Preview / Invoice</h3>
+            <p style="font-size: 11px; color: #10B981; margin: 0; font-weight: 600;">✅ Bill Saved Successfully</p>
+          </div>
+        </div>
+        <button onclick="closeBillPreviewModal()" style="background: transparent; border: none; color: #94A3B8; font-size: 20px; cursor: pointer; line-height: 1; padding: 4px 8px; border-radius: 4px;" title="Close">✕</button>
+      </div>
+
+      <!-- Modal Body (Preview Content) -->
+      <div style="padding: 14px 16px; overflow-y: auto; flex-grow: 1; background: #F8FAFC;">
+        <div id="previewReceiptCard" style="background: #FFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+          <!-- Header with logo and shop details -->
+          <div style="text-align: center; border-bottom: 1px dashed #CBD5E1; padding-bottom: 10px; margin-bottom: 10px;">
+            <div class="bwc-logo-sq" style="width: 44px; height: 44px; margin: 0 auto 6px auto;">
+              <img src="logo.png" alt="Bharat Wellness Club">
+            </div>
+            <h3 style="font-size: 15px; color: #0F172A; font-weight: 800; margin: 0;">BHARAT WELLNESS CLUB</h3>
+            <p style="font-size: 10.5px; color: #64748B; margin: 2px 0;">Shop No B-2 Salasar Complex Chourah Bus Stand, Bagar, Jhunjhunu (Raj.)</p>
+            <p style="font-size: 10.5px; color: #334155; font-weight: 600; margin: 2px 0;">📞 Mobile: 9351016789</p>
+            <div style="display: inline-block; margin-top: 5px; background: #FFF3E0; color: var(--primary-dark); font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 12px; border: 1px solid #FFCCBC;" id="pvDocTitle">
+              RETAIL INVOICE
+            </div>
+          </div>
+
+          <!-- Meta info -->
+          <div style="font-size: 12px; color: #334155; margin-bottom: 10px; line-height: 1.6; background: #F1F5F9; padding: 8px 10px; border-radius: 6px;">
+            <div style="display: flex; justify-content: space-between; gap: 8px;">
+              <span><strong>Date:</strong> <span id="pvDate"></span></span>
+              <span><strong>Mode:</strong> <span id="pvPayType" class="badge"></span></span>
+            </div>
+            <div><strong>Customer:</strong> <span id="pvCust" style="font-weight: 700; color: #0F172A;"></span></div>
+          </div>
+
+          <!-- Items table -->
+          <table style="width: 100%; border-collapse: collapse; font-size: 11.5px; margin-bottom: 10px;">
+            <thead>
+              <tr style="border-bottom: 2px solid #E2E8F0; background: #F8FAFC;">
+                <th style="background: none; color: #475569; padding: 6px 4px; text-align: left; font-size: 11px;">Item</th>
+                <th style="background: none; color: #475569; padding: 6px 4px; text-align: center; font-size: 11px;">Qty</th>
+                <th style="background: none; color: #475569; padding: 6px 4px; text-align: center; font-size: 11px;">VP</th>
+                <th style="background: none; color: #475569; padding: 6px 4px; text-align: right; font-size: 11px;">Total</th>
+              </tr>
+            </thead>
+            <tbody id="pvItemsBody"></tbody>
+          </table>
+
+          <!-- Summary -->
+          <div style="border-top: 1px dashed #CBD5E1; padding-top: 8px; font-size: 11.5px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px; color: #64748B;">
+              <span>Total Units: <strong id="pvTotalItems" style="color: #0F172A;">0</strong></span>
+              <span>Total VP: <strong id="pvTotalVP" style="color: #15803D;">0.00</strong></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+              <span>Discount: <strong id="pvDiscountShow" style="color: #C2410C;">0%</strong></span>
+              <span>You Saved: <strong style="color: #15803D;">₹<span id="pvSavingsShow">0</span></strong></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #FFF3E0; padding: 8px 10px; border-radius: 6px; border: 1px solid #FFE0B2; margin-top: 6px;">
+              <span style="font-size: 13px; font-weight: 700; color: #0F172A;">Grand Total:</span>
+              <span style="font-size: 17px; font-weight: 800; color: var(--primary-dark);">₹<span id="pvTotal">0</span></span>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin-top: 10px; color: #64748B; font-size: 11px;">
+            <p id="pvFooterNote">Thank You! To Your Good Health 🌿</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Actions (Bottom) -->
+      <div style="padding: 12px 16px; background: #FFF; border-top: 1px solid #E2E8F0; display: flex; gap: 8px; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <button class="btn-secondary" onclick="goHomeFromPreview()" style="background: #334155; display: inline-flex; align-items: center; gap: 6px; padding: 9px 15px; font-size: 13px; font-weight: 600; cursor: pointer;">
+          🏠 Back to Home
+        </button>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn-outline" onclick="closeBillPreviewModal()" style="padding: 8px 12px; font-size: 12px; cursor: pointer;">
+            ➕ New Bill
+          </button>
+          <button class="btn-primary" onclick="printBillFromPreview()" style="background: linear-gradient(135deg, #FF7043, #E64A19); display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; font-size: 13px; font-weight: 700; box-shadow: 0 2px 8px rgba(230,74,25,0.3); cursor: pointer;">
+            🖨️ Print
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- LEFT SIDEBAR -->
   <div class="sidebar" id="sidebarNav">
     <div class="sidebar-header">
@@ -602,8 +694,7 @@
               </div>
               <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                 <h3 style="font-size: 16px; color: var(--primary-dark); margin-right: 6px;">Total: ₹<span id="cartGrandTotal">0</span></h3>
-                <button class="btn-save" id="btnFinalSaveOnly" onclick="checkoutCustomerBill(false)">💾 Save Bill</button>
-                <button class="btn-primary" id="btnFinalSaveBill" onclick="checkoutCustomerBill(true)">🖨️ Print & Save</button>
+                <button class="btn-primary" id="btnSubmitBill" onclick="submitCustomerBill()" style="background: linear-gradient(135deg, #10B981, #059669); font-size: 14px; padding: 10px 22px; font-weight: 700; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);">🚀 Submit Bill</button>
               </div>
             </div>
           </div>
@@ -2602,7 +2693,11 @@ function recalculateQuoteAutoDiscount() {
       document.getElementById('cartGrandTotal').innerText = grandTotal;
     }
 
-    function checkoutCustomerBill(shouldPrint = true) {
+    function submitCustomerBill() {
+      checkoutCustomerBill(false, true);
+    }
+
+    function checkoutCustomerBill(shouldPrint = false, showPreview = true) {
       const cust = document.getElementById('custName').value.trim();
       const payType = document.getElementById('billPayType').value;
       const billTier = document.getElementById('billTier').value;
@@ -2654,7 +2749,8 @@ function recalculateQuoteAutoDiscount() {
         sales[editingSaleIndex] = saleRecord;
         editingSaleIndex = null;
         document.getElementById('editingBanner').style.display = 'none';
-        document.getElementById('btnFinalSaveBill').innerText = '🖨️ Print & Save';
+        if (document.getElementById('btnSubmitBill')) document.getElementById('btnSubmitBill').innerText = '🚀 Submit Bill';
+        if (document.getElementById('btnFinalSaveBill')) document.getElementById('btnFinalSaveBill').innerText = '🖨️ Print & Save';
         if (document.getElementById('btnFinalSaveOnly')) document.getElementById('btnFinalSaveOnly').innerText = '💾 Save Bill';
       } else {
         sales.unshift(saleRecord);
@@ -2665,38 +2761,32 @@ function recalculateQuoteAutoDiscount() {
 
       pushDataToCloud();
 
-      if (shouldPrint) {
-        // RECEIPT DATA BINDING
-        document.getElementById('rDocTitle').innerText = 'RETAIL INVOICE';
-        document.getElementById('rFooterNote').innerText = 'Thank You! To Your Good Health 🌿';
-        document.getElementById('rDate').innerText = saleRecord.date;
-        document.getElementById('rCust').innerText = saleRecord.customer;
-        document.getElementById('rPayType').innerText = saleRecord.paymentType;
-        document.getElementById('rTotal').innerText = saleRecord.total;
-        document.getElementById('rTotalItems').innerText = `${totalQty} Units`;
-        document.getElementById('rTotalVP').innerText = grandVP.toFixed(2);
-        document.getElementById('rDiscountShow').innerText = discountDisplay;
-        document.getElementById('rSavingsShow').innerText = totalSavings;
-        
-        const rBody = document.getElementById('rItemsBody');
-        rBody.innerHTML = customerCart.map(i => `
-          <tr>
-            <td style="padding: 2px;">${i.name}</td>
-            <td style="padding: 2px; text-align: center;">${i.qty}</td>
-            <td style="padding: 2px; text-align: center;">${i.totalVP.toFixed(2)}</td>
-            <td style="padding: 2px; text-align: right;">₹${i.total}</td>
-          </tr>
-        `).join('');
+      // RECEIPT DATA BINDING (For window.print)
+      document.getElementById('rDocTitle').innerText = 'RETAIL INVOICE';
+      document.getElementById('rFooterNote').innerText = 'Thank You! To Your Good Health 🌿';
+      document.getElementById('rDate').innerText = saleRecord.date;
+      document.getElementById('rCust').innerText = saleRecord.customer;
+      document.getElementById('rPayType').innerText = saleRecord.paymentType;
+      document.getElementById('rTotal').innerText = saleRecord.total;
+      document.getElementById('rTotalItems').innerText = `${totalQty} Units`;
+      document.getElementById('rTotalVP').innerText = grandVP.toFixed(2);
+      document.getElementById('rDiscountShow').innerText = discountDisplay;
+      document.getElementById('rSavingsShow').innerText = totalSavings;
+      
+      const rBody = document.getElementById('rItemsBody');
+      rBody.innerHTML = saleRecord.items.map(i => `
+        <tr>
+          <td style="padding: 2px;">${i.name}</td>
+          <td style="padding: 2px; text-align: center;">${i.qty}</td>
+          <td style="padding: 2px; text-align: center;">${(parseFloat(i.totalVP) || 0).toFixed(2)}</td>
+          <td style="padding: 2px; text-align: right;">₹${i.total}</td>
+        </tr>
+      `).join('');
 
-        document.body.className = 'printing-receipt';
-        setTimeout(() => {
-          window.print();
-          document.body.className = '';
-        }, 150);
-      } else {
-        alert(isEditing ? '✅ Bill update ho gaya!' : '✅ Bill successfully save ho gaya!');
-      }
+      // POPULATE BILL PREVIEW MODAL
+      populateBillPreviewModal(saleRecord);
 
+      // RESET BILLING CART & INPUTS
       customerCart = [];
       renderCustomerCart();
       document.getElementById('custName').value = '';
@@ -2705,6 +2795,82 @@ function recalculateQuoteAutoDiscount() {
       renderDatalists();
       renderTables();
       renderDashboard();
+
+      if (showPreview) {
+        openBillPreviewModal();
+      } else if (shouldPrint) {
+        document.body.className = 'printing-receipt';
+        setTimeout(() => {
+          window.print();
+          document.body.className = '';
+        }, 150);
+      } else {
+        alert(isEditing ? '✅ Bill update ho gaya!' : '✅ Bill successfully save ho gaya!');
+      }
+    }
+
+    function populateBillPreviewModal(saleRecord) {
+      document.getElementById('pvDocTitle').innerText = 'RETAIL INVOICE';
+      document.getElementById('pvDate').innerText = saleRecord.date;
+      document.getElementById('pvCust').innerText = saleRecord.customer;
+      
+      const pvPayBadge = document.getElementById('pvPayType');
+      if (pvPayBadge) {
+        const isPending = (saleRecord.paymentType === 'Udhaar' || saleRecord.status === 'Pending');
+        pvPayBadge.innerText = saleRecord.paymentType || (isPending ? 'Udhaar' : 'Cash');
+        pvPayBadge.className = 'badge ' + (isPending ? 'badge-credit' : 'badge-cash');
+      }
+      
+      document.getElementById('pvTotalItems').innerText = `${saleRecord.qty} Units`;
+      document.getElementById('pvTotalVP').innerText = (parseFloat(saleRecord.totalVP) || 0).toFixed(2);
+      document.getElementById('pvDiscountShow').innerText = saleRecord.discountLabel || '0%';
+      document.getElementById('pvSavingsShow').innerText = saleRecord.totalSavings || 0;
+      document.getElementById('pvTotal').innerText = saleRecord.total;
+      document.getElementById('pvFooterNote').innerText = 'Thank You! To Your Good Health 🌿';
+
+      const pvBody = document.getElementById('pvItemsBody');
+      if (saleRecord.items && saleRecord.items.length > 0) {
+        pvBody.innerHTML = saleRecord.items.map(i => `
+          <tr style="border-bottom: 1px solid #F1F5F9;">
+            <td style="padding: 6px 4px; font-weight: 500;">${i.name}</td>
+            <td style="padding: 6px 4px; text-align: center;">${i.qty}</td>
+            <td style="padding: 6px 4px; text-align: center; color: #15803D; font-weight: 600;">${(parseFloat(i.totalVP) || (parseFloat(i.vp || 0) * i.qty)).toFixed(2)}</td>
+            <td style="padding: 6px 4px; text-align: right; font-weight: 700; color: #0F172A;">₹${i.total}</td>
+          </tr>
+        `).join('');
+      } else {
+        pvBody.innerHTML = `
+          <tr style="border-bottom: 1px solid #F1F5F9;">
+            <td style="padding: 6px 4px;">${saleRecord.product}</td>
+            <td style="padding: 6px 4px; text-align: center;">${saleRecord.qty}</td>
+            <td style="padding: 6px 4px; text-align: center; color: #15803D;">${(parseFloat(saleRecord.totalVP) || 0).toFixed(2)}</td>
+            <td style="padding: 6px 4px; text-align: right; font-weight: 700;">₹${saleRecord.total}</td>
+          </tr>
+        `;
+      }
+    }
+
+    function openBillPreviewModal() {
+      const modal = document.getElementById('billPreviewModal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closeBillPreviewModal() {
+      const modal = document.getElementById('billPreviewModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function printBillFromPreview() {
+      document.body.className = 'printing-receipt';
+      setTimeout(() => {
+        window.print();
+        document.body.className = '';
+      }, 150);
+    }
+
+    function goHomeFromPreview() {
+      closeBillPreviewModal();
+      switchNav('dashboard', document.getElementById('menu-dashboard'));
     }
 
     /* REPRINT BILL */
@@ -2781,7 +2947,8 @@ function recalculateQuoteAutoDiscount() {
 
       editingSaleIndex = index;
       document.getElementById('editingBanner').style.display = 'flex';
-      document.getElementById('btnFinalSaveBill').innerText = '🖨️ Update & Print';
+      if (document.getElementById('btnSubmitBill')) document.getElementById('btnSubmitBill').innerText = '🚀 Update & Submit Bill';
+      if (document.getElementById('btnFinalSaveBill')) document.getElementById('btnFinalSaveBill').innerText = '🖨️ Update & Print';
       if (document.getElementById('btnFinalSaveOnly')) document.getElementById('btnFinalSaveOnly').innerText = '💾 Update Bill';
 
       document.getElementById('custName').value = sale.customer;
@@ -2807,7 +2974,8 @@ function recalculateQuoteAutoDiscount() {
       customerCart = [];
       renderCustomerCart();
       document.getElementById('editingBanner').style.display = 'none';
-      document.getElementById('btnFinalSaveBill').innerText = '🖨️ Print & Save';
+      if (document.getElementById('btnSubmitBill')) document.getElementById('btnSubmitBill').innerText = '🚀 Submit Bill';
+      if (document.getElementById('btnFinalSaveBill')) document.getElementById('btnFinalSaveBill').innerText = '🖨️ Print & Save';
       if (document.getElementById('btnFinalSaveOnly')) document.getElementById('btnFinalSaveOnly').innerText = '💾 Save Bill';
       document.getElementById('custName').value = '';
     }
