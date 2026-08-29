@@ -8,8 +8,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Bharat Wellness Club - Multi-Device System</title>
 
-  <!-- WEB APP MANIFEST -->
-  <link rel="manifest" href="data:application/manifest+json;utf-8,%7B%22name%22%3A%22Bharat%20Wellness%20Club%22%2C%22short_name%22%3A%22BWC%20App%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23FFF8F6%22%2C%22theme_color%22%3A%22%231E293B%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Butf-8%2C%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Crect%20width%3D'100'%20height%3D'100'%20fill%3D'%23FF8A50'%2F%3E%3Ccircle%20cx%3D'50'%20cy%3D'50'%20r%3D'38'%20fill%3D'%23FFFFFF'%2F%3E%3Ctext%20x%3D'50'%20y%3D'58'%20font-size%3D'24'%20text-anchor%3D'middle'%20fill%3D'%231E293B'%20font-weight%3D'bold'%3EBWC%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+  <!-- WEB APP ICONS & MANIFEST -->
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="manifest" href="data:application/manifest+json;utf-8,%7B%22name%22%3A%22Bharat%20Wellness%20Club%22%2C%22short_name%22%3A%22BWC%20App%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23FFF8F6%22%2C%22theme_color%22%3A%22%231E293B%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22logo.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
 
   <!-- FIREBASE SCRIPTS FOR REAL-TIME MULTI-DEVICE SYNC -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -63,6 +65,7 @@
       flex-shrink: 0;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
+    .bwc-logo-sq img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .bwc-logo-sq svg { width: 100%; height: 100%; display: block; }
 
     /* SIDEBAR & OVERLAY */
@@ -304,19 +307,7 @@
   <div id="loginOverlay">
     <div class="login-box">
       <div class="bwc-logo-sq" style="width: 55px; height: 55px; margin: 0 auto 10px auto;">
-        <svg viewBox="0 0 100 100">
-          <rect width="100" height="100" fill="#FF8A50" />
-          <circle cx="50" cy="50" r="38" fill="#FFFFFF" />
-          <path d="M 43 38 Q 38 24 43 14 Q 54 22 47 36 Z" fill="#388E3C" />
-          <path d="M 47 37 Q 60 33 53 26 Q 45 30 46 37 Z" fill="#4CAF50" />
-          <circle cx="51.5" cy="33" r="3.2" fill="#E65100" />
-          <path d="M 47 37 Q 54 41 55 49 Q 49 43 47 37 Z" fill="#FF9800" />
-          <ellipse cx="50" cy="48" rx="10" ry="2.8" fill="none" stroke="#00ACC1" stroke-width="1.8" />
-          <path d="M 23 30 C 20 46 30 68 45 68 C 34 65 28 50 29 40 Z" fill="#1E293B" />
-          <path d="M 77 30 C 80 46 70 68 55 68 C 66 65 72 50 71 40 Z" fill="#1E293B" />
-          <rect x="5" y="67" width="90" height="14" fill="#FF8A50" stroke="#1E293B" stroke-width="2.5" />
-          <text x="50" y="77.5" font-size="6.2" font-weight="900" fill="#1E293B" text-anchor="middle" font-family="Impact, Arial Black, sans-serif">BHARAT WELLNESS CLUB</text>
-        </svg>
+        <img src="logo.png" alt="Bharat Wellness Club">
       </div>
       <h2>Bharat Wellness Club</h2>
       <p>Secure System Login</p>
@@ -383,19 +374,7 @@
   <div class="sidebar" id="sidebarNav">
     <div class="sidebar-header">
       <div class="bwc-logo-sq">
-        <svg viewBox="0 0 100 100">
-          <rect width="100" height="100" fill="#FF8A50" />
-          <circle cx="50" cy="50" r="38" fill="#FFFFFF" />
-          <path d="M 43 38 Q 38 24 43 14 Q 54 22 47 36 Z" fill="#388E3C" />
-          <path d="M 47 37 Q 60 33 53 26 Q 45 30 46 37 Z" fill="#4CAF50" />
-          <circle cx="51.5" cy="33" r="3.2" fill="#E65100" />
-          <path d="M 47 37 Q 54 41 55 49 Q 49 43 47 37 Z" fill="#FF9800" />
-          <ellipse cx="50" cy="48" rx="10" ry="2.8" fill="none" stroke="#00ACC1" stroke-width="1.8" />
-          <path d="M 23 30 C 20 46 30 68 45 68 C 34 65 28 50 29 40 Z" fill="#1E293B" />
-          <path d="M 77 30 C 80 46 70 68 55 68 C 66 65 72 50 71 40 Z" fill="#1E293B" />
-          <rect x="5" y="67" width="90" height="14" fill="#FF8A50" stroke="#1E293B" stroke-width="2.5" />
-          <text x="50" y="77.5" font-size="6.2" font-weight="900" fill="#1E293B" text-anchor="middle" font-family="Impact, Arial Black, sans-serif">BHARAT WELLNESS CLUB</text>
-        </svg>
+        <img src="logo.png" alt="Bharat Wellness Club">
       </div>
       <h2>Bharat Wellness<span>Club Management</span></h2>
     </div>
@@ -1373,19 +1352,7 @@
   <div id="printReceipt">
     <div style="text-align: center; margin-bottom: 8px;">
       <div class="bwc-logo-sq" style="width: 50px; height: 50px; margin: 0 auto 5px auto;">
-        <svg viewBox="0 0 100 100">
-          <rect width="100" height="100" fill="#FF8A50" />
-          <circle cx="50" cy="50" r="38" fill="#FFFFFF" />
-          <path d="M 43 38 Q 38 24 43 14 Q 54 22 47 36 Z" fill="#388E3C" />
-          <path d="M 47 37 Q 60 33 53 26 Q 45 30 46 37 Z" fill="#4CAF50" />
-          <circle cx="51.5" cy="33" r="3.2" fill="#E65100" />
-          <path d="M 47 37 Q 54 41 55 49 Q 49 43 47 37 Z" fill="#FF9800" />
-          <ellipse cx="50" cy="48" rx="10" ry="2.8" fill="none" stroke="#00ACC1" stroke-width="1.8" />
-          <path d="M 23 30 C 20 46 30 68 45 68 C 34 65 28 50 29 40 Z" fill="#1E293B" />
-          <path d="M 77 30 C 80 46 70 68 55 68 C 66 65 72 50 71 40 Z" fill="#1E293B" />
-          <rect x="5" y="67" width="90" height="14" fill="#FF8A50" stroke="#1E293B" stroke-width="2.5" />
-          <text x="50" y="77.5" font-size="6.2" font-weight="900" fill="#1E293B" text-anchor="middle" font-family="Impact, Arial Black, sans-serif">BHARAT WELLNESS CLUB</text>
-        </svg>
+        <img src="logo.png" alt="Bharat Wellness Club">
       </div>
       <h3 style="font-size: 15px; margin-bottom: 2px;">BHARAT WELLNESS CLUB</h3>
       <p style="font-size: 10px; margin: 2px 0;">Shop No B-2 Salasar Complex Chourah Bus Stand, Bagar, Jhunjhunu (Raj.)</p>
@@ -1429,19 +1396,7 @@
   <div id="printPayReceipt">
     <div style="text-align: center; margin-bottom: 8px;">
       <div class="bwc-logo-sq" style="width: 48px; height: 48px; margin: 0 auto 5px auto;">
-        <svg viewBox="0 0 100 100">
-          <rect width="100" height="100" fill="#FF8A50" />
-          <circle cx="50" cy="50" r="38" fill="#FFFFFF" />
-          <path d="M 43 38 Q 38 24 43 14 Q 54 22 47 36 Z" fill="#388E3C" />
-          <path d="M 47 37 Q 60 33 53 26 Q 45 30 46 37 Z" fill="#4CAF50" />
-          <circle cx="51.5" cy="33" r="3.2" fill="#E65100" />
-          <path d="M 47 37 Q 54 41 55 49 Q 49 43 47 37 Z" fill="#FF9800" />
-          <ellipse cx="50" cy="48" rx="10" ry="2.8" fill="none" stroke="#00ACC1" stroke-width="1.8" />
-          <path d="M 23 30 C 20 46 30 68 45 68 C 34 65 28 50 29 40 Z" fill="#1E293B" />
-          <path d="M 77 30 C 80 46 70 68 55 68 C 66 65 72 50 71 40 Z" fill="#1E293B" />
-          <rect x="5" y="67" width="90" height="14" fill="#FF8A50" stroke="#1E293B" stroke-width="2.5" />
-          <text x="50" y="77.5" font-size="6.2" font-weight="900" fill="#1E293B" text-anchor="middle" font-family="Impact, Arial Black, sans-serif">BHARAT WELLNESS CLUB</text>
-        </svg>
+        <img src="logo.png" alt="Bharat Wellness Club">
       </div>
       <h3 style="font-size: 15px; margin-bottom: 2px;">BHARAT WELLNESS CLUB</h3>
       <p style="font-size: 10px; margin: 2px 0;">Shop No B-2 Salasar Complex Chourah Bus Stand, Bagar, Jhunjhunu (Raj.)</p>
@@ -1473,19 +1428,7 @@
     <div style="border-bottom: 3px solid #FF7043; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end;">
       <div style="display: flex; align-items: center; gap: 15px;">
         <div class="bwc-logo-sq" style="width: 65px; height: 65px;">
-          <svg viewBox="0 0 100 100">
-            <rect width="100" height="100" fill="#FF8A50" />
-            <circle cx="50" cy="50" r="38" fill="#FFFFFF" />
-            <path d="M 43 38 Q 38 24 43 14 Q 54 22 47 36 Z" fill="#388E3C" />
-            <path d="M 47 37 Q 60 33 53 26 Q 45 30 46 37 Z" fill="#4CAF50" />
-            <circle cx="51.5" cy="33" r="3.2" fill="#E65100" />
-            <path d="M 47 37 Q 54 41 55 49 Q 49 43 47 37 Z" fill="#FF9800" />
-            <ellipse cx="50" cy="48" rx="10" ry="2.8" fill="none" stroke="#00ACC1" stroke-width="1.8" />
-            <path d="M 23 30 C 20 46 30 68 45 68 C 34 65 28 50 29 40 Z" fill="#1E293B" />
-            <path d="M 77 30 C 80 46 70 68 55 68 C 66 65 72 50 71 40 Z" fill="#1E293B" />
-            <rect x="5" y="67" width="90" height="14" fill="#FF8A50" stroke="#1E293B" stroke-width="2.5" />
-            <text x="50" y="77.5" font-size="6.2" font-weight="900" fill="#1E293B" text-anchor="middle" font-family="Impact, Arial Black, sans-serif">BHARAT WELLNESS CLUB</text>
-          </svg>
+          <img src="logo.png" alt="Bharat Wellness Club">
         </div>
         <div>
           <h2 style="color: #E64A19; margin: 0; font-size: 22px;">BHARAT WELLNESS CLUB</h2>
