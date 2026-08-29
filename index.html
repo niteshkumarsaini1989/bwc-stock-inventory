@@ -676,13 +676,14 @@
             </div>
 
             <div class="cart-total-bar">
-              <div style="display: flex; gap: 15px;">
+              <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
                 <span style="font-size: 13px; font-weight: bold; color: #475569;">Items: <span id="quoteCartItemCount" style="color: var(--primary-dark);">0</span></span>
                 <span style="font-size: 13px; font-weight: bold; color: #15803D;">Total VP: <span id="quoteGrandVP">0.00</span></span>
               </div>
-              <div style="display: flex; align-items: center; gap: 15px;">
-                <h3 style="font-size: 16px; color: var(--primary-dark);">Est. Total: ₹<span id="quoteGrandTotal">0</span></h3>
-                <button class="btn-primary" onclick="printAndSaveQuotation()">🖨️ Print Quote</button>
+              <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <h3 style="font-size: 16px; color: var(--primary-dark); margin-right: 6px;">Est. Total: ₹<span id="quoteGrandTotal">0</span></h3>
+                <button class="btn-save" id="btnFinalSaveQuote" onclick="printAndSaveQuotation(false)">💾 Save Quote</button>
+                <button class="btn-primary" id="btnFinalPrintQuote" onclick="printAndSaveQuotation(true)">🖨️ Print Quote</button>
               </div>
             </div>
           </div>
@@ -3147,7 +3148,7 @@ function recalculateQuoteAutoDiscount() {
       document.getElementById('quoteGrandTotal').innerText = grandTotal;
     }
 
-    function printAndSaveQuotation() {
+    function printAndSaveQuotation(shouldPrint = true) {
       const cust = document.getElementById('quoteCustName').value.trim();
       const validity = document.getElementById('quoteValidity').value.trim() || 'Valid for 7 Days';
       const quoteTier = document.getElementById('quoteTier').value;
@@ -3193,32 +3194,36 @@ function recalculateQuoteAutoDiscount() {
       localStorage.setItem('bwc_quotations', JSON.stringify(quotations));
       pushDataToCloud();
 
-      document.getElementById('rDocTitle').innerText = 'PROFORMA INVOICE / QUOTE';
-      document.getElementById('rFooterNote').innerText = `* Price Quotation Only (${validity}) - Not a Tax Invoice`;
-      document.getElementById('rDate').innerText = quoteRecord.date;
-      document.getElementById('rCust').innerText = quoteRecord.customer;
-      document.getElementById('rPayType').innerText = quoteRecord.id;
-      document.getElementById('rTotal').innerText = quoteRecord.total;
-      document.getElementById('rTotalItems').innerText = `${totalQty} Units`;
-      document.getElementById('rTotalVP').innerText = grandVP.toFixed(2);
-      document.getElementById('rDiscountShow').innerText = discountDisplay;
-      document.getElementById('rSavingsShow').innerText = totalSavings;
-      
-      const rBody = document.getElementById('rItemsBody');
-      rBody.innerHTML = quoteCart.map(i => `
-        <tr>
-          <td style="padding: 2px;">${i.name}</td>
-          <td style="padding: 2px; text-align: center;">${i.qty}</td>
-          <td style="padding: 2px; text-align: center;">${i.totalVP.toFixed(2)}</td>
-          <td style="padding: 2px; text-align: right;">₹${i.total}</td>
-        </tr>
-      `).join('');
+      if (shouldPrint) {
+        document.getElementById('rDocTitle').innerText = 'PROFORMA INVOICE / QUOTE';
+        document.getElementById('rFooterNote').innerText = `* Price Quotation Only (${validity}) - Not a Tax Invoice`;
+        document.getElementById('rDate').innerText = quoteRecord.date;
+        document.getElementById('rCust').innerText = quoteRecord.customer;
+        document.getElementById('rPayType').innerText = quoteRecord.id;
+        document.getElementById('rTotal').innerText = quoteRecord.total;
+        document.getElementById('rTotalItems').innerText = `${totalQty} Units`;
+        document.getElementById('rTotalVP').innerText = grandVP.toFixed(2);
+        document.getElementById('rDiscountShow').innerText = discountDisplay;
+        document.getElementById('rSavingsShow').innerText = totalSavings;
+        
+        const rBody = document.getElementById('rItemsBody');
+        rBody.innerHTML = quoteCart.map(i => `
+          <tr>
+            <td style="padding: 2px;">${i.name}</td>
+            <td style="padding: 2px; text-align: center;">${i.qty}</td>
+            <td style="padding: 2px; text-align: center;">${i.totalVP.toFixed(2)}</td>
+            <td style="padding: 2px; text-align: right;">₹${i.total}</td>
+          </tr>
+        `).join('');
 
-      document.body.className = 'printing-receipt';
-      setTimeout(() => {
-        window.print();
-        document.body.className = '';
-      }, 150);
+        document.body.className = 'printing-receipt';
+        setTimeout(() => {
+          window.print();
+          document.body.className = '';
+        }, 150);
+      } else {
+        alert('✅ Quotation successfully save ho gaya!');
+      }
 
       quoteCart = [];
       renderQuoteCart();
