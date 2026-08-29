@@ -146,8 +146,6 @@
 
     /* BUTTONS */
     button.btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 9px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
-    button.btn-save-only { background: #15803D; color: white; padding: 9px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
-    button.btn-save-only:hover { background: #166534; }
     button.btn-add { background: #00ACC1; color: white; padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; width: 100%; height: 40px; }
     button.btn-add:hover { background: #00838F; }
     button.btn-secondary { background: #64748B; color: white; padding: 9px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
@@ -498,15 +496,15 @@
             <div class="form-group">
               <label>2. Discount Slab</label>
               <select id="billTier" onchange="applyDiscountTier()" onkeydown="handleDiscountKey(event, 'billTier', applyDiscountTier)">
-                <option value="auto" style="color: #10B981; font-weight: bold;">⚡ Auto (Volume Based)</option>
-                <option value="custom" selected>Custom (% on MRP)</option>
-                <option value="0">Retail MRP (0%)</option>
-                <option value="15">Preferred Customer Bronze (15%)</option>
-                <option value="25">Associate / Silver PC (25%)</option>
-                <option value="35">Senior Consultant / Gold PC (35%)</option>
-                <option value="42">Qualified Producer (42%)</option>
-                <option value="50">Supervisor (50%)</option>
-              </select>
+  <option value="auto" style="color: #10B981; font-weight: bold;">⚡ Auto (Volume Based)</option>
+  <option value="custom" selected>Custom (% on MRP)</option>
+  <option value="0">Retail MRP (0%)</option>
+  <option value="15">Preferred Customer Bronze (15%)</option>
+  <option value="25">Associate / Silver PC (25%)</option>
+  <option value="35">Senior Consultant / Gold PC (35%)</option>
+  <option value="42">Qualified Producer (42%)</option>
+  <option value="50">Supervisor (50%)</option>
+</select>
             </div>
             <div class="form-group">
               <label>3. Custom Disc %</label>
@@ -576,12 +574,9 @@
                 <span style="font-size: 13px; font-weight: bold; color: #475569;">Items: <span id="cartItemCount" style="color: var(--primary-dark);">0</span></span>
                 <span style="font-size: 13px; font-weight: bold; color: #15803D;">Total VP: <span id="cartGrandVP">0.00</span></span>
               </div>
-              <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                <h3 style="font-size: 16px; color: var(--primary-dark); margin-right: 5px;">Total: ₹<span id="cartGrandTotal">0</span></h3>
-                <!-- SAVE ONLY BUTTON (LEFT OF PRINT & SAVE) -->
-                <button class="btn-save-only" id="btnSaveOnlyBill" onclick="checkoutCustomerBill(false)">💾 Save Only</button>
-                <!-- PRINT & SAVE BUTTON -->
-                <button class="btn-primary" id="btnFinalSaveBill" onclick="checkoutCustomerBill(true)">🖨️ Print & Save</button>
+              <div style="display: flex; align-items: center; gap: 15px;">
+                <h3 style="font-size: 16px; color: var(--primary-dark);">Total: ₹<span id="cartGrandTotal">0</span></h3>
+                <button class="btn-primary" id="btnFinalSaveBill" onclick="checkoutCustomerBill()">🖨️ Print & Save</button>
               </div>
             </div>
           </div>
@@ -608,15 +603,15 @@
             <div class="form-group">
               <label>Discount Slab</label>
               <select id="quoteTier" onchange="applyQuoteDiscountTier()" onkeydown="handleDiscountKey(event, 'quoteTier', applyQuoteDiscountTier)">
-                <option value="auto" style="color: #10B981; font-weight: bold;">⚡ Auto (Volume Based)</option>
-                <option value="custom" selected>Custom (% on MRP)</option>
-                <option value="0">Retail MRP (0%)</option>
-                <option value="15">Preferred Customer Bronze (15%)</option>
-                <option value="25">Associate / Silver PC (25%)</option>
-                <option value="35">Senior Consultant / Gold PC (35%)</option>
-                <option value="42">Qualified Producer (42%)</option>
-                <option value="50">Supervisor (50%)</option>
-              </select>
+  <option value="auto" style="color: #10B981; font-weight: bold;">⚡ Auto (Volume Based)</option>
+  <option value="custom" selected>Custom (% on MRP)</option>
+  <option value="0">Retail MRP (0%)</option>
+  <option value="15">Preferred Customer Bronze (15%)</option>
+  <option value="25">Associate / Silver PC (25%)</option>
+  <option value="35">Senior Consultant / Gold PC (35%)</option>
+  <option value="42">Qualified Producer (42%)</option>
+  <option value="50">Supervisor (50%)</option>
+</select>
             </div>
             <div class="form-group">
               <label>Custom Disc %</label>
@@ -1501,7 +1496,7 @@
     let linearData = JSON.parse(localStorage.getItem('bwc_linear_data')) || [];
     let linearLastUpdated = localStorage.getItem('bwc_linear_updated') || '';
 
-    // HARD ZERO ZERO ZERO QUANTITY TEMPLATE FOR TRUE FRESH START (LOCKED)
+    // HARD ZERO ZERO ZERO QUANTITY TEMPLATE FOR TRUE FRESH START
     const defaultCatalog = [
       { sku: '1291', name: 'Afresh Energy Drink Mix - Ginger - 50 gms', vp: 7.80, mrp: 812, p15: 707, p25: 638, p35: 568, p42: 520, p50: 464, qty: 0 },
       { sku: '1294', name: 'Afresh Energy Drink Mix - Elaichi - 50 gms', vp: 7.80, mrp: 812, p15: 707, p25: 638, p35: 568, p42: 520, p50: 464, qty: 0 },
@@ -1583,109 +1578,109 @@
     let dbRef = null;
     let isFirebaseActive = false;
     let isInternalUpdate = false;
-
     // --- ⚡ AUTO DISCOUNT VP LOGIC ---
-    function getAutoTier(vp) {
-      if (vp >= 1000) return '42';
-      if (vp >= 500) return '35';
-      if (vp >= 100) return '25';
-      return '15';
-    }
-
+function getAutoTier(vp) {
+  if (vp >= 1000) return '42';
+  if (vp >= 500) return '35';
+  if (vp >= 100) return '25';
+  return '15';
+}
     // --- ✏️ CART QUANTITY UPDATE FUNCTIONS ---
-    function updateCustomerCartQty(index, val) {
-      let newQty = parseInt(val);
-      if (isNaN(newQty) || newQty < 1) newQty = 1;
-      const cartItem = customerCart[index];
-      const stockItem = inventory.find(p => p.sku === cartItem.sku);
+function updateCustomerCartQty(index, val) {
+  let newQty = parseInt(val);
+  if (isNaN(newQty) || newQty < 1) newQty = 1;
+  const cartItem = customerCart[index];
+  const stockItem = inventory.find(p => p.sku === cartItem.sku);
 
-      if (stockItem && stockItem.qty < newQty) {
-        alert(`Stock kam hai! Available Stock: ${stockItem.qty}`);
-        renderCustomerCart(); // Revert to valid qty
-        return;
-      }
-      cartItem.qty = newQty;
-      cartItem.totalVP = cartItem.vp * newQty;
-      cartItem.total = Math.round(cartItem.rate * newQty);
+  if (stockItem && stockItem.qty < newQty) {
+    alert(`Stock kam hai! Available Stock: ${stockItem.qty}`);
+    renderCustomerCart(); // Revert to valid qty
+    return;
+  }
+  cartItem.qty = newQty;
+  cartItem.totalVP = cartItem.vp * newQty;
+  cartItem.total = Math.round(cartItem.rate * newQty);
 
-      if (document.getElementById('billTier').value === 'auto') recalculateCartAutoDiscount();
-      renderCustomerCart();
-    }
+  if (document.getElementById('billTier').value === 'auto') recalculateCartAutoDiscount();
+  renderCustomerCart();
+}
 
-    function updateQuoteCartQty(index, val) {
-      let newQty = parseInt(val);
-      if (isNaN(newQty) || newQty < 1) newQty = 1;
-      const cartItem = quoteCart[index];
-      
-      cartItem.qty = newQty;
-      cartItem.totalVP = cartItem.vp * newQty;
-      cartItem.total = Math.round(cartItem.rate * newQty);
+function updateQuoteCartQty(index, val) {
+  let newQty = parseInt(val);
+  if (isNaN(newQty) || newQty < 1) newQty = 1;
+  const cartItem = quoteCart[index];
+  
+  cartItem.qty = newQty;
+  cartItem.totalVP = cartItem.vp * newQty;
+  cartItem.total = Math.round(cartItem.rate * newQty);
 
-      if (document.getElementById('quoteTier').value === 'auto') recalculateQuoteAutoDiscount();
-      renderQuoteCart();
-    }
+  if (document.getElementById('quoteTier').value === 'auto') recalculateQuoteAutoDiscount();
+  renderQuoteCart();
+}
 
-    function updateCoachCartQty(index, val) {
-      let newQty = parseInt(val);
-      if (isNaN(newQty) || newQty < 1) newQty = 1;
-      const cartItem = coachCart[index];
-      const action = document.getElementById('coachAction').value;
+function updateCoachCartQty(index, val) {
+  let newQty = parseInt(val);
+  if (isNaN(newQty) || newQty < 1) newQty = 1;
+  const cartItem = coachCart[index];
+  const action = document.getElementById('coachAction').value;
 
-      if (action === 'Lend') {
-        const stockItem = inventory.find(p => p.sku === cartItem.sku);
-        if (stockItem && stockItem.qty < newQty) {
-          alert(`Stock me utna maal nahi hai! Total Stock: ${stockItem.qty}`);
-          renderCoachCart();
-          return;
-        }
-      }
-      cartItem.qty = newQty;
-      cartItem.totalVP = cartItem.vp * newQty;
+  if (action === 'Lend') {
+    const stockItem = inventory.find(p => p.sku === cartItem.sku);
+    if (stockItem && stockItem.qty < newQty) {
+      alert(`Stock me utna maal nahi hai! Total Stock: ${stockItem.qty}`);
       renderCoachCart();
+      return;
     }
+  }
+  cartItem.qty = newQty;
+  cartItem.totalVP = cartItem.vp * newQty;
+  renderCoachCart();
+}
 
-    function updatePurchaseCartQty(index, val) {
-      let newQty = parseInt(val);
-      if (isNaN(newQty) || newQty < 1) newQty = 1;
-      const cartItem = purchaseCart[index];
-      
-      cartItem.qty = newQty;
-      cartItem.totalVP = cartItem.vp * newQty;
-      cartItem.total = Math.round(cartItem.rate * newQty);
-      renderPurchaseCart();
+function updatePurchaseCartQty(index, val) {
+  let newQty = parseInt(val);
+  if (isNaN(newQty) || newQty < 1) newQty = 1;
+  const cartItem = purchaseCart[index];
+  
+  cartItem.qty = newQty;
+  cartItem.totalVP = cartItem.vp * newQty;
+  cartItem.total = Math.round(cartItem.rate * newQty);
+  renderPurchaseCart();
+}
+// ------------------------------------------
+
+function recalculateCartAutoDiscount() {
+  const totalCartVP = customerCart.reduce((sum, i) => sum + i.totalVP, 0);
+  const autoTier = getAutoTier(totalCartVP);
+
+  customerCart.forEach(cartItem => {
+    const stockItem = inventory.find(p => p.sku === cartItem.sku);
+    if(stockItem) {
+       cartItem.tier = autoTier;
+       cartItem.rate = getProductTierUnitPrice(stockItem, autoTier, 0);
+       cartItem.total = Math.round(cartItem.rate * cartItem.qty);
+       cartItem.tierLabel = `Auto (${autoTier}%)`;
+       cartItem.discount = autoTier;
     }
+  });
+}
 
-    function recalculateCartAutoDiscount() {
-      const totalCartVP = customerCart.reduce((sum, i) => sum + i.totalVP, 0);
-      const autoTier = getAutoTier(totalCartVP);
+function recalculateQuoteAutoDiscount() {
+  const totalQuoteVP = quoteCart.reduce((sum, i) => sum + i.totalVP, 0);
+  const autoTier = getAutoTier(totalQuoteVP);
 
-      customerCart.forEach(cartItem => {
-        const stockItem = inventory.find(p => p.sku === cartItem.sku);
-        if(stockItem) {
-          cartItem.tier = autoTier;
-          cartItem.rate = getProductTierUnitPrice(stockItem, autoTier, 0);
-          cartItem.total = Math.round(cartItem.rate * cartItem.qty);
-          cartItem.tierLabel = `Auto (${autoTier}%)`;
-          cartItem.discount = autoTier;
-        }
-      });
+  quoteCart.forEach(cartItem => {
+    const stockItem = inventory.find(p => p.sku === cartItem.sku);
+    if(stockItem) {
+       cartItem.tier = autoTier;
+       cartItem.rate = getProductTierUnitPrice(stockItem, autoTier, 0);
+       cartItem.total = Math.round(cartItem.rate * cartItem.qty);
+       cartItem.tierLabel = `Auto (${autoTier}%)`;
+       cartItem.discount = autoTier;
     }
-
-    function recalculateQuoteAutoDiscount() {
-      const totalQuoteVP = quoteCart.reduce((sum, i) => sum + i.totalVP, 0);
-      const autoTier = getAutoTier(totalQuoteVP);
-
-      quoteCart.forEach(cartItem => {
-        const stockItem = inventory.find(p => p.sku === cartItem.sku);
-        if(stockItem) {
-          cartItem.tier = autoTier;
-          cartItem.rate = getProductTierUnitPrice(stockItem, autoTier, 0);
-          cartItem.total = Math.round(cartItem.rate * cartItem.qty);
-          cartItem.tierLabel = `Auto (${autoTier}%)`;
-          cartItem.discount = autoTier;
-        }
-      });
-    }
+  });
+}
+// ----------------------------------
 
     /* AUTHENTICATION SYSTEM */
     function checkAuthStatus() {
@@ -2479,104 +2474,104 @@
     }
 
     function applyDiscountTier() {
-      const tier = document.getElementById('billTier').value;
-      if (tier !== 'custom' && tier !== 'auto') {
-        document.getElementById('billDiscount').value = tier;
-      }
-      if (tier === 'auto' && customerCart.length > 0) {
-        recalculateCartAutoDiscount();
-        renderCustomerCart();
-      }
-      calculateBillItemSubtotal();
-    }
+  const tier = document.getElementById('billTier').value;
+  if (tier !== 'custom' && tier !== 'auto') {
+    document.getElementById('billDiscount').value = tier;
+  }
+  if (tier === 'auto' && customerCart.length > 0) {
+     recalculateCartAutoDiscount();
+     renderCustomerCart();
+  }
+  calculateBillItemSubtotal();
+}
 
     function calculateBillItemSubtotal() {
-      const pInput = document.getElementById('billProductInput').value;
-      const found = findSmartProductMatch(pInput);
-      let tier = document.getElementById('billTier').value;
-      const qty = parseInt(document.getElementById('billQty').value) || 1;
-      const customDisc = parseFloat(document.getElementById('billDiscount').value) || 0;
+  const pInput = document.getElementById('billProductInput').value;
+  const found = findSmartProductMatch(pInput);
+  let tier = document.getElementById('billTier').value;
+  const qty = parseInt(document.getElementById('billQty').value) || 1;
+  const customDisc = parseFloat(document.getElementById('billDiscount').value) || 0;
 
-      if (found) {
-        document.getElementById('billMrp').value = found.mrp;
-        document.getElementById('billVp').value = (parseFloat(found.vp) || 0).toFixed(2);
-        
-        // Auto Calculation Logic
-        if (tier === 'auto') {
-          const currentCartVP = customerCart.reduce((sum, i) => sum + i.totalVP, 0);
-          const prospectiveVP = currentCartVP + ((parseFloat(found.vp) || 0) * qty);
-          tier = getAutoTier(prospectiveVP);
-        }
-
-        const unitRate = getProductTierUnitPrice(found, tier, customDisc);
-        document.getElementById('billItemTotal').value = Math.round(unitRate * qty);
-      } else {
-        const mrp = parseFloat(document.getElementById('billMrp').value) || 0;
-        const total = (mrp * qty) - ((mrp * qty * customDisc) / 100);
-        document.getElementById('billItemTotal').value = Math.round(total);
-      }
+  if (found) {
+    document.getElementById('billMrp').value = found.mrp;
+    document.getElementById('billVp').value = (parseFloat(found.vp) || 0).toFixed(2);
+    
+    // Auto Calculation Logic
+    if (tier === 'auto') {
+      const currentCartVP = customerCart.reduce((sum, i) => sum + i.totalVP, 0);
+      const prospectiveVP = currentCartVP + ((parseFloat(found.vp) || 0) * qty);
+      tier = getAutoTier(prospectiveVP);
     }
+
+    const unitRate = getProductTierUnitPrice(found, tier, customDisc);
+    document.getElementById('billItemTotal').value = Math.round(unitRate * qty);
+  } else {
+    const mrp = parseFloat(document.getElementById('billMrp').value) || 0;
+    const total = (mrp * qty) - ((mrp * qty * customDisc) / 100);
+    document.getElementById('billItemTotal').value = Math.round(total);
+  }
+}
 
     function addItemToCustomerCart() {
-      const pInput = document.getElementById('billProductInput').value;
-      const item = findSmartProductMatch(pInput);
-      let tier = document.getElementById('billTier').value;
-      const customDisc = parseFloat(document.getElementById('billDiscount').value) || 0;
-      const qty = parseInt(document.getElementById('billQty').value) || 1;
+  const pInput = document.getElementById('billProductInput').value;
+  const item = findSmartProductMatch(pInput);
+  let tier = document.getElementById('billTier').value;
+  const customDisc = parseFloat(document.getElementById('billDiscount').value) || 0;
+  const qty = parseInt(document.getElementById('billQty').value) || 1;
 
-      if (!item) return alert('Kripya valid product select karein!');
+  if (!item) return alert('Kripya valid product select karein!');
 
-      const unitVP = parseFloat(item.vp) || 0;
-      const totalVP = unitVP * qty;
-      
-      if (tier === 'auto') {
-        const currentCartVP = customerCart.reduce((sum, i) => sum + i.totalVP, 0);
-        const prospectiveVP = currentCartVP + totalVP;
-        tier = getAutoTier(prospectiveVP);
-      }
+  const unitVP = parseFloat(item.vp) || 0;
+  const totalVP = unitVP * qty;
+  
+  if (tier === 'auto') {
+    const currentCartVP = customerCart.reduce((sum, i) => sum + i.totalVP, 0);
+    const prospectiveVP = currentCartVP + totalVP;
+    tier = getAutoTier(prospectiveVP);
+  }
 
-      const unitRate = getProductTierUnitPrice(item, tier, customDisc);
-      const total = Math.round(unitRate * qty);
-      
-      const existingIndex = customerCart.findIndex(i => i.sku === item.sku);
-      const currentInCart = existingIndex > -1 ? customerCart[existingIndex].qty : 0;
-      
-      if (item.qty < (currentInCart + qty)) {
-        return alert(`Stock kam hai! Total Stock: ${item.qty}`);
-      }
+  const unitRate = getProductTierUnitPrice(item, tier, customDisc);
+  const total = Math.round(unitRate * qty);
+  
+  const existingIndex = customerCart.findIndex(i => i.sku === item.sku);
+  const currentInCart = existingIndex > -1 ? customerCart[existingIndex].qty : 0;
+  
+  if (item.qty < (currentInCart + qty)) {
+    return alert(`Stock kam hai! Total Stock: ${item.qty}`);
+  }
 
-      if (existingIndex > -1) {
-        // Agar product pehle se hai, toh sirf Qty aur Total badhao (Nayi row nahi banegi)
-        customerCart[existingIndex].qty += qty;
-        customerCart[existingIndex].totalVP = customerCart[existingIndex].vp * customerCart[existingIndex].qty;
-        customerCart[existingIndex].total = Math.round(customerCart[existingIndex].rate * customerCart[existingIndex].qty);
-      } else {
-        // Naya product hai toh push karo
-        const tierLabel = (document.getElementById('billTier').value === 'auto') ? `Auto (${tier}%)` : (tier === 'custom' ? `Custom (${customDisc}%)` : `${tier}% Slab`);
-        customerCart.push({
-          sku: item.sku, name: item.name, vp: unitVP, totalVP: totalVP, mrp: item.mrp,
-          qty: qty, tier: tier, rate: unitRate, discount: tier === 'custom' ? customDisc : tier, tierLabel: tierLabel, total: total
-        });
-      }
+  if (existingIndex > -1) {
+    // Agar product pehle se hai, toh sirf Qty aur Total badhao (Nayi row nahi banegi)
+    customerCart[existingIndex].qty += qty;
+    customerCart[existingIndex].totalVP = customerCart[existingIndex].vp * customerCart[existingIndex].qty;
+    customerCart[existingIndex].total = Math.round(customerCart[existingIndex].rate * customerCart[existingIndex].qty);
+  } else {
+    // Naya product hai toh push karo
+    const tierLabel = (document.getElementById('billTier').value === 'auto') ? `Auto (${tier}%)` : (tier === 'custom' ? `Custom (${customDisc}%)` : `${tier}% Slab`);
+    customerCart.push({
+      sku: item.sku, name: item.name, vp: unitVP, totalVP: totalVP, mrp: item.mrp,
+      qty: qty, tier: tier, rate: unitRate, discount: tier === 'custom' ? customDisc : tier, tierLabel: tierLabel, total: total
+    });
+  }
 
-      if (document.getElementById('billTier').value === 'auto') recalculateCartAutoDiscount();
+  if (document.getElementById('billTier').value === 'auto') recalculateCartAutoDiscount();
 
-      renderCustomerCart();
-      document.getElementById('billProductInput').value = '';
-      document.getElementById('billMrp').value = '';
-      document.getElementById('billVp').value = '';
-      document.getElementById('billItemTotal').value = '';
-      document.getElementById('billQty').value = '1';
-      document.getElementById('billProductInput').focus();
-    }
+  renderCustomerCart();
+  document.getElementById('billProductInput').value = '';
+  document.getElementById('billMrp').value = '';
+  document.getElementById('billVp').value = '';
+  document.getElementById('billItemTotal').value = '';
+  document.getElementById('billQty').value = '1';
+  document.getElementById('billProductInput').focus();
+}
 
     function removeCustomerCartItem(index) {
-      customerCart.splice(index, 1);
-      if (document.getElementById('billTier').value === 'auto') {
-        recalculateCartAutoDiscount();
-      }
-      renderCustomerCart();
-    }
+  customerCart.splice(index, 1);
+  if (document.getElementById('billTier').value === 'auto') {
+    recalculateCartAutoDiscount();
+  }
+  renderCustomerCart();
+}
 
     function renderCustomerCart() {
       const tbody = document.querySelector('#customerCartTable tbody');
@@ -2615,8 +2610,7 @@
       document.getElementById('cartGrandTotal').innerText = grandTotal;
     }
 
-    /* CUSTOMER BILL CHECKOUT WITH SAVE ONLY / PRINT & SAVE LOGIC */
-    function checkoutCustomerBill(doPrint = true) {
+    function checkoutCustomerBill() {
       const cust = document.getElementById('custName').value.trim();
       const payType = document.getElementById('billPayType').value;
       const billTier = document.getElementById('billTier').value;
@@ -2675,37 +2669,33 @@
 
       pushDataToCloud();
 
-      // RECEIPT DATA BINDING ONLY IF PRINT IS REQUESTED
-      if (doPrint) {
-        document.getElementById('rDocTitle').innerText = 'RETAIL INVOICE';
-        document.getElementById('rFooterNote').innerText = 'Thank You! To Your Good Health 🌿';
-        document.getElementById('rDate').innerText = saleRecord.date;
-        document.getElementById('rCust').innerText = saleRecord.customer;
-        document.getElementById('rPayType').innerText = saleRecord.paymentType;
-        document.getElementById('rTotal').innerText = saleRecord.total;
-        document.getElementById('rTotalItems').innerText = `${totalQty} Units`;
-        document.getElementById('rTotalVP').innerText = grandVP.toFixed(2);
-        document.getElementById('rDiscountShow').innerText = discountDisplay;
-        document.getElementById('rSavingsShow').innerText = totalSavings;
-        
-        const rBody = document.getElementById('rItemsBody');
-        rBody.innerHTML = customerCart.map(i => `
-          <tr>
-            <td style="padding: 2px;">${i.name}</td>
-            <td style="padding: 2px; text-align: center;">${i.qty}</td>
-            <td style="padding: 2px; text-align: center;">${i.totalVP.toFixed(2)}</td>
-            <td style="padding: 2px; text-align: right;">₹${i.total}</td>
-          </tr>
-        `).join('');
+      // RECEIPT DATA BINDING
+      document.getElementById('rDocTitle').innerText = 'RETAIL INVOICE';
+      document.getElementById('rFooterNote').innerText = 'Thank You! To Your Good Health 🌿';
+      document.getElementById('rDate').innerText = saleRecord.date;
+      document.getElementById('rCust').innerText = saleRecord.customer;
+      document.getElementById('rPayType').innerText = saleRecord.paymentType;
+      document.getElementById('rTotal').innerText = saleRecord.total;
+      document.getElementById('rTotalItems').innerText = `${totalQty} Units`;
+      document.getElementById('rTotalVP').innerText = grandVP.toFixed(2);
+      document.getElementById('rDiscountShow').innerText = discountDisplay;
+      document.getElementById('rSavingsShow').innerText = totalSavings;
+      
+      const rBody = document.getElementById('rItemsBody');
+      rBody.innerHTML = customerCart.map(i => `
+        <tr>
+          <td style="padding: 2px;">${i.name}</td>
+          <td style="padding: 2px; text-align: center;">${i.qty}</td>
+          <td style="padding: 2px; text-align: center;">${i.totalVP.toFixed(2)}</td>
+          <td style="padding: 2px; text-align: right;">₹${i.total}</td>
+        </tr>
+      `).join('');
 
-        document.body.className = 'printing-receipt';
-        setTimeout(() => {
-          window.print();
-          document.body.className = '';
-        }, 150);
-      } else {
-        alert(`Bill for "${cust}" (₹${grandTotal}) successfully save ho gaya!`);
-      }
+      document.body.className = 'printing-receipt';
+      setTimeout(() => {
+        window.print();
+        document.body.className = '';
+      }, 150);
 
       customerCart = [];
       renderCustomerCart();
@@ -2791,8 +2781,7 @@
 
       editingSaleIndex = index;
       document.getElementById('editingBanner').style.display = 'flex';
-      document.getElementById('btnFinalSaveBill').innerText = '🖨️ Update & Print';
-      document.getElementById('btnSaveOnlyBill').innerText = '💾 Update Only';
+      document.getElementById('btnFinalSaveBill').innerText = '💾 Update Bill';
 
       document.getElementById('custName').value = sale.customer;
       document.getElementById('billPayType').value = sale.paymentType || (sale.status === 'Pending' ? 'Udhaar' : 'Cash');
@@ -2817,8 +2806,7 @@
       customerCart = [];
       renderCustomerCart();
       document.getElementById('editingBanner').style.display = 'none';
-      document.getElementById('btnFinalSaveBill').innerText = '🖨️ Print & Save';
-      document.getElementById('btnSaveOnlyBill').innerText = '💾 Save Only';
+      document.getElementById('btnFinalSaveBill').innerText = '🖨️ Print & Save Bill';
       document.getElementById('custName').value = '';
     }
 
@@ -3020,97 +3008,95 @@
     }
 
     function applyQuoteDiscountTier() {
-      const tier = document.getElementById('quoteTier').value;
-      if (tier !== 'custom' && tier !== 'auto') {
-        document.getElementById('quoteDiscount').value = tier;
-      }
-      if (tier === 'auto' && quoteCart.length > 0) {
-        recalculateQuoteAutoDiscount();
-        renderQuoteCart();
-      }
-      calculateQuoteItemSubtotal();
-    }
+  const tier = document.getElementById('quoteTier').value;
+  if (tier !== 'custom' && tier !== 'auto') {
+    document.getElementById('quoteDiscount').value = tier;
+  }
+  if (tier === 'auto' && quoteCart.length > 0) {
+     recalculateQuoteAutoDiscount();
+     renderQuoteCart();
+  }
+  calculateQuoteItemSubtotal();
+}
 
     function calculateQuoteItemSubtotal() {
-      const pInput = document.getElementById('quoteProductInput').value;
-      const found = findSmartProductMatch(pInput);
-      let tier = document.getElementById('quoteTier').value;
-      const qty = parseInt(document.getElementById('quoteQty').value) || 1;
-      const customDisc = parseFloat(document.getElementById('quoteDiscount').value) || 0;
+  const pInput = document.getElementById('quoteProductInput').value;
+  const found = findSmartProductMatch(pInput);
+  let tier = document.getElementById('quoteTier').value;
+  const qty = parseInt(document.getElementById('quoteQty').value) || 1;
+  const customDisc = parseFloat(document.getElementById('quoteDiscount').value) || 0;
 
-      if (found) {
-        document.getElementById('quoteMrp').value = found.mrp;
-        document.getElementById('quoteVp').value = (parseFloat(found.vp) || 0).toFixed(2);
-        
-        if (tier === 'auto') {
-          const currentCartVP = quoteCart.reduce((sum, i) => sum + i.totalVP, 0);
-          const prospectiveVP = currentCartVP + ((parseFloat(found.vp) || 0) * qty);
-          tier = getAutoTier(prospectiveVP);
-        }
-
-        const unitRate = getProductTierUnitPrice(found, tier, customDisc);
-        document.getElementById('quoteItemTotal').value = Math.round(unitRate * qty);
-      } else {
-        const mrp = parseFloat(document.getElementById('quoteMrp').value) || 0;
-        const total = (mrp * qty) - ((mrp * qty * customDisc) / 100);
-        document.getElementById('quoteItemTotal').value = Math.round(total);
-      }
+  if (found) {
+    document.getElementById('quoteMrp').value = found.mrp;
+    document.getElementById('quoteVp').value = (parseFloat(found.vp) || 0).toFixed(2);
+    
+    if (tier === 'auto') {
+      const currentCartVP = quoteCart.reduce((sum, i) => sum + i.totalVP, 0);
+      const prospectiveVP = currentCartVP + ((parseFloat(found.vp) || 0) * qty);
+      tier = getAutoTier(prospectiveVP);
     }
+
+    const unitRate = getProductTierUnitPrice(found, tier, customDisc);
+    document.getElementById('quoteItemTotal').value = Math.round(unitRate * qty);
+  } else {
+    const mrp = parseFloat(document.getElementById('quoteMrp').value) || 0;
+    const total = (mrp * qty) - ((mrp * qty * customDisc) / 100);
+    document.getElementById('quoteItemTotal').value = Math.round(total);
+  }
+}
 
     function addItemToQuoteCart() {
-      const pInput = document.getElementById('quoteProductInput').value;
-      const item = findSmartProductMatch(pInput);
-      let tier = document.getElementById('quoteTier').value;
-      const customDisc = parseFloat(document.getElementById('quoteDiscount').value) || 0;
-      const qty = parseInt(document.getElementById('quoteQty').value) || 1;
+  const pInput = document.getElementById('quoteProductInput').value;
+  const item = findSmartProductMatch(pInput);
+  let tier = document.getElementById('quoteTier').value;
+  const customDisc = parseFloat(document.getElementById('quoteDiscount').value) || 0;
+  const qty = parseInt(document.getElementById('quoteQty').value) || 1;
 
-      if (!item) return alert('Kripya valid product select karein!');
+  if (!item) return alert('Kripya valid product select karein!');
 
-      const unitVP = parseFloat(item.vp) || 0;
-      const totalVP = unitVP * qty;
+  const unitVP = parseFloat(item.vp) || 0;
+  const totalVP = unitVP * qty;
 
-      if (tier === 'auto') {
-        const currentCartVP = quoteCart.reduce((sum, i) => sum + i.totalVP, 0);
-        const prospectiveVP = currentCartVP + totalVP;
-        tier = getAutoTier(prospectiveVP);
-      }
+  if (tier === 'auto') {
+    const currentCartVP = quoteCart.reduce((sum, i) => sum + i.totalVP, 0);
+    const prospectiveVP = currentCartVP + totalVP;
+    tier = getAutoTier(prospectiveVP);
+  }
 
-      const unitRate = getProductTierUnitPrice(item, tier, customDisc);
-      const total = Math.round(unitRate * qty);
-      
-      const existingIndex = quoteCart.findIndex(i => i.sku === item.sku);
+  const unitRate = getProductTierUnitPrice(item, tier, customDisc);
+  const total = Math.round(unitRate * qty);
+  
+  const existingIndex = quoteCart.findIndex(i => i.sku === item.sku);
 
-      if (existingIndex > -1) {
-        quoteCart[existingIndex].qty += qty;
-        quoteCart[existingIndex].totalVP = quoteCart[existingIndex].vp * quoteCart[existingIndex].qty;
-        quoteCart[existingIndex].total = Math.round(quoteCart[existingIndex].rate * quoteCart[existingIndex].qty);
-      } else {
-        const tierLabel = (document.getElementById('quoteTier').value === 'auto') ? `Auto (${tier}%)` : (tier === 'custom' ? `Custom (${customDisc}%)` : `${tier}% Slab`);
-        quoteCart.push({
-          sku: item.sku, name: item.name, vp: unitVP, totalVP: totalVP, mrp: item.mrp,
-          qty: qty, tier: tier, rate: unitRate, tierLabel: tierLabel, discount: tier === 'custom' ? customDisc : tier, total: total
-        });
-      }
+  if (existingIndex > -1) {
+    quoteCart[existingIndex].qty += qty;
+    quoteCart[existingIndex].totalVP = quoteCart[existingIndex].vp * quoteCart[existingIndex].qty;
+    quoteCart[existingIndex].total = Math.round(quoteCart[existingIndex].rate * quoteCart[existingIndex].qty);
+  } else {
+    const tierLabel = (document.getElementById('quoteTier').value === 'auto') ? `Auto (${tier}%)` : (tier === 'custom' ? `Custom (${customDisc}%)` : `${tier}% Slab`);
+    quoteCart.push({
+      sku: item.sku, name: item.name, vp: unitVP, totalVP: totalVP, mrp: item.mrp,
+      qty: qty, tier: tier, rate: unitRate, tierLabel: tierLabel, discount: tier === 'custom' ? customDisc : tier, total: total
+    });
+  }
 
-      if (document.getElementById('quoteTier').value === 'auto') recalculateQuoteAutoDiscount();
+  if (document.getElementById('quoteTier').value === 'auto') recalculateQuoteAutoDiscount();
 
-      renderQuoteCart();
-      document.getElementById('quoteProductInput').value = '';
-      document.getElementById('quoteMrp').value = '';
-      document.getElementById('quoteVp').value = '';
-      document.getElementById('quoteItemTotal').value = '';
-      document.getElementById('quoteQty').value = '1';
-      document.getElementById('quoteProductInput').focus();
-    }
-
+  renderQuoteCart();
+  document.getElementById('quoteProductInput').value = '';
+  document.getElementById('quoteMrp').value = '';
+  document.getElementById('quoteVp').value = '';
+  document.getElementById('quoteItemTotal').value = '';
+  document.getElementById('quoteQty').value = '1';
+  document.getElementById('quoteProductInput').focus();
+}
     function removeQuoteCartItem(index) {
-      quoteCart.splice(index, 1);
-      if (document.getElementById('quoteTier').value === 'auto') {
-        recalculateQuoteAutoDiscount();
-      }
-      renderQuoteCart();
-    }
-
+  quoteCart.splice(index, 1);
+  if (document.getElementById('quoteTier').value === 'auto') {
+    recalculateQuoteAutoDiscount();
+  }
+  renderQuoteCart();
+}
     function renderQuoteCart() {
       const tbody = document.querySelector('#quoteCartTable tbody');
       if (quoteCart.length === 0) {
@@ -3312,38 +3298,38 @@
     }
 
     function addItemToCoachCart() {
-      const pInput = document.getElementById('coachProductInput').value;
-      const item = findSmartProductMatch(pInput);
-      const qty = parseInt(document.getElementById('coachQty').value) || 1;
-      const action = document.getElementById('coachAction').value;
+  const pInput = document.getElementById('coachProductInput').value;
+  const item = findSmartProductMatch(pInput);
+  const qty = parseInt(document.getElementById('coachQty').value) || 1;
+  const action = document.getElementById('coachAction').value;
 
-      if (!item) return alert('Kripya valid product dalein!');
+  if (!item) return alert('Kripya valid product dalein!');
 
-      const existingIndex = coachCart.findIndex(i => i.sku === item.sku);
-      const currentInCart = existingIndex > -1 ? coachCart[existingIndex].qty : 0;
+  const existingIndex = coachCart.findIndex(i => i.sku === item.sku);
+  const currentInCart = existingIndex > -1 ? coachCart[existingIndex].qty : 0;
 
-      if (action === 'Lend') {
-        if (item.qty < (currentInCart + qty)) {
-          return alert(`Stock me utna maal nahi hai! Total Stock: ${item.qty}`);
-        }
-      }
-
-      const unitVP = parseFloat(item.vp) || 0;
-
-      if (existingIndex > -1) {
-        coachCart[existingIndex].qty += qty;
-        coachCart[existingIndex].totalVP = coachCart[existingIndex].vp * coachCart[existingIndex].qty;
-      } else {
-        coachCart.push({
-          sku: item.sku, name: item.name, vp: unitVP, totalVP: unitVP * qty, qty: qty
-        });
-      }
-
-      renderCoachCart();
-      document.getElementById('coachProductInput').value = '';
-      document.getElementById('coachQty').value = '1';
-      document.getElementById('coachProductInput').focus();
+  if (action === 'Lend') {
+    if (item.qty < (currentInCart + qty)) {
+      return alert(`Stock me utna maal nahi hai! Total Stock: ${item.qty}`);
     }
+  }
+
+  const unitVP = parseFloat(item.vp) || 0;
+
+  if (existingIndex > -1) {
+    coachCart[existingIndex].qty += qty;
+    coachCart[existingIndex].totalVP = coachCart[existingIndex].vp * coachCart[existingIndex].qty;
+  } else {
+    coachCart.push({
+      sku: item.sku, name: item.name, vp: unitVP, totalVP: unitVP * qty, qty: qty
+    });
+  }
+
+  renderCoachCart();
+  document.getElementById('coachProductInput').value = '';
+  document.getElementById('coachQty').value = '1';
+  document.getElementById('coachProductInput').focus();
+}
 
     function removeCoachCartItem(index) {
       coachCart.splice(index, 1);
@@ -3450,38 +3436,37 @@
     }
 
     function addItemToPurchaseCart() {
-      const pInput = document.getElementById('purchProductInput').value;
-      const item = findSmartProductMatch(pInput);
-      const qty = parseInt(document.getElementById('purchQty').value) || 1;
-      const rate = parseFloat(document.getElementById('purchRate').value) || 0;
-      const unitVP = parseFloat(item ? item.vp : 0) || 0;
+  const pInput = document.getElementById('purchProductInput').value;
+  const item = findSmartProductMatch(pInput);
+  const qty = parseInt(document.getElementById('purchQty').value) || 1;
+  const rate = parseFloat(document.getElementById('purchRate').value) || 0;
+  const unitVP = parseFloat(item ? item.vp : 0) || 0;
 
-      if (!item) return alert('Kripya valid product select karein!');
+  if (!item) return alert('Kripya valid product select karein!');
 
-      const existingIndex = purchaseCart.findIndex(i => i.sku === item.sku);
+  const existingIndex = purchaseCart.findIndex(i => i.sku === item.sku);
 
-      if (existingIndex > -1) {
-        // Merge Duplicate
-        purchaseCart[existingIndex].qty += qty;
-        purchaseCart[existingIndex].totalVP = purchaseCart[existingIndex].vp * purchaseCart[existingIndex].qty;
-        purchaseCart[existingIndex].total = Math.round(purchaseCart[existingIndex].rate * purchaseCart[existingIndex].qty);
-      } else {
-        // Naya product
-        purchaseCart.push({
-          sku: item.sku, name: item.name, vp: unitVP, totalVP: unitVP * qty,
-          mrp: item.mrp, rate: rate, qty: qty, total: Math.round(qty * rate)
-        });
-      }
+  if (existingIndex > -1) {
+    // Merge Duplicate
+    purchaseCart[existingIndex].qty += qty;
+    purchaseCart[existingIndex].totalVP = purchaseCart[existingIndex].vp * purchaseCart[existingIndex].qty;
+    purchaseCart[existingIndex].total = Math.round(purchaseCart[existingIndex].rate * purchaseCart[existingIndex].qty);
+  } else {
+    // Naya product
+    purchaseCart.push({
+      sku: item.sku, name: item.name, vp: unitVP, totalVP: unitVP * qty,
+      mrp: item.mrp, rate: rate, qty: qty, total: Math.round(qty * rate)
+    });
+  }
 
-      renderPurchaseCart();
-      document.getElementById('purchProductInput').value = '';
-      document.getElementById('purchRate').value = '';
-      document.getElementById('purchVp').value = '';
-      document.getElementById('purchItemTotal').value = '';
-      document.getElementById('purchQty').value = '1';
-      document.getElementById('purchProductInput').focus();
-    }
-
+  renderPurchaseCart();
+  document.getElementById('purchProductInput').value = '';
+  document.getElementById('purchRate').value = '';
+  document.getElementById('purchVp').value = '';
+  document.getElementById('purchItemTotal').value = '';
+  document.getElementById('purchQty').value = '1';
+  document.getElementById('purchProductInput').focus();
+}
     function removePurchaseCartItem(index) {
       purchaseCart.splice(index, 1);
       renderPurchaseCart();
@@ -4028,7 +4013,7 @@
             <td><strong style="color: #C2410C; font-size: 14px;">${p.pending} units</strong></td>
             <td><strong style="color: #10B981;">${p.pendingVP.toFixed(2)} VP</strong></td>
           </tr>
-        `);
+        `).join('');
       }
 
       setCoachViewMode(currentCoachViewMode || 'full');
@@ -4349,4 +4334,9 @@
         self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
         self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
       `;
-      const blob = new Blob([swMain ismein aapki madad nahin kar sakta, kyunki main sirf ek language model hoon. Yah meri samajh se baahar hai.
+      const blob = new Blob([swCode], { type: 'application/javascript' });
+      navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+    }
+  </script>
+</body>
+</html>
