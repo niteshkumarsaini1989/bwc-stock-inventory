@@ -193,6 +193,51 @@
     .badge-quote { background: #E0F2FE; color: #0369A1; }
     .badge-pay { background: #FEF3C7; color: #D97706; }
 
+    /* LINEAR VIEW & SCROLLABLE TABLES WITH FIXED / STICKY HEADERS */
+    .linear-table-container {
+      overflow-y: auto;
+      overflow-x: auto;
+      max-height: calc(100vh - 280px);
+      min-height: 380px;
+      border: 1px solid #FFE0B2;
+      border-radius: 8px;
+      background: #fff;
+      position: relative;
+    }
+    #linearViewTable {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 0;
+    }
+    #linearViewTable thead th {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #FFF3E0;
+      color: #E64A19;
+      font-weight: 700;
+      border-top: none;
+      border-bottom: 2px solid #FFCCBC;
+      border-right: 1px solid #FFE0B2;
+      border-left: none;
+      padding: 10px 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+      white-space: nowrap;
+    }
+    #linearViewTable th:first-child, #linearViewTable td:first-child {
+      border-left: none;
+    }
+    #linearViewTable td {
+      border: 1px solid #F1F5F9;
+      border-left: none;
+      padding: 8px 12px;
+      white-space: nowrap;
+    }
+    #linearViewTable tbody tr:hover {
+      background: #FFF8E1;
+    }
+
     #printReceipt, #printPayReceipt { display: none; width: 320px; padding: 15px; border: 1px dashed #333; font-family: monospace; font-size: 12px; }
     
     /* RESPONSIVE MOBILE UI RULES */
@@ -1223,7 +1268,7 @@
             <span id="linearLastUpdated" style="color: #94A3B8; font-weight: normal;"></span>
           </div>
 
-          <div style="overflow-x: auto; max-height: calc(100vh - 350px);">
+          <div class="linear-table-container">
             <table id="linearViewTable">
               <thead>
                 <tr>
