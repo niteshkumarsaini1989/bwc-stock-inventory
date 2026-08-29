@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BWC System - Test Runner</title>
+  <style>
+    :root {
+      --primary: #FF7043;
+      --primary-dark: #E64A19;
+      --bg: #0F172A;
+      --card: #1E293B;
+      --text: #F8FAFC;
+      --success: #10B981;
+      --danger: #EF4444;
+    }
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); padding: 30px 20px; }
+    .container { max-width: 800px; margin: 0 auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #334155; }
+    .header h1 { font-size: 22px; color: #FFF; }
+    .header h1 span { color: var(--primary); }
+    .summary-card { background: var(--card); border-radius: 10px; padding: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; border: 1px solid #334155; }
+    .stat { text-align: center; }
+    .stat .num { font-size: 28px; font-weight: bold; }
+    .stat .lbl { font-size: 12px; color: #94A3B8; margin-top: 4px; text-transform: uppercase; }
+    .results-card { background: var(--card); border-radius: 10px; padding: 20px; border: 1px solid #334155; }
+    .test-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid #334155; font-size: 13.5px; }
+    .test-item:last-child { border-bottom: none; }
+    .badge { padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+    .badge-pass { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-fail { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+    button.btn-run { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; }
+    button.btn-run:hover { opacity: 0.9; }
+    .app-link { display: inline-block; margin-top: 20px; color: #38BDF8; text-decoration: none; font-size: 13px; }
+    .app-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>Bharat Wellness Club <span>System Test Suite</span></h1>
+        <p style="font-size: 13px; color: #94A3B8; margin-top: 4px;">Billing submission, price calculations & preview modal verification</p>
+      </div>
+      <button class="btn-run" onclick="executeTests()">▶ Run Tests</button>
+    </div>
+
+    <div class="summary-card">
+      <div class="stat">
+        <div class="num" id="totalCount" style="color: #38BDF8;">0</div>
+        <div class="lbl">Total Tests</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="passCount" style="color: var(--success);">0</div>
+        <div class="lbl">Passed</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="failCount" style="color: var(--danger);">0</div>
+        <div class="lbl">Failed</div>
+      </div>
+    </div>
+
+    <div class="results-card">
+      <h3 style="margin-bottom: 12px; font-size: 15px; color: #E2E8F0;">Test Results</h3>
+      <div id="testResultsList">
+        <p style="color: #64748B; font-size: 13px; text-align: center; padding: 20px;">Click 'Run Tests' button to execute the test suite.</p>
+      </div>
+    </div>
+
+    <a href="../index.html" class="app-link">← Open Main Application (index.html)</a>
+  </div>
+
+  <script src="test_suite.js"></script>
+  <script>
+    function executeTests() {
+      const summary = window.BwcTestRunner.runAllTests();
+      document.getElementById('totalCount').innerText = summary.results.length;
+      document.getElementById('passCount').innerText = summary.passed;
+      document.getElementById('failCount').innerText = summary.failed;
+
+      const list = document.getElementById('testResultsList');
+      list.innerHTML = summary.results.map(r => `
+        <div class="test-item">
+          <span>${r.description}</span>
+          <span class="badge ${r.status === 'PASS' ? 'badge-pass' : 'badge-fail'}">${r.status}</span>
+        </div>
+      `).join('');
+    }
+
+    // Auto-run on load
+    window.addEventListener('DOMContentLoaded', executeTests);
+  </script>
+</body>
+</html>
