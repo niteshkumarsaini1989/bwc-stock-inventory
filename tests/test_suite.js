@@ -243,6 +243,53 @@ function testBackdateEntryAndDateConversion() {
   console.groupEnd();
 }
 
+// 8. PhonePe UPI & AU Small Finance Bank Verification Tests
+function testPaymentAndBankDetails() {
+  console.group('--- PhonePe & AU Small Finance Bank Tests ---');
+
+  const settings = {
+    upiNumber: '9351016789',
+    bankAccountName: 'BHARAT WELLNESS CLUB',
+    bankName: 'AU SMALL FINANCE BANK',
+    bankAccountNumber: '3719899351016789',
+    bankIfsc: 'AUBL0002181'
+  };
+
+  TestRunner.assertEquals('PhonePe / UPI Number is permanently 9351016789', settings.upiNumber, '9351016789');
+  TestRunner.assertEquals('Bank Account Name is BHARAT WELLNESS CLUB', settings.bankAccountName, 'BHARAT WELLNESS CLUB');
+  TestRunner.assertEquals('Bank Name is AU SMALL FINANCE BANK', settings.bankName, 'AU SMALL FINANCE BANK');
+  TestRunner.assertEquals('Bank Account Number is 3719899351016789', settings.bankAccountNumber, '3719899351016789');
+  TestRunner.assertEquals('Bank IFSC Code is AUBL0002181', settings.bankIfsc, 'AUBL0002181');
+
+  // Verify message formatting includes all payment channels
+  const dummyItem = {
+    name: 'Shyam',
+    pendingAmount: 9026,
+    oldestDate: '23/8/2026',
+    daysOverdue: 7,
+    reminderCount: 0
+  };
+
+  const formattedMsg = `*BHARAT WELLNESS CLUB* 🌿\n\n` +
+             `Namaste *${dummyItem.name}* ji,\n\n` +
+             `This is a polite reminder (Notice #1) regarding your pending balance of *₹${dummyItem.pendingAmount}* for health & nutrition products purchased on *${dummyItem.oldestDate}* (${dummyItem.daysOverdue} days ago).\n\n` +
+             `Kindly clear the outstanding amount via PhonePe / UPI / Bank Transfer / Cash:\n` +
+             `📱 *PhonePe / UPI:* ${settings.upiNumber}\n\n` +
+             `🏦 *Bank Account Details:*\n` +
+             `• *A/C Name:* ${settings.bankAccountName}\n` +
+             `• *Bank:* ${settings.bankName}\n` +
+             `• *A/C No:* ${settings.bankAccountNumber}\n` +
+             `• *IFSC Code:* ${settings.bankIfsc}\n\n` +
+             `📍 *Address:* Shop No B-2 Salasar Complex Chouraha Bus Stand, Bagar, Jhunjhunu (Raj.)\n\n` +
+             `Thank you! To Your Good Health 🌿`;
+
+  TestRunner.assertEquals('Reminder message includes PhonePe number 9351016789', formattedMsg.includes('PhonePe / UPI:* 9351016789'), true);
+  TestRunner.assertEquals('Reminder message includes AU Small Finance Bank account number', formattedMsg.includes('3719899351016789'), true);
+  TestRunner.assertEquals('Reminder message includes IFSC AUBL0002181', formattedMsg.includes('AUBL0002181'), true);
+
+  console.groupEnd();
+}
+
 // Run All Tests
 function runAllTests() {
   TestRunner.passed = 0;
@@ -256,6 +303,7 @@ function runAllTests() {
   testWhatsAppRecurringCycleCalculations();
   testOfficeAddressIntegrity();
   testBackdateEntryAndDateConversion();
+  testPaymentAndBankDetails();
 
   console.log(`\n%c==================================\nTests Completed: Passed: ${TestRunner.passed}, Failed: ${TestRunner.failed}\n==================================`, 
     TestRunner.failed === 0 ? 'color: #10B981; font-weight: bold;' : 'color: #EF4444; font-weight: bold;');

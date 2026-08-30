@@ -471,8 +471,35 @@
           <input type="number" id="waIntervalDaysInput" value="7" min="1" max="90" style="height: 34px; font-size: 13px;">
         </div>
         <div class="form-group">
-          <label style="font-size: 11px; font-weight: bold; color: #334155;">Shop Mobile / UPI Number:</label>
-          <input type="text" id="waUpiNumberInput" value="9351016789" placeholder="e.g. 9351016789" style="height: 34px; font-size: 13px;">
+          <label style="font-size: 11px; font-weight: bold; color: #334155;">PhonePe / UPI Number:</label>
+          <input type="text" id="waUpiNumberInput" value="9351016789" placeholder="e.g. 9351016789" style="height: 34px; font-size: 13px; font-weight: 700; color: var(--primary-dark);">
+        </div>
+      </div>
+
+      <!-- BANK ACCOUNT DETAILS BOX -->
+      <div style="background: #F0FDF4; border: 1px solid #BBF7D0; padding: 10px 12px; border-radius: 8px; margin-bottom: 12px;">
+        <h4 style="font-size: 11.5px; color: #166534; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+          🏦 Official Bank Details (Auto-sent in WhatsApp Payment Reminders)
+        </h4>
+        <div class="form-row" style="grid-template-columns: 1.2fr 1fr; gap: 8px; margin-bottom: 8px;">
+          <div class="form-group">
+            <label style="font-size: 10.5px; font-weight: bold; color: #166534;">Account Name:</label>
+            <input type="text" id="waBankAccNameInput" value="BHARAT WELLNESS CLUB" style="height: 30px; font-size: 12px; font-weight: 600;">
+          </div>
+          <div class="form-group">
+            <label style="font-size: 10.5px; font-weight: bold; color: #166534;">Bank Name:</label>
+            <input type="text" id="waBankNameInput" value="AU SMALL FINANCE BANK" style="height: 30px; font-size: 12px; font-weight: 600;">
+          </div>
+        </div>
+        <div class="form-row" style="grid-template-columns: 1.2fr 1fr; gap: 8px; margin-bottom: 0;">
+          <div class="form-group">
+            <label style="font-size: 10.5px; font-weight: bold; color: #166534;">Account Number:</label>
+            <input type="text" id="waBankAccNoInput" value="3719899351016789" style="height: 30px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px;">
+          </div>
+          <div class="form-group">
+            <label style="font-size: 10.5px; font-weight: bold; color: #166534;">IFSC Code:</label>
+            <input type="text" id="waBankIfscInput" value="AUBL0002181" style="height: 30px; font-size: 12px; font-weight: 700; text-transform: uppercase;">
+          </div>
         </div>
       </div>
 
@@ -1977,19 +2004,24 @@
     let savedCoaches = JSON.parse(localStorage.getItem('bwc_saved_coaches')) || [];
     let customerContacts = JSON.parse(localStorage.getItem('bwc_customer_contacts')) || {};
     let coachContacts = JSON.parse(localStorage.getItem('bwc_coach_contacts')) || {};
-    let whatsappSettings = JSON.parse(localStorage.getItem('bwc_whatsapp_settings')) || {
-      enabled: true,
-      gateway: 'direct',
-      intervalDays: 7,
+    let rawWhatsappSettings = JSON.parse(localStorage.getItem('bwc_whatsapp_settings')) || {};
+    let whatsappSettings = {
+      enabled: rawWhatsappSettings.enabled !== false,
+      gateway: rawWhatsappSettings.gateway || 'direct',
+      intervalDays: rawWhatsappSettings.intervalDays || 7,
       upiNumber: '9351016789',
+      bankAccountName: rawWhatsappSettings.bankAccountName || 'BHARAT WELLNESS CLUB',
+      bankName: rawWhatsappSettings.bankName || 'AU SMALL FINANCE BANK',
+      bankAccountNumber: rawWhatsappSettings.bankAccountNumber || '3719899351016789',
+      bankIfsc: rawWhatsappSettings.bankIfsc || 'AUBL0002181',
       clubAddress: 'Shop No B-2 Salasar Complex Chouraha Bus Stand, Bagar, Jhunjhunu (Raj.)',
-      metaPhoneId: '',
-      metaToken: '',
-      greenInstance: '',
-      greenToken: '',
-      callmebotPhone: '',
-      callmebotApiKey: '',
-      webhookUrl: ''
+      metaPhoneId: rawWhatsappSettings.metaPhoneId || '',
+      metaToken: rawWhatsappSettings.metaToken || '',
+      greenInstance: rawWhatsappSettings.greenInstance || '',
+      greenToken: rawWhatsappSettings.greenToken || '',
+      callmebotPhone: rawWhatsappSettings.callmebotPhone || '',
+      callmebotApiKey: rawWhatsappSettings.callmebotApiKey || '',
+      webhookUrl: rawWhatsappSettings.webhookUrl || ''
     };
     let whatsappLogs = JSON.parse(localStorage.getItem('bwc_whatsapp_logs')) || [];
     let currentEditingPhoneType = '';
@@ -4972,6 +5004,10 @@ function recalculateQuoteAutoDiscount() {
       document.getElementById('waAutoEnabledToggle').checked = (whatsappSettings.enabled !== false);
       document.getElementById('waIntervalDaysInput').value = whatsappSettings.intervalDays || 7;
       document.getElementById('waUpiNumberInput').value = whatsappSettings.upiNumber || '9351016789';
+      document.getElementById('waBankAccNameInput').value = whatsappSettings.bankAccountName || 'BHARAT WELLNESS CLUB';
+      document.getElementById('waBankNameInput').value = whatsappSettings.bankName || 'AU SMALL FINANCE BANK';
+      document.getElementById('waBankAccNoInput').value = whatsappSettings.bankAccountNumber || '3719899351016789';
+      document.getElementById('waBankIfscInput').value = whatsappSettings.bankIfsc || 'AUBL0002181';
       document.getElementById('waGatewaySelect').value = whatsappSettings.gateway || 'direct';
       document.getElementById('waMetaPhoneIdInput').value = whatsappSettings.metaPhoneId || '';
       document.getElementById('waMetaTokenInput').value = whatsappSettings.metaToken || '';
@@ -5002,6 +5038,10 @@ function recalculateQuoteAutoDiscount() {
         enabled: document.getElementById('waAutoEnabledToggle').checked,
         intervalDays: parseInt(document.getElementById('waIntervalDaysInput').value) || 7,
         upiNumber: document.getElementById('waUpiNumberInput').value.trim() || '9351016789',
+        bankAccountName: document.getElementById('waBankAccNameInput').value.trim() || 'BHARAT WELLNESS CLUB',
+        bankName: document.getElementById('waBankNameInput').value.trim() || 'AU SMALL FINANCE BANK',
+        bankAccountNumber: document.getElementById('waBankAccNoInput').value.trim() || '3719899351016789',
+        bankIfsc: document.getElementById('waBankIfscInput').value.trim().toUpperCase() || 'AUBL0002181',
         clubAddress: 'Shop No B-2 Salasar Complex Chouraha Bus Stand, Bagar, Jhunjhunu (Raj.)',
         gateway: document.getElementById('waGatewaySelect').value,
         metaPhoneId: document.getElementById('waMetaPhoneIdInput').value.trim(),
@@ -5230,13 +5270,22 @@ function recalculateQuoteAutoDiscount() {
     function formatCustomerDueMessage(item) {
       const cycleNum = (item.reminderCount || 0) + 1;
       const upi = whatsappSettings.upiNumber || '9351016789';
+      const bAccName = whatsappSettings.bankAccountName || 'BHARAT WELLNESS CLUB';
+      const bName = whatsappSettings.bankName || 'AU SMALL FINANCE BANK';
+      const bAccNo = whatsappSettings.bankAccountNumber || '3719899351016789';
+      const bIfsc = whatsappSettings.bankIfsc || 'AUBL0002181';
       const addr = whatsappSettings.clubAddress || 'Shop No B-2 Salasar Complex Chouraha Bus Stand, Bagar, Jhunjhunu (Raj.)';
       
       return `*BHARAT WELLNESS CLUB* 🌿\n\n` +
              `Namaste *${item.name}* ji,\n\n` +
              `This is a polite reminder (Notice #${cycleNum}) regarding your pending balance of *₹${item.pendingAmount}* for health & nutrition products purchased on *${item.oldestDate}* (${item.daysOverdue} days ago).\n\n` +
-             `Kindly clear the outstanding amount via UPI / Cash at your earliest convenience:\n` +
-             `📱 *UPI / Mobile:* ${upi}\n` +
+             `Kindly clear the outstanding amount via PhonePe / UPI / Bank Transfer / Cash:\n` +
+             `📱 *PhonePe / UPI:* ${upi}\n\n` +
+             `🏦 *Bank Account Details:*\n` +
+             `• *A/C Name:* ${bAccName}\n` +
+             `• *Bank:* ${bName}\n` +
+             `• *A/C No:* ${bAccNo}\n` +
+             `• *IFSC Code:* ${bIfsc}\n\n` +
              `📍 *Address:* ${addr}\n\n` +
              `Thank you! To Your Good Health 🌿`;
     }
