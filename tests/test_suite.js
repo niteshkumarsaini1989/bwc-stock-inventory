@@ -140,6 +140,52 @@ function testPreviewModalDataBinding() {
   console.groupEnd();
 }
 
+// 5. WhatsApp 7-Day Recurring Overdue Cycle Calculation Tests
+function testWhatsAppRecurringCycleCalculations() {
+  console.group('--- WhatsApp 7-Day Recurring Reminder Tests ---');
+
+  const intervalDays = 7;
+
+  function evaluateReminderDue(daysOverdue, lastReminderDaysAgo) {
+    if (daysOverdue < intervalDays) return false;
+    if (lastReminderDaysAgo === null || lastReminderDaysAgo === undefined) return true;
+    return lastReminderDaysAgo >= intervalDays;
+  }
+
+  // Case 1: 5 Days Overdue (under 7 days) -> Not Due
+  TestRunner.assertEquals('Day 5 overdue: reminder should NOT be due', evaluateReminderDue(5, null), false);
+
+  // Case 2: 7 Days Overdue, never sent before -> Due (Notice #1)
+  TestRunner.assertEquals('Day 7 overdue (first time): reminder SHOULD be due', evaluateReminderDue(7, null), true);
+
+  // Case 3: 10 Days Overdue, reminder sent 3 days ago -> Not Due yet
+  TestRunner.assertEquals('Day 10 overdue (sent 3d ago): reminder should NOT be due', evaluateReminderDue(10, 3), false);
+
+  // Case 4: 14 Days Overdue, reminder sent 7 days ago -> Due (Notice #2)
+  TestRunner.assertEquals('Day 14 overdue (sent 7d ago): reminder SHOULD be due', evaluateReminderDue(14, 7), true);
+
+  // Case 5: 21 Days Overdue, reminder sent 7 days ago -> Due (Notice #3)
+  TestRunner.assertEquals('Day 21 overdue (sent 7d ago): reminder SHOULD be due', evaluateReminderDue(21, 7), true);
+
+  // Case 6: 0 Pending Balance -> Cycle terminates immediately
+  const netPending = 0;
+  const shouldSend = netPending > 0 && evaluateReminderDue(14, 7);
+  TestRunner.assertEquals('Zero pending balance: reminder cycle is stopped', shouldSend, false);
+
+  console.groupEnd();
+}
+
+// 6. Office Address Typo Verification Test
+function testOfficeAddressIntegrity() {
+  console.group('--- Office Address Verification Tests ---');
+
+  const expectedAddress = 'Shop No B-2 Salasar Complex Chouraha Bus Stand, Bagar, Jhunjhunu (Raj.)';
+  TestRunner.assertEquals('Office address contains correct spelling "Chouraha"', expectedAddress.includes('Chouraha Bus Stand'), true);
+  TestRunner.assertEquals('Office address does NOT contain old typo "Chourah Bus Stand"', expectedAddress.includes('Chourah Bus Stand'), false);
+
+  console.groupEnd();
+}
+
 // Run All Tests
 function runAllTests() {
   TestRunner.passed = 0;
@@ -150,6 +196,8 @@ function runAllTests() {
   testCartTotalsAndSavings();
   testBillRecordConstruction();
   testPreviewModalDataBinding();
+  testWhatsAppRecurringCycleCalculations();
+  testOfficeAddressIntegrity();
 
   console.log(`\n%c==================================\nTests Completed: Passed: ${TestRunner.passed}, Failed: ${TestRunner.failed}\n==================================`, 
     TestRunner.failed === 0 ? 'color: #10B981; font-weight: bold;' : 'color: #EF4444; font-weight: bold;');

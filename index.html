@@ -295,6 +295,78 @@
       body.printing-report #printReportArea * { visibility: visible; }
       body.printing-report #printReportArea { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 20px; }
     }
+    /* WHATSAPP AUTOMATION STYLES */
+    .btn-whatsapp {
+      background: #16A34A;
+      color: #FFF;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+    .btn-whatsapp:hover {
+      background: #15803D;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(22, 163, 74, 0.25);
+    }
+    .badge-reminder {
+      background: #FEF3C7;
+      color: #92400E;
+      font-weight: 700;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      border: 1px solid #FDE68A;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-reminder-sent {
+      background: #DCFCE7;
+      color: #166534;
+      font-weight: 700;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      border: 1px solid #BBF7D0;
+    }
+    .wa-nav-pill {
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid #CBD5E1;
+      background: #FFF;
+      color: #475569;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .wa-nav-pill.active {
+      background: #1E293B;
+      color: #FFF;
+      border-color: #1E293B;
+    }
+    .wa-nav-pill .pill-counter {
+      background: #EF4444;
+      color: #FFF;
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+    .wa-nav-pill.active .pill-counter {
+      background: #F87171;
+    }
+
     #printReportArea { display: none; }
   </style>
 </head>
@@ -366,6 +438,126 @@
       <div style="display: flex; gap: 10px; justify-content: flex-end;">
         <button class="btn-secondary" onclick="closeAdvSettingsModal()">Close</button>
         <button class="btn-clear" onclick="executeFactoryResetSecure()" style="width: auto; padding: 8px 16px; background: #DC2626; color: white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">Execute Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHATSAPP AUTOMATION SETTINGS MODAL (ADMIN ONLY) -->
+  <div id="whatsappSettingsModal" class="modal-overlay">
+    <div class="modal-card" style="width: 520px; max-width: 95vw; border-top: 5px solid #16A34A;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 22px;">💬</span>
+          <h3 style="color: #166534; margin: 0; font-size: 16px;">WhatsApp Automated Reminder Setup</h3>
+        </div>
+        <button onclick="closeWhatsAppModal()" style="background: transparent; border: none; font-size: 18px; color: #94A3B8; cursor: pointer;">✕</button>
+      </div>
+      <p style="font-size: 12px; color: #64748B; margin-bottom: 15px;">Automate 7-day recurring WhatsApp reminders for overdue customer payments and coach stock returns.</p>
+
+      <div style="background: #F0FDF4; border: 1px solid #BBF7D0; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <strong style="color: #166534; font-size: 13px; display: block;">⚡ Background Auto-Reminders</strong>
+          <span style="font-size: 11px; color: #15803D;">Automatically dispatches reminders every 7 days until dues are cleared.</span>
+        </div>
+        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">
+          <input type="checkbox" id="waAutoEnabledToggle" checked style="width: 18px; height: 18px; accent-color: #16A34A;">
+          Enabled
+        </label>
+      </div>
+
+      <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+        <div class="form-group">
+          <label style="font-size: 11px; font-weight: bold; color: #334155;">Recurring Interval (Days):</label>
+          <input type="number" id="waIntervalDaysInput" value="7" min="1" max="90" style="height: 34px; font-size: 13px;">
+        </div>
+        <div class="form-group">
+          <label style="font-size: 11px; font-weight: bold; color: #334155;">Shop Mobile / UPI Number:</label>
+          <input type="text" id="waUpiNumberInput" value="9351016789" placeholder="e.g. 9351016789" style="height: 34px; font-size: 13px;">
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 12px;">
+        <label style="font-size: 11px; font-weight: bold; color: #334155;">Select WhatsApp Delivery Gateway:</label>
+        <select id="waGatewaySelect" onchange="onWhatsAppGatewayChange()" style="height: 36px; font-size: 13px; font-weight: 600;">
+          <option value="direct">Direct WhatsApp Web / App (100% Free Default / 1-Click Fallback)</option>
+          <option value="cloud_api">Meta Official WhatsApp Cloud API (1,000 Free Messages/Mo)</option>
+          <option value="green_api">Green-API (Developer Free Instance)</option>
+          <option value="callmebot">CallMeBot Free API (Zero-Cost Personal Bridge)</option>
+          <option value="webhook">Custom Cloud Webhook / Self-Hosted Gateway</option>
+        </select>
+      </div>
+
+      <!-- META CLOUD API FIELDS -->
+      <div id="waMetaFieldsBox" style="display: none; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label style="font-size: 11px; font-weight: bold;">Meta Phone Number ID:</label>
+          <input type="text" id="waMetaPhoneIdInput" placeholder="e.g. 104589234892341" style="height: 32px; font-size: 12px;">
+        </div>
+        <div class="form-group">
+          <label style="font-size: 11px; font-weight: bold;">Meta System User Access Token:</label>
+          <input type="password" id="waMetaTokenInput" placeholder="EAAOx..." style="height: 32px; font-size: 12px;">
+        </div>
+      </div>
+
+      <!-- GREEN API FIELDS -->
+      <div id="waGreenFieldsBox" style="display: none; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label style="font-size: 11px; font-weight: bold;">Green-API Instance ID:</label>
+          <input type="text" id="waGreenInstanceInput" placeholder="e.g. 1101823902" style="height: 32px; font-size: 12px;">
+        </div>
+        <div class="form-group">
+          <label style="font-size: 11px; font-weight: bold;">Green-API Token:</label>
+          <input type="password" id="waGreenTokenInput" placeholder="API Token..." style="height: 32px; font-size: 12px;">
+        </div>
+      </div>
+
+      <!-- CALLMEBOT FIELDS -->
+      <div id="waCallMeBotFieldsBox" style="display: none; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label style="font-size: 11px; font-weight: bold;">CallMeBot WhatsApp Phone Number (+91...):</label>
+          <input type="text" id="waCallmebotPhoneInput" placeholder="+919351016789" style="height: 32px; font-size: 12px;">
+        </div>
+        <div class="form-group">
+          <label style="font-size: 11px; font-weight: bold;">CallMeBot API Key:</label>
+          <input type="password" id="waCallmebotApiKeyInput" placeholder="API Key..." style="height: 32px; font-size: 12px;">
+        </div>
+      </div>
+
+      <!-- CUSTOM WEBHOOK FIELDS -->
+      <div id="waWebhookFieldsBox" style="display: none; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+        <div class="form-group">
+          <label style="font-size: 11px; font-weight: bold;">Custom Webhook HTTP POST Endpoint:</label>
+          <input type="text" id="waWebhookUrlInput" placeholder="https://api.yourdomain.com/send-whatsapp" style="height: 32px; font-size: 12px;">
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+        <button type="button" class="btn-outline" onclick="testWhatsAppGatewayConnection()" style="font-size: 12px;">🧪 Test Connection</button>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn-secondary" onclick="closeWhatsAppModal()">Cancel</button>
+          <button type="button" class="btn-primary" style="background: #16A34A; border-color: #16A34A;" onclick="saveWhatsAppSettings()">Save Settings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK PHONE NUMBER EDIT MODAL -->
+  <div id="quickPhoneModal" class="modal-overlay" style="z-index: 10001;">
+    <div class="modal-card" style="width: 380px; max-width: 95vw;">
+      <h3 style="color: var(--primary-dark); margin-bottom: 6px; font-size: 15px;">📞 Edit WhatsApp Mobile Number</h3>
+      <p id="phoneModalPersonName" style="font-size: 13px; font-weight: bold; color: #1E293B; margin-bottom: 12px;"></p>
+
+      <div class="form-group" style="margin-bottom: 15px;">
+        <label style="font-size: 12px; font-weight: bold;">10-Digit WhatsApp Mobile Number:</label>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="font-size: 13px; font-weight: bold; color: #64748B;">+91</span>
+          <input type="tel" id="quickPhoneInput" maxlength="10" placeholder="e.g. 9876543210" style="height: 36px; font-size: 14px; font-weight: 600; letter-spacing: 1px;">
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; justify-content: flex-end;">
+        <button class="btn-secondary" onclick="closeQuickPhoneModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveQuickPhoneModal()">Save Number</button>
       </div>
     </div>
   </div>
@@ -510,6 +702,7 @@
     <!-- DATA BACKUP & CLOUD FOOTER (ADMIN ONLY POWER) -->
     <div class="sidebar-footer">
       <p>Cloud Sync & Data</p>
+      <button class="btn-sync-setting admin-only" style="background: #16A34A; color: white;" onclick="openWhatsAppModal()">💬 WhatsApp Automation</button>
       <button class="btn-sync-setting admin-only" onclick="openSyncModal()">☁️ Cloud Sync Settings</button>
       <button class="btn-backup" onclick="exportDataBackup()">💾 Backup Data (Download)</button>
       <button class="btn-backup admin-only" onclick="document.getElementById('importFileInput').click()">📂 Restore Data (Upload)</button>
@@ -571,6 +764,104 @@
           </div>
         </div>
 
+        <!-- WHATSAPP AUTOMATED OVERDUE REMINDER HUB -->
+        <div class="card" style="border-top: 4px solid #16A34A; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 20px;">📢</span>
+                <h3 style="color: #166534; font-size: 15px; margin: 0;">Automated Overdue Reminders (7-Day Recurring Cycle)</h3>
+                <span id="waAutoStatusBadge" class="badge-reminder-sent" style="font-size: 11px;">🟢 Auto-Check Active</span>
+              </div>
+              <p style="font-size: 11.5px; color: #64748B; margin: 3px 0 0 0;">Automatic background reminder dispatches on Day 7, Day 14, Day 21... until payment or stock is cleared.</p>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <button class="btn-primary" style="background: #16A34A; border-color: #16A34A; font-size: 12px; padding: 7px 12px;" onclick="manualTriggerAutoReminders()">⚡ Run Auto-Check Now</button>
+              <button class="btn-outline admin-only" style="font-size: 12px; padding: 7px 12px;" onclick="openWhatsAppModal()">⚙️ Settings</button>
+            </div>
+          </div>
+
+          <!-- Tab Selector Pills -->
+          <div style="display: flex; gap: 8px; margin-bottom: 12px; border-bottom: 1px solid #E2E8F0; padding-bottom: 10px; flex-wrap: wrap;">
+            <button class="wa-nav-pill active" id="pillCustOverdue" onclick="switchWhatsAppTab('customers')">
+              👤 Customers: Payment Due (7+ Days)
+              <span class="pill-counter" id="custOverdueCounter">0</span>
+            </button>
+            <button class="wa-nav-pill" id="pillCoachOverdue" onclick="switchWhatsAppTab('coaches')">
+              👥 Coaches: Stock Due (7+ Days)
+              <span class="pill-counter" id="coachOverdueCounter">0</span>
+            </button>
+            <button class="wa-nav-pill" id="pillLogsOverdue" onclick="switchWhatsAppTab('logs')">
+              📋 WhatsApp Dispatch History Log
+            </button>
+          </div>
+
+          <!-- Section 1: Customers Overdue Payment -->
+          <div id="waTabCustomers">
+            <div style="overflow-x: auto;">
+              <table id="dashCustOverdueTable">
+                <thead>
+                  <tr>
+                    <th>Customer Name</th>
+                    <th>WhatsApp Mobile</th>
+                    <th>Pending Due (₹)</th>
+                    <th>Oldest Bill Date</th>
+                    <th>Overdue Age</th>
+                    <th>Recurring Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Section 2: Coaches Overdue Stock -->
+          <div id="waTabCoaches" style="display: none;">
+            <div style="overflow-x: auto;">
+              <table id="dashCoachOverdueTable">
+                <thead>
+                  <tr>
+                    <th>Coach Name</th>
+                    <th>WhatsApp Mobile</th>
+                    <th>Pending Stock Items</th>
+                    <th>Total VP</th>
+                    <th>Earliest Lend Date</th>
+                    <th>Overdue Age</th>
+                    <th>Recurring Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Section 3: WhatsApp Logs -->
+          <div id="waTabLogs" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 12px; color: #64748B;">Recent automated and manual WhatsApp reminder dispatches</span>
+              <button class="btn-outline admin-only" style="font-size: 11px; padding: 4px 8px;" onclick="clearWhatsAppLogs()">Clear Logs</button>
+            </div>
+            <div style="overflow-x: auto;">
+              <table id="dashWhatsAppLogsTable">
+                <thead>
+                  <tr>
+                    <th>Date & Time</th>
+                    <th>Recipient</th>
+                    <th>Type</th>
+                    <th>Details</th>
+                    <th>Cycle</th>
+                    <th>Gateway</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
         <div class="card">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
             <h3 style="color: var(--sidebar-bg); font-size: 15px;">Recent Customer Bills & Orders</h3>
@@ -605,11 +896,15 @@
         </div>
 
         <div class="card">
-          <div class="form-row row-1-cust">
+          <div class="form-row row-1-cust" style="grid-template-columns: 2fr 1.2fr 1.2fr 1fr 1.2fr;">
             <div class="form-group">
               <label>1. Customer Name</label>
-              <input list="customerList" id="custName" placeholder="Type customer name..." autocomplete="off" onkeydown="handleCustomerCoachTab(event, 'custName', 'customerList')" autofocus>
+              <input list="customerList" id="custName" placeholder="Type customer name..." autocomplete="off" onkeydown="handleCustomerCoachTab(event, 'custName', 'customerList')" oninput="onBillingCustomerChange()" autofocus>
               <datalist id="customerList"></datalist>
+            </div>
+            <div class="form-group">
+              <label>WhatsApp Mobile</label>
+              <input type="tel" id="custPhone" maxlength="10" placeholder="10-digit mobile...">
             </div>
             <div class="form-group">
               <label>2. Discount Slab</label>
@@ -918,8 +1213,16 @@
           </div>
           <div class="ledger-detail-card" id="custLedgerDetail">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 8px;">
-              <h3 id="selectedCustName" style="font-size: 15px;">Select a customer from the left list</h3>
+              <div>
+                <h3 id="selectedCustName" style="font-size: 15px; margin: 0;">Select a customer from the left list</h3>
+                <div id="custPhoneRow" style="display: none; align-items: center; gap: 8px; margin-top: 5px; font-size: 12px; color: #475569; flex-wrap: wrap;">
+                  <span>📞 <span id="custPhoneDisplay" style="font-weight: 700; color: #0F172A;">Not Added</span></span>
+                  <button class="btn-outline" style="padding: 2px 8px; font-size: 11px;" onclick="openEditPhoneModalForCustomer()">✏️ Edit Mobile</button>
+                  <span id="custReminderStatusBadge"></span>
+                </div>
+              </div>
               <div id="custActionButtons" style="display: none; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <button class="btn-whatsapp" onclick="triggerManualCustomerReminder()">💬 WhatsApp Due Reminder</button>
                 <button class="btn-pdf" onclick="downloadCustomerReportPDF()">📥 Statement (PDF)</button>
                 <button class="btn-outline" onclick="resetCustomerLedgerView()">⬅ Close</button>
               </div>
@@ -976,10 +1279,14 @@
       <div id="coach-ledger" class="tab-content">
         <div class="card">
           <div style="margin-bottom: 15px; border-bottom: 1px solid #FFE0B2; padding-bottom: 12px; display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 200px;">
+            <div style="flex: 1.5; min-width: 200px;">
               <label style="font-size: 13px; font-weight: bold; color: var(--primary-dark);">Coach Name</label>
-              <input list="coachNamesList" id="coachName" placeholder="Type coach name..." autocomplete="off" onkeydown="handleCustomerCoachTab(event, 'coachName', 'coachNamesList')">
+              <input list="coachNamesList" id="coachName" placeholder="Type coach name..." autocomplete="off" onkeydown="handleCustomerCoachTab(event, 'coachName', 'coachNamesList')" oninput="onCoachTransactionNameChange()">
               <datalist id="coachNamesList"></datalist>
+            </div>
+            <div style="flex: 1; min-width: 150px;">
+              <label style="font-size: 13px; font-weight: bold; color: var(--primary-dark);">WhatsApp Mobile</label>
+              <input type="tel" id="coachPhone" maxlength="10" placeholder="10-digit mobile...">
             </div>
             <div style="width: 220px;">
               <label style="font-size: 13px; font-weight: bold; color: var(--primary-dark);">Action Type</label>
@@ -1046,8 +1353,16 @@
           </div>
           <div class="ledger-detail-card" id="coachLedgerDetail">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 8px;">
-              <h3 id="selectedCoachTitle" style="font-size: 15px;">Select a coach to view ledger</h3>
+              <div>
+                <h3 id="selectedCoachTitle" style="font-size: 15px; margin: 0;">Select a coach to view ledger</h3>
+                <div id="coachPhoneRow" style="display: none; align-items: center; gap: 8px; margin-top: 5px; font-size: 12px; color: #475569; flex-wrap: wrap;">
+                  <span>📞 <span id="coachPhoneDisplay" style="font-weight: 700; color: #0F172A;">Not Added</span></span>
+                  <button class="btn-outline" style="padding: 2px 8px; font-size: 11px;" onclick="openEditPhoneModalForCoach()">✏️ Edit Mobile</button>
+                  <span id="coachReminderStatusBadge"></span>
+                </div>
+              </div>
               <div id="coachActionButtons" style="display: none; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <button class="btn-whatsapp" onclick="triggerManualCoachReminder()">💬 WhatsApp Stock Reminder</button>
                 <button class="btn-pending-slip" onclick="downloadCoachPendingReportPDF()">⚠️ Due Slip (PDF)</button>
                 <button class="btn-pdf" onclick="downloadCoachReportPDF()">📥 Full Statement</button>
                 <button class="btn-outline" onclick="resetCoachLedgerView()">⬅ Close</button>
@@ -1648,6 +1963,25 @@
     let quotations = JSON.parse(localStorage.getItem('bwc_quotations')) || [];
     let savedCustomers = JSON.parse(localStorage.getItem('bwc_saved_customers')) || [];
     let savedCoaches = JSON.parse(localStorage.getItem('bwc_saved_coaches')) || [];
+    let customerContacts = JSON.parse(localStorage.getItem('bwc_customer_contacts')) || {};
+    let coachContacts = JSON.parse(localStorage.getItem('bwc_coach_contacts')) || {};
+    let whatsappSettings = JSON.parse(localStorage.getItem('bwc_whatsapp_settings')) || {
+      enabled: true,
+      gateway: 'direct',
+      intervalDays: 7,
+      upiNumber: '9351016789',
+      clubAddress: 'Shop No B-2 Salasar Complex Chouraha Bus Stand, Bagar, Jhunjhunu (Raj.)',
+      metaPhoneId: '',
+      metaToken: '',
+      greenInstance: '',
+      greenToken: '',
+      callmebotPhone: '',
+      callmebotApiKey: '',
+      webhookUrl: ''
+    };
+    let whatsappLogs = JSON.parse(localStorage.getItem('bwc_whatsapp_logs')) || [];
+    let currentEditingPhoneType = '';
+    let currentEditingPhoneName = '';
 
     let customerCart = [];
     let quoteCart = [];
@@ -2078,6 +2412,10 @@ function recalculateQuoteAutoDiscount() {
               if (data.quotations) { quotations = data.quotations; localStorage.setItem('bwc_quotations', JSON.stringify(quotations)); }
               if (data.savedCustomers) { savedCustomers = data.savedCustomers; localStorage.setItem('bwc_saved_customers', JSON.stringify(savedCustomers)); }
               if (data.savedCoaches) { savedCoaches = data.savedCoaches; localStorage.setItem('bwc_saved_coaches', JSON.stringify(savedCoaches)); }
+              if (data.customerContacts) { customerContacts = data.customerContacts; localStorage.setItem('bwc_customer_contacts', JSON.stringify(customerContacts)); }
+              if (data.coachContacts) { coachContacts = data.coachContacts; localStorage.setItem('bwc_coach_contacts', JSON.stringify(coachContacts)); }
+              if (data.whatsappSettings) { whatsappSettings = data.whatsappSettings; localStorage.setItem('bwc_whatsapp_settings', JSON.stringify(whatsappSettings)); }
+              if (data.whatsappLogs) { whatsappLogs = data.whatsappLogs; localStorage.setItem('bwc_whatsapp_logs', JSON.stringify(whatsappLogs)); }
               if (data.linearData) { 
                 linearData = data.linearData; 
                 linearLastUpdated = data.linearLastUpdated || '';
@@ -2121,6 +2459,10 @@ function recalculateQuoteAutoDiscount() {
           quotations: quotations,
           savedCustomers: savedCustomers,
           savedCoaches: savedCoaches,
+          customerContacts: customerContacts,
+          coachContacts: coachContacts,
+          whatsappSettings: whatsappSettings,
+          whatsappLogs: whatsappLogs,
           linearData: linearData,
           linearLastUpdated: linearLastUpdated,
           lastUpdated: new Date().toISOString()
@@ -2359,6 +2701,8 @@ function recalculateQuoteAutoDiscount() {
           </tr>
         `).join('');
       }
+
+      renderWhatsAppHub();
     }
 
     function exportDataBackup() {
@@ -2374,6 +2718,10 @@ function recalculateQuoteAutoDiscount() {
         quotations: quotations,
         savedCustomers: savedCustomers,
         savedCoaches: savedCoaches,
+        customerContacts: customerContacts,
+        coachContacts: coachContacts,
+        whatsappSettings: whatsappSettings,
+        whatsappLogs: whatsappLogs,
         linearData: linearData,
         linearLastUpdated: linearLastUpdated,
         users: appUsers
@@ -2410,6 +2758,10 @@ function recalculateQuoteAutoDiscount() {
               quotations = imported.quotations || [];
               savedCustomers = imported.savedCustomers || [];
               savedCoaches = imported.savedCoaches || [];
+              customerContacts = imported.customerContacts || {};
+              coachContacts = imported.coachContacts || {};
+              whatsappSettings = imported.whatsappSettings || whatsappSettings;
+              whatsappLogs = imported.whatsappLogs || [];
               linearData = imported.linearData || [];
               linearLastUpdated = imported.linearLastUpdated || '';
               if (imported.users) {
@@ -2425,6 +2777,10 @@ function recalculateQuoteAutoDiscount() {
               localStorage.setItem('bwc_quotations', JSON.stringify(quotations));
               localStorage.setItem('bwc_saved_customers', JSON.stringify(savedCustomers));
               localStorage.setItem('bwc_saved_coaches', JSON.stringify(savedCoaches));
+              localStorage.setItem('bwc_customer_contacts', JSON.stringify(customerContacts));
+              localStorage.setItem('bwc_coach_contacts', JSON.stringify(coachContacts));
+              localStorage.setItem('bwc_whatsapp_settings', JSON.stringify(whatsappSettings));
+              localStorage.setItem('bwc_whatsapp_logs', JSON.stringify(whatsappLogs));
               localStorage.setItem('bwc_linear_data', JSON.stringify(linearData));
               localStorage.setItem('bwc_linear_updated', linearLastUpdated);
 
@@ -2709,6 +3065,13 @@ function recalculateQuoteAutoDiscount() {
       if (!savedCustomers.includes(cust)) {
         savedCustomers.push(cust);
         localStorage.setItem('bwc_saved_customers', JSON.stringify(savedCustomers));
+      }
+
+      const custPhoneVal = (document.getElementById('custPhone')?.value || '').trim().replace(/\D/g, '');
+      if (custPhoneVal && custPhoneVal.length === 10) {
+        if (!customerContacts[cust]) customerContacts[cust] = {};
+        customerContacts[cust].phone = custPhoneVal;
+        localStorage.setItem('bwc_customer_contacts', JSON.stringify(customerContacts));
       }
 
       customerCart.forEach(cartItem => {
@@ -3552,6 +3915,13 @@ function recalculateQuoteAutoDiscount() {
         localStorage.setItem('bwc_saved_coaches', JSON.stringify(savedCoaches));
       }
 
+      const coachPhoneVal = (document.getElementById('coachPhone')?.value || '').trim().replace(/\D/g, '');
+      if (coachPhoneVal && coachPhoneVal.length === 10) {
+        if (!coachContacts[coach]) coachContacts[coach] = {};
+        coachContacts[coach].phone = coachPhoneVal;
+        localStorage.setItem('bwc_coach_contacts', JSON.stringify(coachContacts));
+      }
+
       coachCart.forEach(cartItem => {
         const stockItem = inventory.find(p => p.sku === cartItem.sku);
         if (stockItem) {
@@ -3920,6 +4290,30 @@ function recalculateQuoteAutoDiscount() {
       document.getElementById('custStatPaid').innerText = `₹${bal.totalPaid}`;
       document.getElementById('custStatVP').innerText = bal.totalVP.toFixed(2);
 
+      // Customer Phone & Reminder Status
+      const contact = customerContacts[custName] || {};
+      const phoneRow = document.getElementById('custPhoneRow');
+      const phoneDisplay = document.getElementById('custPhoneDisplay');
+      const reminderBadge = document.getElementById('custReminderStatusBadge');
+      
+      if (phoneRow) {
+        phoneRow.style.display = 'flex';
+        phoneDisplay.innerText = contact.phone ? `+91 ${contact.phone}` : 'Not Added';
+        if (bal.netPending > 0) {
+          const overdueList = getOverdueCustomerData(whatsappSettings.intervalDays || 7);
+          const oItem = overdueList.find(x => x.name.toLowerCase() === custName.toLowerCase());
+          if (oItem && oItem.isDueNow) {
+            reminderBadge.innerHTML = `<span class="badge" style="background:#FEE2E2; color:#991B1B; font-weight:bold;">🔔 Notice #${oItem.reminderCount + 1} Due</span>`;
+          } else if (contact.lastReminderDate) {
+            reminderBadge.innerHTML = `<span class="badge-reminder-sent">✅ Sent (${getDaysDiffFromToday(parseDateStringToTimestamp(contact.lastReminderDate))}d ago)</span>`;
+          } else {
+            reminderBadge.innerHTML = '';
+          }
+        } else {
+          reminderBadge.innerHTML = '<span class="badge" style="background:#DCFCE7; color:#166534;">🎉 Balance Clear</span>';
+        }
+      }
+
       // BILLS TABLE
       const tbody = document.querySelector('#custHistoryTable tbody');
       tbody.innerHTML = bal.custSales.map((s) => {
@@ -4161,6 +4555,31 @@ function recalculateQuoteAutoDiscount() {
       document.getElementById('selectedCoachTitle').innerText = `Coach Statement: ${coachName}`;
       document.getElementById('coachActionButtons').style.display = 'flex';
       document.getElementById('coachLedgerBody').style.display = 'block';
+
+      // Coach Phone & Reminder Status
+      const contact = coachContacts[coachName] || {};
+      const phoneRow = document.getElementById('coachPhoneRow');
+      const phoneDisplay = document.getElementById('coachPhoneDisplay');
+      const reminderBadge = document.getElementById('coachReminderStatusBadge');
+
+      if (phoneRow) {
+        phoneRow.style.display = 'flex';
+        phoneDisplay.innerText = contact.phone ? `+91 ${contact.phone}` : 'Not Added';
+        const pendingItemsCheck = getCoachPendingProductSummary(coachName);
+        if (pendingItemsCheck.length > 0) {
+          const overdueList = getOverdueCoachData(whatsappSettings.intervalDays || 7);
+          const oItem = overdueList.find(x => x.name.toLowerCase() === coachName.toLowerCase());
+          if (oItem && oItem.isDueNow) {
+            reminderBadge.innerHTML = `<span class="badge" style="background:#FEE2E2; color:#991B1B; font-weight:bold;">🔔 Notice #${oItem.reminderCount + 1} Due</span>`;
+          } else if (contact.lastReminderDate) {
+            reminderBadge.innerHTML = `<span class="badge-reminder-sent">✅ Sent (${getDaysDiffFromToday(parseDateStringToTimestamp(contact.lastReminderDate))}d ago)</span>`;
+          } else {
+            reminderBadge.innerHTML = '';
+          }
+        } else {
+          reminderBadge.innerHTML = '<span class="badge" style="background:#DCFCE7; color:#166534;">🎉 Stock Clear</span>';
+        }
+      }
 
       const cLogs = coachLogs.filter(l => l.coach.toLowerCase() === coachName.toLowerCase());
       const tbody = document.querySelector('#coachDetailTable tbody');
@@ -4465,6 +4884,683 @@ function recalculateQuoteAutoDiscount() {
       }, 150);
     }
 
+    // --- 💬 WHATSAPP AUTOMATION & RECURRING 7-DAY REMINDER SYSTEM ---
+
+    function openWhatsAppModal() {
+      if (currentUser && currentUser.role !== 'Admin') {
+        return alert('Access Denied: Only Admin can access WhatsApp Automation Settings.');
+      }
+      document.getElementById('waAutoEnabledToggle').checked = (whatsappSettings.enabled !== false);
+      document.getElementById('waIntervalDaysInput').value = whatsappSettings.intervalDays || 7;
+      document.getElementById('waUpiNumberInput').value = whatsappSettings.upiNumber || '9351016789';
+      document.getElementById('waGatewaySelect').value = whatsappSettings.gateway || 'direct';
+      document.getElementById('waMetaPhoneIdInput').value = whatsappSettings.metaPhoneId || '';
+      document.getElementById('waMetaTokenInput').value = whatsappSettings.metaToken || '';
+      document.getElementById('waGreenInstanceInput').value = whatsappSettings.greenInstance || '';
+      document.getElementById('waGreenTokenInput').value = whatsappSettings.greenToken || '';
+      document.getElementById('waCallmebotPhoneInput').value = whatsappSettings.callmebotPhone || '';
+      document.getElementById('waCallmebotApiKeyInput').value = whatsappSettings.callmebotApiKey || '';
+      document.getElementById('waWebhookUrlInput').value = whatsappSettings.webhookUrl || '';
+      
+      onWhatsAppGatewayChange();
+      document.getElementById('whatsappSettingsModal').style.display = 'flex';
+    }
+
+    function closeWhatsAppModal() {
+      document.getElementById('whatsappSettingsModal').style.display = 'none';
+    }
+
+    function onWhatsAppGatewayChange() {
+      const g = document.getElementById('waGatewaySelect').value;
+      document.getElementById('waMetaFieldsBox').style.display = (g === 'cloud_api') ? 'block' : 'none';
+      document.getElementById('waGreenFieldsBox').style.display = (g === 'green_api') ? 'block' : 'none';
+      document.getElementById('waCallMeBotFieldsBox').style.display = (g === 'callmebot') ? 'block' : 'none';
+      document.getElementById('waWebhookFieldsBox').style.display = (g === 'webhook') ? 'block' : 'none';
+    }
+
+    function saveWhatsAppSettings() {
+      whatsappSettings = {
+        enabled: document.getElementById('waAutoEnabledToggle').checked,
+        intervalDays: parseInt(document.getElementById('waIntervalDaysInput').value) || 7,
+        upiNumber: document.getElementById('waUpiNumberInput').value.trim() || '9351016789',
+        clubAddress: 'Shop No B-2 Salasar Complex Chouraha Bus Stand, Bagar, Jhunjhunu (Raj.)',
+        gateway: document.getElementById('waGatewaySelect').value,
+        metaPhoneId: document.getElementById('waMetaPhoneIdInput').value.trim(),
+        metaToken: document.getElementById('waMetaTokenInput').value.trim(),
+        greenInstance: document.getElementById('waGreenInstanceInput').value.trim(),
+        greenToken: document.getElementById('waGreenTokenInput').value.trim(),
+        callmebotPhone: document.getElementById('waCallmebotPhoneInput').value.trim(),
+        callmebotApiKey: document.getElementById('waCallmebotApiKeyInput').value.trim(),
+        webhookUrl: document.getElementById('waWebhookUrlInput').value.trim()
+      };
+
+      localStorage.setItem('bwc_whatsapp_settings', JSON.stringify(whatsappSettings));
+      pushDataToCloud();
+      closeWhatsAppModal();
+      renderWhatsAppHub();
+      alert('WhatsApp Automation Settings saved successfully!');
+    }
+
+    /* DATE & TIME UTILITY HELPERS */
+    function parseDateStringToTimestamp(dateStr) {
+      if (!dateStr) return 0;
+      if (typeof dateStr === 'number') return dateStr;
+      
+      const clean = String(dateStr).trim();
+      if (clean.includes('-')) {
+        const parts = clean.split('T')[0].split('-');
+        if (parts.length === 3) {
+          return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])).getTime();
+        }
+      }
+      
+      if (clean.includes('/')) {
+        const parts = clean.split('/');
+        if (parts.length === 3) {
+          return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])).getTime();
+        }
+      }
+
+      const parsed = new Date(clean).getTime();
+      return isNaN(parsed) ? 0 : parsed;
+    }
+
+    function getDaysDiffFromToday(dateTimestamp) {
+      if (!dateTimestamp) return 0;
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const diffMs = today.getTime() - dateTimestamp;
+      return Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+    }
+
+    /* QUICK PHONE NUMBER MANAGEMENT */
+    function openEditPhoneModalForCustomer(custName) {
+      const name = custName || currentSelectedCust;
+      if (!name) return;
+      currentEditingPhoneType = 'customer';
+      currentEditingPhoneName = name;
+      document.getElementById('phoneModalPersonName').innerText = `Customer: ${name}`;
+      document.getElementById('quickPhoneInput').value = (customerContacts[name]?.phone) || '';
+      document.getElementById('quickPhoneModal').style.display = 'flex';
+      setTimeout(() => document.getElementById('quickPhoneInput').focus(), 50);
+    }
+
+    function openEditPhoneModalForCoach(coachName) {
+      const name = coachName || currentSelectedCoach;
+      if (!name) return;
+      currentEditingPhoneType = 'coach';
+      currentEditingPhoneName = name;
+      document.getElementById('phoneModalPersonName').innerText = `Coach: ${name}`;
+      document.getElementById('quickPhoneInput').value = (coachContacts[name]?.phone) || '';
+      document.getElementById('quickPhoneModal').style.display = 'flex';
+      setTimeout(() => document.getElementById('quickPhoneInput').focus(), 50);
+    }
+
+    function closeQuickPhoneModal() {
+      document.getElementById('quickPhoneModal').style.display = 'none';
+      currentEditingPhoneType = '';
+      currentEditingPhoneName = '';
+    }
+
+    function saveQuickPhoneModal() {
+      const rawPhone = document.getElementById('quickPhoneInput').value.trim().replace(/\D/g, '');
+      if (rawPhone && rawPhone.length !== 10) {
+        return alert('Please enter a valid 10-digit mobile number (e.g. 9876543210)');
+      }
+
+      if (currentEditingPhoneType === 'customer' && currentEditingPhoneName) {
+        if (!customerContacts[currentEditingPhoneName]) customerContacts[currentEditingPhoneName] = {};
+        customerContacts[currentEditingPhoneName].phone = rawPhone;
+        localStorage.setItem('bwc_customer_contacts', JSON.stringify(customerContacts));
+        if (currentSelectedCust === currentEditingPhoneName) viewCustomerLedger(currentSelectedCust);
+      } else if (currentEditingPhoneType === 'coach' && currentEditingPhoneName) {
+        if (!coachContacts[currentEditingPhoneName]) coachContacts[currentEditingPhoneName] = {};
+        coachContacts[currentEditingPhoneName].phone = rawPhone;
+        localStorage.setItem('bwc_coach_contacts', JSON.stringify(coachContacts));
+        if (currentSelectedCoach === currentEditingPhoneName) viewCoachLedger(currentSelectedCoach);
+      }
+
+      pushDataToCloud();
+      closeQuickPhoneModal();
+      renderWhatsAppHub();
+    }
+
+    function onBillingCustomerChange() {
+      const c = document.getElementById('custName').value.trim();
+      const phoneInput = document.getElementById('custPhone');
+      if (c && customerContacts[c] && customerContacts[c].phone && phoneInput) {
+        phoneInput.value = customerContacts[c].phone;
+      }
+    }
+
+    function onCoachTransactionNameChange() {
+      const c = document.getElementById('coachName').value.trim();
+      const phoneInput = document.getElementById('coachPhone');
+      if (c && coachContacts[c] && coachContacts[c].phone && phoneInput) {
+        phoneInput.value = coachContacts[c].phone;
+      }
+    }
+
+    /* OVERDUE CUSTOMERS & COACHES EVALUATION (7-DAY RECURRING CYCLE) */
+    function getOverdueCustomerData(intervalDays = 7) {
+      const results = [];
+      const threshold = intervalDays || 7;
+
+      savedCustomers.forEach(cust => {
+        const bal = getCustomerBalanceData(cust);
+        if (bal.netPending > 0 && bal.custSales.length > 0) {
+          const unpaidSales = bal.custSales.filter(s => s.paymentType === 'Udhaar' || s.paymentType === 'Credit' || s.status === 'Pending');
+          if (unpaidSales.length === 0) return;
+
+          let oldestTs = Date.now();
+          let oldestDateStr = unpaidSales[0].date;
+          unpaidSales.forEach(s => {
+            const ts = parseDateStringToTimestamp(s.date);
+            if (ts > 0 && ts < oldestTs) {
+              oldestTs = ts;
+              oldestDateStr = s.date;
+            }
+          });
+
+          const daysOverdue = getDaysDiffFromToday(oldestTs);
+          const contact = customerContacts[cust] || {};
+          const lastReminderTs = contact.lastReminderDate ? parseDateStringToTimestamp(contact.lastReminderDate) : 0;
+          const daysSinceLastReminder = lastReminderTs > 0 ? getDaysDiffFromToday(lastReminderTs) : null;
+          const reminderCount = contact.reminderCount || 0;
+
+          let isDueNow = false;
+          if (daysOverdue >= threshold) {
+            if (daysSinceLastReminder === null || daysSinceLastReminder >= threshold) {
+              isDueNow = true;
+            }
+          }
+
+          results.push({
+            name: cust,
+            phone: contact.phone || '',
+            pendingAmount: bal.netPending,
+            oldestDate: oldestDateStr,
+            daysOverdue: daysOverdue,
+            reminderCount: reminderCount,
+            lastReminderDate: contact.lastReminderDate || null,
+            daysSinceLastReminder: daysSinceLastReminder,
+            isDueNow: isDueNow,
+            totalVP: bal.totalVP
+          });
+        }
+      });
+
+      return results.sort((a, b) => b.daysOverdue - a.daysOverdue);
+    }
+
+    function getOverdueCoachData(intervalDays = 7) {
+      const results = [];
+      const threshold = intervalDays || 7;
+
+      savedCoaches.forEach(coach => {
+        const pendingItems = getCoachPendingProductSummary(coach);
+        if (pendingItems.length > 0) {
+          const cLogs = coachLogs.filter(l => l.coach.toLowerCase() === coach.toLowerCase() && l.type === 'Lend');
+          if (cLogs.length === 0) return;
+
+          let oldestTs = Date.now();
+          let oldestDateStr = cLogs[0].date;
+          cLogs.forEach(l => {
+            const ts = parseDateStringToTimestamp(l.date);
+            if (ts > 0 && ts < oldestTs) {
+              oldestTs = ts;
+              oldestDateStr = l.date;
+            }
+          });
+
+          const daysOverdue = getDaysDiffFromToday(oldestTs);
+          const contact = coachContacts[coach] || {};
+          const lastReminderTs = contact.lastReminderDate ? parseDateStringToTimestamp(contact.lastReminderDate) : 0;
+          const daysSinceLastReminder = lastReminderTs > 0 ? getDaysDiffFromToday(lastReminderTs) : null;
+          const reminderCount = contact.reminderCount || 0;
+          const totalPendingUnits = pendingItems.reduce((sum, p) => sum + p.pending, 0);
+          const totalPendingVP = pendingItems.reduce((sum, p) => sum + p.pendingVP, 0);
+
+          let isDueNow = false;
+          if (daysOverdue >= threshold) {
+            if (daysSinceLastReminder === null || daysSinceLastReminder >= threshold) {
+              isDueNow = true;
+            }
+          }
+
+          results.push({
+            name: coach,
+            phone: contact.phone || '',
+            pendingItems: pendingItems,
+            totalUnits: totalPendingUnits,
+            totalVP: totalPendingVP,
+            oldestDate: oldestDateStr,
+            daysOverdue: daysOverdue,
+            reminderCount: reminderCount,
+            lastReminderDate: contact.lastReminderDate || null,
+            daysSinceLastReminder: daysSinceLastReminder,
+            isDueNow: isDueNow
+          });
+        }
+      });
+
+      return results.sort((a, b) => b.daysOverdue - a.daysOverdue);
+    }
+
+    /* MESSAGE FORMATTERS */
+    function formatCustomerDueMessage(item) {
+      const cycleNum = (item.reminderCount || 0) + 1;
+      const upi = whatsappSettings.upiNumber || '9351016789';
+      const addr = whatsappSettings.clubAddress || 'Shop No B-2 Salasar Complex Chouraha Bus Stand, Bagar, Jhunjhunu (Raj.)';
+      
+      return `*BHARAT WELLNESS CLUB* 🌿\n\n` +
+             `Namaste *${item.name}* ji,\n\n` +
+             `This is a polite reminder (Notice #${cycleNum}) regarding your pending balance of *₹${item.pendingAmount}* for health & nutrition products purchased on *${item.oldestDate}* (${item.daysOverdue} days ago).\n\n` +
+             `Kindly clear the outstanding amount via UPI / Cash at your earliest convenience:\n` +
+             `📱 *UPI / Mobile:* ${upi}\n` +
+             `📍 *Address:* ${addr}\n\n` +
+             `Thank you! To Your Good Health 🌿`;
+    }
+
+    function formatCoachDueMessage(item) {
+      const cycleNum = (item.reminderCount || 0) + 1;
+      const addr = whatsappSettings.clubAddress || 'Shop No B-2 Salasar Complex Chouraha Bus Stand, Bagar, Jhunjhunu (Raj.)';
+      
+      const itemsList = item.pendingItems.map(p => `• ${p.name}: *${p.pending} Units* (${p.pendingVP.toFixed(2)} VP)`).join('\n');
+
+      return `*BHARAT WELLNESS CLUB* 🌿\n\n` +
+             `Namaste Coach *${item.name}* ji,\n\n` +
+             `This is a friendly reminder (Notice #${cycleNum}) regarding club stock issued to you on *${item.oldestDate}* (${item.daysOverdue} days ago) pending return / settlement:\n\n` +
+             `📦 *Pending Stock Breakdown:*\n` +
+             `${itemsList}\n\n` +
+             `*Total Pending:* ${item.totalUnits} Units (${item.totalVP.toFixed(2)} VP)\n` +
+             `📍 *Return Location:* ${addr}\n\n` +
+             `Kindly arrange to return or settle the pending stock units.\n` +
+             `Thank you! 🌿`;
+    }
+
+    /* WHATSAPP DISPATCHER (BACKGROUND API & 1-CLICK HYBRID) */
+    async function dispatchWhatsAppMessage(phone, messageText, recipientName, type, reminderCount, isManual = false) {
+      const cleanPhone = (phone || '').replace(/\D/g, '');
+      const fullPhone = cleanPhone.startsWith('91') && cleanPhone.length === 12 ? cleanPhone : ('91' + cleanPhone);
+      const timestamp = new Date().toLocaleString('en-IN');
+      const cycleText = `Notice #${(reminderCount || 0) + 1}`;
+      const gateway = whatsappSettings.gateway || 'direct';
+
+      if (!cleanPhone || cleanPhone.length < 10) {
+        logWhatsAppEvent(timestamp, recipientName, type, 'Failed: Missing Phone', cycleText, gateway, '❌ Failed (No Phone)');
+        if (isManual) {
+          if (type.includes('Customer')) openEditPhoneModalForCustomer(recipientName);
+          else openEditPhoneModalForCoach(recipientName);
+        }
+        return false;
+      }
+
+      let success = false;
+      let statusNote = '';
+
+      try {
+        if (gateway === 'cloud_api' && whatsappSettings.metaPhoneId && whatsappSettings.metaToken) {
+          const res = await fetch(`https://graph.facebook.com/v18.0/${whatsappSettings.metaPhoneId}/messages`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${whatsappSettings.metaToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              messaging_product: 'whatsapp',
+              to: fullPhone,
+              type: 'text',
+              text: { body: messageText }
+            })
+          });
+          const data = await res.json();
+          if (res.ok && !data.error) {
+            success = true;
+            statusNote = '✅ Sent via Meta Cloud API';
+          } else {
+            throw new Error(data.error ? data.error.message : 'Meta API error');
+          }
+        } else if (gateway === 'green_api' && whatsappSettings.greenInstance && whatsappSettings.greenToken) {
+          const res = await fetch(`https://api.green-api.com/waInstance${whatsappSettings.greenInstance}/sendMessage/${whatsappSettings.greenToken}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chatId: `${fullPhone}@c.us`,
+              message: messageText
+            })
+          });
+          if (res.ok) {
+            success = true;
+            statusNote = '✅ Sent via Green-API';
+          } else {
+            throw new Error('Green-API dispatch failed');
+          }
+        } else if (gateway === 'callmebot' && whatsappSettings.callmebotApiKey) {
+          const url = `https://api.callmebot.com/whatsapp.php?phone=+${fullPhone}&text=${encodeURIComponent(messageText)}&apikey=${whatsappSettings.callmebotApiKey}`;
+          await fetch(url, { mode: 'no-cors' });
+          success = true;
+          statusNote = '✅ Dispatched via CallMeBot';
+        } else if (gateway === 'webhook' && whatsappSettings.webhookUrl) {
+          const res = await fetch(whatsappSettings.webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              phone: fullPhone,
+              recipient: recipientName,
+              type: type,
+              message: messageText,
+              timestamp: timestamp
+            })
+          });
+          if (res.ok) {
+            success = true;
+            statusNote = '✅ Sent via Webhook';
+          } else {
+            throw new Error('Webhook error');
+          }
+        } else {
+          const waUrl = `https://wa.me/${fullPhone}?text=${encodeURIComponent(messageText)}`;
+          window.open(waUrl, '_blank');
+          success = true;
+          statusNote = '✅ Opened in WhatsApp Web/App';
+        }
+      } catch (err) {
+        console.warn('Background WhatsApp API dispatch error, falling back to direct URL:', err);
+        const waUrl = `https://wa.me/${fullPhone}?text=${encodeURIComponent(messageText)}`;
+        window.open(waUrl, '_blank');
+        success = true;
+        statusNote = '⚠️ Dispatched (Fallback: ' + err.message.slice(0, 25) + ')';
+      }
+
+      if (success) {
+        const todayStr = new Date().toISOString().split('T')[0];
+        if (type.includes('Customer')) {
+          if (!customerContacts[recipientName]) customerContacts[recipientName] = {};
+          customerContacts[recipientName].lastReminderDate = todayStr;
+          customerContacts[recipientName].reminderCount = (customerContacts[recipientName].reminderCount || 0) + 1;
+          localStorage.setItem('bwc_customer_contacts', JSON.stringify(customerContacts));
+        } else {
+          if (!coachContacts[recipientName]) coachContacts[recipientName] = {};
+          coachContacts[recipientName].lastReminderDate = todayStr;
+          coachContacts[recipientName].reminderCount = (coachContacts[recipientName].reminderCount || 0) + 1;
+          localStorage.setItem('bwc_coach_contacts', JSON.stringify(coachContacts));
+        }
+
+        logWhatsAppEvent(timestamp, recipientName, type, messageText.slice(0, 45) + '...', cycleText, gateway, statusNote);
+        pushDataToCloud();
+        renderWhatsAppHub();
+        return true;
+      }
+      return false;
+    }
+
+    function logWhatsAppEvent(timestamp, recipient, type, details, cycle, gateway, status) {
+      whatsappLogs.unshift({
+        timestamp: timestamp,
+        recipient: recipient,
+        type: type,
+        details: details,
+        cycle: cycle,
+        gateway: gateway,
+        status: status
+      });
+      if (whatsappLogs.length > 100) whatsappLogs.pop();
+      localStorage.setItem('bwc_whatsapp_logs', JSON.stringify(whatsappLogs));
+    }
+
+    function clearWhatsAppLogs() {
+      if (confirm('Are you sure you want to clear WhatsApp dispatch logs?')) {
+        whatsappLogs = [];
+        localStorage.setItem('bwc_whatsapp_logs', JSON.stringify(whatsappLogs));
+        pushDataToCloud();
+        renderWhatsAppHub();
+      }
+    }
+
+    /* WHATSAPP HUB RENDERING & TAB SWITCHING */
+    let currentWaTab = 'customers';
+
+    function switchWhatsAppTab(tab) {
+      currentWaTab = tab;
+      document.getElementById('waTabCustomers').style.display = (tab === 'customers') ? 'block' : 'none';
+      document.getElementById('waTabCoaches').style.display = (tab === 'coaches') ? 'block' : 'none';
+      document.getElementById('waTabLogs').style.display = (tab === 'logs') ? 'block' : 'none';
+
+      document.getElementById('pillCustOverdue').classList.toggle('active', tab === 'customers');
+      document.getElementById('pillCoachOverdue').classList.toggle('active', tab === 'coaches');
+      document.getElementById('pillLogsOverdue').classList.toggle('active', tab === 'logs');
+    }
+
+    function renderWhatsAppHub() {
+      const interval = whatsappSettings.intervalDays || 7;
+      const overdueCustomers = getOverdueCustomerData(interval);
+      const overdueCoaches = getOverdueCoachData(interval);
+
+      const custCounterEl = document.getElementById('custOverdueCounter');
+      const coachCounterEl = document.getElementById('coachOverdueCounter');
+      if (custCounterEl) custCounterEl.innerText = overdueCustomers.length;
+      if (coachCounterEl) coachCounterEl.innerText = overdueCoaches.length;
+
+      const statusBadge = document.getElementById('waAutoStatusBadge');
+      if (statusBadge) {
+        if (whatsappSettings.enabled !== false) {
+          statusBadge.className = 'badge-reminder-sent';
+          statusBadge.innerText = `🟢 Auto-Reminders Active (Every ${interval} Days)`;
+        } else {
+          statusBadge.className = 'badge-reminder';
+          statusBadge.innerText = `⏸️ Auto-Reminders Paused`;
+        }
+      }
+
+      // 1. Render Overdue Customers Table
+      const custTbody = document.querySelector('#dashCustOverdueTable tbody');
+      if (custTbody) {
+        if (overdueCustomers.length === 0) {
+          custTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #16A34A; padding: 18px; font-weight: bold;">🎉 Excellent! No customer payments are overdue by ${interval}+ days.</td></tr>`;
+        } else {
+          custTbody.innerHTML = overdueCustomers.map(item => `
+            <tr>
+              <td><strong>${item.name}</strong></td>
+              <td>
+                <span style="font-weight: 600; color: ${item.phone ? '#1E293B' : '#EF4444'};">
+                  ${item.phone ? `+91 ${item.phone}` : '⚠️ No Mobile'}
+                </span>
+                <button class="btn-outline" style="padding: 1px 6px; font-size: 11px; margin-left: 4px;" onclick="openEditPhoneModalForCustomer('${item.name}')">✏️</button>
+              </td>
+              <td><strong style="color: #DC2626; font-size: 14px;">₹${item.pendingAmount}</strong></td>
+              <td>${item.oldestDate}</td>
+              <td><span class="badge-reminder">⚠️ ${item.daysOverdue} Days Ago</span></td>
+              <td>
+                ${item.isDueNow 
+                  ? `<span class="badge" style="background:#FEE2E2; color:#991B1B; font-weight:bold;">🔔 Notice #${item.reminderCount + 1} Due</span>` 
+                  : `<span class="badge" style="background:#DCFCE7; color:#166534;">✅ Sent (${item.daysSinceLastReminder}d ago)</span>`}
+              </td>
+              <td>
+                <button class="btn-whatsapp" onclick="triggerCustomerWhatsAppReminder('${item.name}')">💬 Send WhatsApp</button>
+              </td>
+            </tr>
+          `).join('');
+        }
+      }
+
+      // 2. Render Overdue Coaches Table
+      const coachTbody = document.querySelector('#dashCoachOverdueTable tbody');
+      if (coachTbody) {
+        if (overdueCoaches.length === 0) {
+          coachTbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #16A34A; padding: 18px; font-weight: bold;">🎉 All clear! No coach stock returns are overdue by ${interval}+ days.</td></tr>`;
+        } else {
+          coachTbody.innerHTML = overdueCoaches.map(item => `
+            <tr>
+              <td><strong>${item.name}</strong></td>
+              <td>
+                <span style="font-weight: 600; color: ${item.phone ? '#1E293B' : '#EF4444'};">
+                  ${item.phone ? `+91 ${item.phone}` : '⚠️ No Mobile'}
+                </span>
+                <button class="btn-outline" style="padding: 1px 6px; font-size: 11px; margin-left: 4px;" onclick="openEditPhoneModalForCoach('${item.name}')">✏️</button>
+              </td>
+              <td><strong>${item.totalUnits} units</strong> (${item.pendingItems.map(p => p.name + ': ' + p.pending).join(', ')})</td>
+              <td><strong style="color: #10B981;">${item.totalVP.toFixed(2)} VP</strong></td>
+              <td>${item.oldestDate}</td>
+              <td><span class="badge-reminder">⚠️ ${item.daysOverdue} Days Ago</span></td>
+              <td>
+                ${item.isDueNow 
+                  ? `<span class="badge" style="background:#FEE2E2; color:#991B1B; font-weight:bold;">🔔 Notice #${item.reminderCount + 1} Due</span>` 
+                  : `<span class="badge" style="background:#DCFCE7; color:#166534;">✅ Sent (${item.daysSinceLastReminder}d ago)</span>`}
+              </td>
+              <td>
+                <button class="btn-whatsapp" onclick="triggerCoachWhatsAppReminder('${item.name}')">💬 Send WhatsApp</button>
+              </td>
+            </tr>
+          `).join('');
+        }
+      }
+
+      // 3. Render WhatsApp Logs Table
+      const logsTbody = document.querySelector('#dashWhatsAppLogsTable tbody');
+      if (logsTbody) {
+        if (whatsappLogs.length === 0) {
+          logsTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #94A3B8; padding: 15px;">No WhatsApp reminder dispatches logged yet.</td></tr>`;
+        } else {
+          logsTbody.innerHTML = whatsappLogs.map(log => `
+            <tr>
+              <td style="font-size: 12px;">${log.timestamp}</td>
+              <td><strong>${log.recipient}</strong></td>
+              <td><span class="badge badge-quote" style="font-size: 11px;">${log.type}</span></td>
+              <td style="font-size: 11.5px; color: #475569;">${log.details}</td>
+              <td><span class="badge-reminder-sent" style="font-size: 11px;">${log.cycle || 'Notice #1'}</span></td>
+              <td><span class="badge badge-cash" style="font-size: 11px;">${log.gateway || 'direct'}</span></td>
+              <td><strong style="color: ${log.status.includes('❌') ? '#DC2626' : '#15803D'}; font-size: 12px;">${log.status}</strong></td>
+            </tr>
+          `).join('');
+        }
+      }
+    }
+
+    /* MANUAL TRIGGERS FROM LEDGERS & HUB */
+    async function triggerCustomerWhatsAppReminder(custName) {
+      const bal = getCustomerBalanceData(custName);
+      if (bal.netPending <= 0) return alert(`Customer "${custName}" has ₹0 balance (Account is clear).`);
+
+      const overdueList = getOverdueCustomerData(0);
+      let item = overdueList.find(x => x.name.toLowerCase() === custName.toLowerCase());
+      if (!item) {
+        item = {
+          name: custName,
+          phone: customerContacts[custName]?.phone || '',
+          pendingAmount: bal.netPending,
+          oldestDate: bal.custSales[0]?.date || new Date().toLocaleDateString('en-IN'),
+          daysOverdue: 0,
+          reminderCount: customerContacts[custName]?.reminderCount || 0
+        };
+      }
+
+      if (!item.phone) {
+        openEditPhoneModalForCustomer(custName);
+        return;
+      }
+
+      const msg = formatCustomerDueMessage(item);
+      await dispatchWhatsAppMessage(item.phone, msg, item.name, 'Customer Payment Due', item.reminderCount, true);
+    }
+
+    async function triggerCoachWhatsAppReminder(coachName) {
+      const pendingItems = getCoachPendingProductSummary(coachName);
+      if (pendingItems.length === 0) return alert(`Coach "${coachName}" has no pending stock items (Account is clear).`);
+
+      const overdueList = getOverdueCoachData(0);
+      let item = overdueList.find(x => x.name.toLowerCase() === coachName.toLowerCase());
+      if (!item) {
+        const totalUnits = pendingItems.reduce((sum, p) => sum + p.pending, 0);
+        const totalVP = pendingItems.reduce((sum, p) => sum + p.pendingVP, 0);
+        item = {
+          name: coachName,
+          phone: coachContacts[coachName]?.phone || '',
+          pendingItems: pendingItems,
+          totalUnits: totalUnits,
+          totalVP: totalVP,
+          oldestDate: new Date().toLocaleDateString('en-IN'),
+          daysOverdue: 0,
+          reminderCount: coachContacts[coachName]?.reminderCount || 0
+        };
+      }
+
+      if (!item.phone) {
+        openEditPhoneModalForCoach(coachName);
+        return;
+      }
+
+      const msg = formatCoachDueMessage(item);
+      await dispatchWhatsAppMessage(item.phone, msg, item.name, 'Coach Stock Due', item.reminderCount, true);
+    }
+
+    function triggerManualCustomerReminder() {
+      if (currentSelectedCust) triggerCustomerWhatsAppReminder(currentSelectedCust);
+    }
+
+    function triggerManualCoachReminder() {
+      if (currentSelectedCoach) triggerCoachWhatsAppReminder(currentSelectedCoach);
+    }
+
+    /* AUTOMATED BACKGROUND RUNNER (RECURRING CYCLE) */
+    async function runAutoWhatsAppReminderCycle() {
+      if (whatsappSettings.enabled === false) return 0;
+      const interval = whatsappSettings.intervalDays || 7;
+
+      const overdueCustomers = getOverdueCustomerData(interval).filter(x => x.isDueNow && x.phone);
+      const overdueCoaches = getOverdueCoachData(interval).filter(x => x.isDueNow && x.phone);
+
+      let dispatchedCount = 0;
+
+      // Dispatch Overdue Customers
+      for (const item of overdueCustomers) {
+        const msg = formatCustomerDueMessage(item);
+        const ok = await dispatchWhatsAppMessage(item.phone, msg, item.name, 'Customer Payment Due', item.reminderCount, false);
+        if (ok) dispatchedCount++;
+      }
+
+      // Dispatch Overdue Coaches
+      for (const item of overdueCoaches) {
+        const msg = formatCoachDueMessage(item);
+        const ok = await dispatchWhatsAppMessage(item.phone, msg, item.name, 'Coach Stock Due', item.reminderCount, false);
+        if (ok) dispatchedCount++;
+      }
+
+      renderWhatsAppHub();
+      return dispatchedCount;
+    }
+
+    async function manualTriggerAutoReminders() {
+      const interval = whatsappSettings.intervalDays || 7;
+      const dueCusts = getOverdueCustomerData(interval).filter(x => x.isDueNow);
+      const dueCoaches = getOverdueCoachData(interval).filter(x => x.isDueNow);
+      const totalDue = dueCusts.length + dueCoaches.length;
+
+      if (totalDue === 0) {
+        return alert(`All caught up! There are no customer dues or coach stock returns pending for ${interval}+ days notice.`);
+      }
+
+      const count = await runAutoWhatsAppReminderCycle();
+      alert(`Auto-Reminder cycle completed! Total ${count} automated WhatsApp reminder(s) dispatched.`);
+    }
+
+    async function testWhatsAppGatewayConnection() {
+      const g = document.getElementById('waGatewaySelect').value;
+      const testPhone = prompt('Enter a 10-digit mobile number to send a test WhatsApp message:', whatsappSettings.upiNumber || '9351016789');
+      if (!testPhone) return;
+
+      const clean = testPhone.trim().replace(/\D/g, '');
+      if (clean.length < 10) return alert('Invalid phone number.');
+
+      const testMsg = `*BHARAT WELLNESS CLUB* 🌿\n\n` +
+                      `✅ WhatsApp Auto-Reminder Gateway test successful!\n` +
+                      `Gateway: *${g.toUpperCase()}*\n` +
+                      `Time: ${new Date().toLocaleString('en-IN')}\n\n` +
+                      `Your 7-day recurring automated reminders are configured properly! 🚀`;
+
+      await dispatchWhatsAppMessage(clean, testMsg, 'Test User', 'Gateway Verification Test', 0, true);
+    }
+
     function renderTables() {
       renderStockTable();
       renderLinearTable();
@@ -4501,6 +5597,16 @@ function recalculateQuoteAutoDiscount() {
     renderDatalists();
     renderTables();
     renderDashboard();
+
+    // Run automated WhatsApp reminders check after initial page load (3 seconds)
+    setTimeout(() => {
+      runAutoWhatsAppReminderCycle();
+    }, 3000);
+
+    // Continuous background recurring check every 30 minutes
+    setInterval(() => {
+      runAutoWhatsAppReminderCycle();
+    }, 30 * 60 * 1000);
 
     if ('serviceWorker' in navigator) {
       const swCode = `
