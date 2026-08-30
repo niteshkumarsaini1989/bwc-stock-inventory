@@ -896,7 +896,7 @@
         </div>
 
         <div class="card">
-          <div class="form-row row-1-cust" style="grid-template-columns: 2fr 1.2fr 1.2fr 1fr 1.2fr;">
+          <div class="form-row row-1-cust" style="grid-template-columns: 1.8fr 1.1fr 1.1fr 1.1fr 0.9fr 1.1fr;">
             <div class="form-group">
               <label>1. Customer Name</label>
               <input list="customerList" id="custName" placeholder="Type customer name..." autocomplete="off" onkeydown="handleCustomerCoachTab(event, 'custName', 'customerList')" oninput="onBillingCustomerChange()" autofocus>
@@ -905,6 +905,10 @@
             <div class="form-group">
               <label>WhatsApp Mobile</label>
               <input type="tel" id="custPhone" maxlength="10" placeholder="10-digit mobile...">
+            </div>
+            <div class="form-group">
+              <label>Invoice Date</label>
+              <input type="date" id="billDate">
             </div>
             <div class="form-group">
               <label>2. Discount Slab</label>
@@ -1008,10 +1012,14 @@
           </div>
           <hr style="margin: 0 0 15px 0; border: 0; border-top: 1px solid #FFE0B2;">
 
-          <div class="form-row row-1-cust">
+          <div class="form-row row-1-cust" style="grid-template-columns: 1.8fr 1.1fr 1.1fr 0.9fr 1.1fr;">
             <div class="form-group">
               <label>Customer Name</label>
               <input list="customerList" id="quoteCustName" placeholder="Type customer name..." autocomplete="off" onkeydown="handleCustomerCoachTab(event, 'quoteCustName', 'customerList')">
+            </div>
+            <div class="form-group">
+              <label>Quotation Date</label>
+              <input type="date" id="quoteDate">
             </div>
             <div class="form-group">
               <label>Discount Slab</label>
@@ -1279,14 +1287,18 @@
       <div id="coach-ledger" class="tab-content">
         <div class="card">
           <div style="margin-bottom: 15px; border-bottom: 1px solid #FFE0B2; padding-bottom: 12px; display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
-            <div style="flex: 1.5; min-width: 200px;">
+            <div style="flex: 1.5; min-width: 180px;">
               <label style="font-size: 13px; font-weight: bold; color: var(--primary-dark);">Coach Name</label>
               <input list="coachNamesList" id="coachName" placeholder="Type coach name..." autocomplete="off" onkeydown="handleCustomerCoachTab(event, 'coachName', 'coachNamesList')" oninput="onCoachTransactionNameChange()">
               <datalist id="coachNamesList"></datalist>
             </div>
-            <div style="flex: 1; min-width: 150px;">
+            <div style="flex: 1; min-width: 130px;">
               <label style="font-size: 13px; font-weight: bold; color: var(--primary-dark);">WhatsApp Mobile</label>
               <input type="tel" id="coachPhone" maxlength="10" placeholder="10-digit mobile...">
+            </div>
+            <div style="flex: 1; min-width: 130px;">
+              <label style="font-size: 13px; font-weight: bold; color: var(--primary-dark);">Transaction Date</label>
+              <input type="date" id="coachDate">
             </div>
             <div style="width: 220px;">
               <label style="font-size: 13px; font-weight: bold; color: var(--primary-dark);">Action Type</label>
@@ -1995,6 +2007,50 @@
     let dbRef = null;
     let isFirebaseActive = false;
     let isInternalUpdate = false;
+
+    // --- 📅 DATE CONVERSION & INITIALIZATION HELPERS ---
+    function formatInputDateToDisplay(dateVal) {
+      if (!dateVal) return new Date().toLocaleDateString('en-IN');
+      const clean = String(dateVal).trim();
+      if (clean.includes('-')) {
+        const parts = clean.split('T')[0].split('-');
+        if (parts.length === 3) {
+          const d = parseInt(parts[2], 10);
+          const m = parseInt(parts[1], 10);
+          const y = parts[0];
+          return `${d}/${m}/${y}`;
+        }
+      }
+      return clean;
+    }
+
+    function formatDisplayDateToInput(displayStr) {
+      if (!displayStr) return new Date().toISOString().split('T')[0];
+      const clean = String(displayStr).trim();
+      if (clean.includes('-') && clean.split('-')[0].length === 4) {
+        return clean.split('T')[0];
+      }
+      if (clean.includes('/')) {
+        const parts = clean.split('/');
+        if (parts.length === 3) {
+          const d = parts[0].padStart(2, '0');
+          const m = parts[1].padStart(2, '0');
+          const y = parts[2];
+          return `${y}-${m}-${d}`;
+        }
+      }
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function initializeAllDateInputs() {
+      const todayISO = new Date().toISOString().split('T')[0];
+      const ids = ['billDate', 'quoteDate', 'payDate', 'coachDate', 'purchDate'];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && !el.value) el.value = todayISO;
+      });
+    }
+
     // --- ⚡ AUTO DISCOUNT VP LOGIC ---
 function getAutoTier(vp) {
   if (vp >= 1000) return '42';
@@ -2613,6 +2669,7 @@ function recalculateQuoteAutoDiscount() {
       renderDatalists();
       renderTables();
       renderDashboard();
+      initializeAllDateInputs();
       if(tabId === 'cust-ledger') renderCustomerLedgerList();
       if(tabId === 'coach-ledger') renderCoachLedgerList();
       if(tabId === 'payment-receipt') renderPaymentReceiptsTable();
@@ -3093,8 +3150,11 @@ function recalculateQuoteAutoDiscount() {
       }
 
       const isEditing = (editingSaleIndex !== null);
+      const billDateInput = document.getElementById('billDate')?.value;
+      const finalBillDate = billDateInput ? formatInputDateToDisplay(billDateInput) : new Date().toLocaleDateString('en-IN');
+
       const saleRecord = {
-        date: new Date().toLocaleDateString('en-IN'),
+        date: finalBillDate,
         customer: cust,
         items: JSON.parse(JSON.stringify(customerCart)),
         product: customerCart.map(i => `${i.name} (x${i.qty})`).join(', '),
@@ -3153,6 +3213,8 @@ function recalculateQuoteAutoDiscount() {
       customerCart = [];
       renderCustomerCart();
       document.getElementById('custName').value = '';
+      if (document.getElementById('custPhone')) document.getElementById('custPhone').value = '';
+      if (document.getElementById('billDate')) document.getElementById('billDate').value = new Date().toISOString().split('T')[0];
       document.getElementById('custName').focus();
 
       renderDatalists();
@@ -3315,6 +3377,12 @@ function recalculateQuoteAutoDiscount() {
       if (document.getElementById('btnFinalSaveOnly')) document.getElementById('btnFinalSaveOnly').innerText = '💾 Update Invoice';
 
       document.getElementById('custName').value = sale.customer;
+      if (document.getElementById('custPhone')) {
+        document.getElementById('custPhone').value = customerContacts[sale.customer]?.phone || '';
+      }
+      if (document.getElementById('billDate')) {
+        document.getElementById('billDate').value = formatDisplayDateToInput(sale.date);
+      }
       document.getElementById('billPayType').value = (sale.paymentType === 'Credit' ? 'Udhaar' : sale.paymentType) || (sale.status === 'Pending' ? 'Udhaar' : 'Cash');
       
       customerCart = JSON.parse(JSON.stringify(sale.items || []));
@@ -3341,6 +3409,8 @@ function recalculateQuoteAutoDiscount() {
       if (document.getElementById('btnFinalSaveBill')) document.getElementById('btnFinalSaveBill').innerText = '🖨️ Print & Save';
       if (document.getElementById('btnFinalSaveOnly')) document.getElementById('btnFinalSaveOnly').innerText = '💾 Save Invoice';
       document.getElementById('custName').value = '';
+      if (document.getElementById('custPhone')) document.getElementById('custPhone').value = '';
+      if (document.getElementById('billDate')) document.getElementById('billDate').value = new Date().toISOString().split('T')[0];
     }
 
     function deleteCustomerSale(index) {
@@ -3694,9 +3764,12 @@ function recalculateQuoteAutoDiscount() {
         discountDisplay = `${quoteTier}% Slab`;
       }
 
+      const quoteDateInput = document.getElementById('quoteDate')?.value;
+      const finalQuoteDate = quoteDateInput ? formatInputDateToDisplay(quoteDateInput) : new Date().toLocaleDateString('en-IN');
+
       const quoteRecord = {
         id: 'QUOT-' + Date.now().toString().slice(-6),
-        date: new Date().toLocaleDateString('en-IN'),
+        date: finalQuoteDate,
         customer: cust,
         validity: validity,
         items: JSON.parse(JSON.stringify(quoteCart)),
@@ -3747,6 +3820,7 @@ function recalculateQuoteAutoDiscount() {
       quoteCart = [];
       renderQuoteCart();
       document.getElementById('quoteCustName').value = '';
+      if (document.getElementById('quoteDate')) document.getElementById('quoteDate').value = new Date().toISOString().split('T')[0];
       document.getElementById('quoteCustName').focus();
 
       renderDatalists();
@@ -3922,6 +3996,9 @@ function recalculateQuoteAutoDiscount() {
         localStorage.setItem('bwc_coach_contacts', JSON.stringify(coachContacts));
       }
 
+      const coachDateInput = document.getElementById('coachDate')?.value;
+      const finalCoachDate = coachDateInput ? formatInputDateToDisplay(coachDateInput) : new Date().toLocaleDateString('en-IN');
+
       coachCart.forEach(cartItem => {
         const stockItem = inventory.find(p => p.sku === cartItem.sku);
         if (stockItem) {
@@ -3930,7 +4007,7 @@ function recalculateQuoteAutoDiscount() {
         }
 
         coachLogs.unshift({
-          date: new Date().toLocaleDateString('en-IN'),
+          date: finalCoachDate,
           coach: coach,
           product: cartItem.name,
           qty: cartItem.qty,
@@ -3949,6 +4026,8 @@ function recalculateQuoteAutoDiscount() {
       coachCart = [];
       renderCoachCart();
       document.getElementById('coachName').value = '';
+      if (document.getElementById('coachPhone')) document.getElementById('coachPhone').value = '';
+      if (document.getElementById('coachDate')) document.getElementById('coachDate').value = new Date().toISOString().split('T')[0];
       document.getElementById('coachName').focus();
 
       renderDatalists();
@@ -5597,6 +5676,7 @@ function recalculateQuoteAutoDiscount() {
     renderDatalists();
     renderTables();
     renderDashboard();
+    initializeAllDateInputs();
 
     // Run automated WhatsApp reminders check after initial page load (3 seconds)
     setTimeout(() => {

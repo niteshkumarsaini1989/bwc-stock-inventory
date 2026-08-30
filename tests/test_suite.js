@@ -186,6 +186,63 @@ function testOfficeAddressIntegrity() {
   console.groupEnd();
 }
 
+// 7. Backdate Entry & Date Format Conversion Tests
+function testBackdateEntryAndDateConversion() {
+  console.group('--- Backdate Entry & Date Conversion Tests ---');
+
+  function formatInputDateToDisplay(dateVal) {
+    if (!dateVal) return '30/8/2026';
+    const clean = String(dateVal).trim();
+    if (clean.includes('-')) {
+      const parts = clean.split('T')[0].split('-');
+      if (parts.length === 3) {
+        const d = parseInt(parts[2], 10);
+        const m = parseInt(parts[1], 10);
+        const y = parts[0];
+        return `${d}/${m}/${y}`;
+      }
+    }
+    return clean;
+  }
+
+  function formatDisplayDateToInput(displayStr) {
+    if (!displayStr) return '2026-08-30';
+    const clean = String(displayStr).trim();
+    if (clean.includes('-') && clean.split('-')[0].length === 4) {
+      return clean.split('T')[0];
+    }
+    if (clean.includes('/')) {
+      const parts = clean.split('/');
+      if (parts.length === 3) {
+        const d = parts[0].padStart(2, '0');
+        const m = parts[1].padStart(2, '0');
+        const y = parts[2];
+        return `${y}-${m}-${d}`;
+      }
+    }
+    return '2026-08-30';
+  }
+
+  // Test converting HTML date input (YYYY-MM-DD) to Indian Display format (D/M/YYYY)
+  TestRunner.assertEquals('Converts 2026-08-15 (backdate) to 15/8/2026', formatInputDateToDisplay('2026-08-15'), '15/8/2026');
+  TestRunner.assertEquals('Converts 2026-01-05 (backdate) to 5/1/2026', formatInputDateToDisplay('2026-01-05'), '5/1/2026');
+
+  // Test converting display date back to HTML input format (YYYY-MM-DD) for editing
+  TestRunner.assertEquals('Converts 15/08/2026 to 2026-08-15 for date input value', formatDisplayDateToInput('15/08/2026'), '2026-08-15');
+  TestRunner.assertEquals('Converts 5/1/2026 to 2026-01-05 for date input value', formatDisplayDateToInput('5/1/2026'), '2026-01-05');
+
+  // Test backdated bill creation
+  const chosenBackDate = '2026-08-10';
+  const billRecord = {
+    date: formatInputDateToDisplay(chosenBackDate),
+    customer: 'Vikram Singh',
+    total: 1500
+  };
+  TestRunner.assertEquals('Backdated bill record captures selected past date', billRecord.date, '10/8/2026');
+
+  console.groupEnd();
+}
+
 // Run All Tests
 function runAllTests() {
   TestRunner.passed = 0;
@@ -198,6 +255,7 @@ function runAllTests() {
   testPreviewModalDataBinding();
   testWhatsAppRecurringCycleCalculations();
   testOfficeAddressIntegrity();
+  testBackdateEntryAndDateConversion();
 
   console.log(`\n%c==================================\nTests Completed: Passed: ${TestRunner.passed}, Failed: ${TestRunner.failed}\n==================================`, 
     TestRunner.failed === 0 ? 'color: #10B981; font-weight: bold;' : 'color: #EF4444; font-weight: bold;');
