@@ -1,11 +1,11 @@
 # Bharat Wellness Club - Test Suite
 
-Yeh folder system ke automated tests aur unit testing ke liye banaya gaya hai.
+This directory contains automated unit tests and test runner utilities for the Bharat Wellness Club Management application.
 
 ## Files:
-1. **`test_runner.html`**: Visual browser test runner. Isko browser me open karke tests run kar sakte hain.
-2. **`test_suite.js`**: Core billing calculations, discount slabs, VP, customer savings aur preview modal data-binding ke unit tests.
+1. **`test_runner.html`**: Visual in-browser test runner to execute and review all test cases with a graphical interface.
+2. **`test_suite.js`**: Core test suite covering retail price calculations, volume point (VP) totals, discount tier rules, customer savings, and receipt/invoice modal data bindings.
 
-## Kaise Run Karein:
-- **Browser me**: `tests/test_runner.html` ko browser me double-click karke ya Live Server (`http://127.0.0.1:5500/tests/test_runner.html`) par open karein.
-- Saare tests automatically execute hokar result (Passed/Failed) display karenge.
+## How to Run:
+- **In Browser**: Open `tests/test_runner.html` directly in your browser or through a local development server (e.g., `http://127.0.0.1:5500/tests/test_runner.html`).
+- All unit test assertions will run automatically upon loading and output summary metrics with detailed pass/fail badges.

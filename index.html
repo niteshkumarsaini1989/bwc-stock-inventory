@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -330,7 +330,7 @@
   <div id="syncModal" class="modal-overlay">
     <div class="modal-card">
       <h3 style="color: var(--primary-dark); margin-bottom: 8px;">☁️ Multi-Device Live Sync Setup</h3>
-      <p style="font-size: 12px; color: #64748B; margin-bottom: 15px;">Mobile aur Laptop ko aapas me connect karne ke liye Firebase Realtime Database URL dalein:</p>
+      <p style="font-size: 12px; color: #64748B; margin-bottom: 15px;">Enter your Firebase Realtime Database URL to enable live synchronization across mobile and desktop devices:</p>
       
       <div style="margin-bottom: 15px;">
         <label style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">Firebase Database URL:</label>
@@ -338,7 +338,7 @@
       </div>
 
       <div style="margin-bottom: 15px;">
-        <label style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">Sync Channel / Shop Passcode (Any Secret Word):</label>
+        <label style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">Sync Channel / Shop Passcode (Any Secret Key):</label>
         <input type="text" id="firebaseChannelInput" placeholder="e.g. bwc_bagar_office" style="width: 100%;">
       </div>
 
@@ -353,13 +353,13 @@
   <div id="advSettingsModal" class="modal-overlay">
     <div class="modal-card" style="border-top: 5px solid #DC2626;">
       <h3 style="color: #991B1B; margin-bottom: 8px;">⚙️ Advanced System Settings (Master Reset)</h3>
-      <p style="font-size: 12px; color: #64748B; margin-bottom: 18px;">Is action se complete software ka sara billing, payment aur live inventory stock permanently zero ho jayega.</p>
+      <p style="font-size: 12px; color: #64748B; margin-bottom: 18px;">This action will permanently wipe all billing records, customer ledgers, and reset live inventory stock to zero (0).</p>
       
       <div style="background: #FEF2F2; border: 1px solid #FCA5A5; padding: 14px; border-radius: 6px; margin-bottom: 18px;">
         <h4 style="color: #991B1B; font-size: 13px; margin-bottom: 4px;">⚠️ Danger Zone: Complete Factory Reset</h4>
-        <p style="font-size: 11px; color: #7F1D1D; margin-bottom: 10px;">Yeh action sabhi customer ledgers, sales bills, payment receipts, quotations, purchase invoices aur **Stock Units (0 Units)** ko reset kar dega.</p>
+        <p style="font-size: 11px; color: #7F1D1D; margin-bottom: 10px;">This action resets all customer ledgers, sales invoices, payment receipts, quotations, purchase records, and sets **Stock Units to 0**.</p>
         
-        <label style="font-size: 11px; font-weight: bold; color: #7F1D1D; display: block; margin-bottom: 4px;">Confirm karne ke liye neeche capital me <strong>RESET</strong> type karein:</label>
+        <label style="font-size: 11px; font-weight: bold; color: #7F1D1D; display: block; margin-bottom: 4px;">To confirm, please type <strong>RESET</strong> in capital letters below:</label>
         <input type="text" id="resetPasscodeInput" placeholder="Type RESET to confirm..." style="border-color: #F87171; height: 34px; font-size: 12px;">
       </div>
 
@@ -549,10 +549,10 @@
             <p id="dashTotalSales">₹0</p>
             <span style="font-size: 11px; color: #64748B; margin-top: 4px;">Paid: <strong id="dashPaidSales" style="color: var(--accent-green);">₹0</strong></span>
           </div>
-          <div class="tile udhaar" onclick="goToUdhaarLedgers()" title="Click to view pending Udhaar">
-            <h4>Total Udhaar ↗</h4>
+          <div class="tile udhaar" onclick="goToUdhaarLedgers()" title="Click to view pending customer balance">
+            <h4>Total Outstanding ↗</h4>
             <p id="dashTotalUdhaar" style="color: #EF4444;">₹0</p>
-            <span style="font-size: 11px; color: #64748B; margin-top: 4px;">Recovery Due</span>
+            <span style="font-size: 11px; color: #64748B; margin-top: 4px;">Pending Due</span>
           </div>
           <div class="tile vp" onclick="goToStockMaster()" title="Click to view stock Volume Points">
             <h4>Total Stock VP ↗</h4>
@@ -599,7 +599,7 @@
       <div id="billing" class="tab-content">
         <div id="editingBanner" class="edit-banner">
           <div>
-            <strong>✏️ Editing Existing Bill:</strong> Purana stock revert hokar naya save ho jayega.
+            <strong>✏️ Editing Existing Invoice:</strong> Previous stock quantities are temporarily restored; changes will update upon saving.
           </div>
           <button class="btn-outline" onclick="cancelBillEditing()" style="background: white; border-color: #93C5FD; color: #1E40AF;">Cancel</button>
         </div>
@@ -632,7 +632,7 @@
               <label>4. Payment Mode</label>
               <select id="billPayType">
                 <option value="Cash">Cash / UPI Paid</option>
-                <option value="Udhaar">Udhaar (Credit)</option>
+                <option value="Udhaar">Credit (Outstanding)</option>
               </select>
             </div>
           </div>
@@ -707,7 +707,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
             <div>
               <h3 style="color: var(--primary-dark); font-size: 16px;">📑 Proforma / Quotation Generator</h3>
-              <p style="font-size: 12px; color: #64748B;">Stock na hone par bhi price estimate de sakte hain.</p>
+              <p style="font-size: 12px; color: #64748B;">Generate formal price estimates and quotations without deducting live stock inventory.</p>
             </div>
             <span class="badge badge-quote">Stock Free</span>
           </div>
@@ -832,7 +832,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
             <div>
               <h3 style="color: var(--primary-dark); font-size: 16px;">💳 Customer Payment Receipt Entry</h3>
-              <p style="font-size: 12px; color: #64748B;">Customer se prapt payment ki entry karein.</p>
+              <p style="font-size: 12px; color: #64748B;">Record customer payments and clear outstanding ledger balances.</p>
             </div>
             <span class="badge badge-cash">Ledger Linked</span>
           </div>
@@ -910,7 +910,7 @@
             <div class="ledger-list-header">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span>All Customers</span>
-                <span id="custFilterStatusText" style="font-size: 11px; color: #EF4444; font-weight: bold; display: none;">[Udhaar Only]</span>
+                <span id="custFilterStatusText" style="font-size: 11px; color: #EF4444; font-weight: bold; display: none;">[Pending Balance Only]</span>
               </div>
               <input type="text" id="custSearchInput" placeholder="🔍 Search Customer..." oninput="filterCustomerList()" style="height: 32px; font-size: 13px;">
             </div>
@@ -928,7 +928,7 @@
               <div class="stat-row">
                 <div class="stat-box"><h4>Total Purchase</h4><p id="custStatTotal">₹0</p></div>
                 <div class="stat-box" style="border-left: 4px solid #10B981;"><h4>Total VP</h4><p id="custStatVP" style="color: #10B981;">0.00</p></div>
-                <div class="stat-box" style="border-left: 4px solid #C62828;"><h4>Total Udhaar</h4><p id="custStatPending" style="color: #C62828;">₹0</p></div>
+                <div class="stat-box" style="border-left: 4px solid #C62828;"><h4>Total Outstanding</h4><p id="custStatPending" style="color: #C62828;">₹0</p></div>
                 <div class="stat-box" style="border-left: 4px solid var(--accent-green);"><h4>Total Paid</h4><p id="custStatPaid" style="color: var(--accent-green);">₹0</p></div>
               </div>
 
@@ -1081,7 +1081,7 @@
               <div id="coachPendingViewArea" style="display: none;">
                 <div style="background: #FFF7ED; border: 1px solid #FFEDD5; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
                   <h4 style="color: #C2410C; margin-bottom: 2px;">⚠️ Pending Stock to be Recovered</h4>
-                  <p style="font-size: 12px; color: #9A3412;">Is coach se aana baki stock.</p>
+                  <p style="font-size: 12px; color: #9A3412;">Stock units pending return from this coach.</p>
                 </div>
                 <div style="overflow-x: auto;">
                   <table id="coachPendingTable">
@@ -1392,7 +1392,7 @@
       <div id="users-manage" class="tab-content admin-only">
         <div class="card">
           <h3 style="color: var(--primary-dark); margin-bottom: 8px; font-size: 16px;">👥 Staff & User Account Management</h3>
-          <p style="font-size: 12px; color: #64748B; margin-bottom: 15px;">Office staff ke user ID aur password manage karein.</p>
+          <p style="font-size: 12px; color: #64748B; margin-bottom: 15px;">Manage office staff accounts, roles, and login credentials.</p>
           <hr style="margin: 0 0 15px 0; border: 0; border-top: 1px solid #FFE0B2;">
 
           <div class="form-row" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
@@ -1676,7 +1676,7 @@ function updateCustomerCartQty(index, val) {
   const stockItem = inventory.find(p => p.sku === cartItem.sku);
 
   if (stockItem && stockItem.qty < newQty) {
-    alert(`Stock kam hai! Available Stock: ${stockItem.qty}`);
+    alert(`Insufficient stock! Available Stock: ${stockItem.qty}`);
     renderCustomerCart(); // Revert to valid qty
     return;
   }
@@ -1710,7 +1710,7 @@ function updateCoachCartQty(index, val) {
   if (action === 'Lend') {
     const stockItem = inventory.find(p => p.sku === cartItem.sku);
     if (stockItem && stockItem.qty < newQty) {
-      alert(`Stock me utna maal nahi hai! Total Stock: ${stockItem.qty}`);
+      alert(`Insufficient stock! Total Available Stock: ${stockItem.qty}`);
       renderCoachCart();
       return;
     }
@@ -1789,12 +1789,12 @@ function recalculateQuoteAutoDiscount() {
         renderTables();
         renderDashboard();
       } else {
-        alert('Galat User ID ya Password! Kripya sahi credentials dalein.');
+        alert('Invalid User ID or Password! Please enter valid credentials.');
       }
     }
 
     function logoutUser() {
-      if (confirm('Kya aap logout karna chahte hain?')) {
+      if (confirm('Are you sure you want to log out?')) {
         currentUser = null;
         sessionStorage.removeItem('bwc_current_user');
         document.getElementById('loginUserId').value = '';
@@ -1822,17 +1822,17 @@ function recalculateQuoteAutoDiscount() {
     }
 
     function addUserAccount() {
-      if (currentUser.role !== 'Admin') return alert('Sirf Admin naye users add kar sakta hai!');
+      if (currentUser.role !== 'Admin') return alert('Access Denied: Only Admin can add user accounts.');
 
       const u = document.getElementById('newUserIdInput').value.trim();
       const p = document.getElementById('newUserPassInput').value.trim();
       const r = document.getElementById('newUserRoleSelect').value;
 
-      if (!u || !p) return alert('Username aur Password dono required hain!');
+      if (!u || !p) return alert('Username and Password are required!');
 
       const existingIndex = appUsers.findIndex(user => user.username.toLowerCase() === u.toLowerCase());
       if (existingIndex >= 0) {
-        if (confirm(`User "${u}" pehle se exist karta hai. Kya aap iska password/role update karna chahte hain?`)) {
+        if (confirm(`User "${u}" already exists. Do you want to update password/role?`)) {
           appUsers[existingIndex] = { username: u, password: p, role: r };
         }
       } else {
@@ -1840,7 +1840,7 @@ function recalculateQuoteAutoDiscount() {
       }
 
       localStorage.setItem('bwc_users', JSON.stringify(appUsers));
-      alert(`User "${u}" successfully save ho gaya!`);
+      alert(`User "${u}" saved successfully!`);
       document.getElementById('newUserIdInput').value = '';
       document.getElementById('newUserPassInput').value = '';
       renderUsersTable();
@@ -1850,9 +1850,9 @@ function recalculateQuoteAutoDiscount() {
       if (currentUser.role !== 'Admin') return;
       const targetUser = appUsers[idx];
       if (targetUser.username.toLowerCase() === 'admin') {
-        return alert('Main Admin account ko delete nahi kiya ja sakta!');
+        return alert('Action Prohibited: The primary Admin account cannot be deleted!');
       }
-      if (confirm(`Kya aap user "${targetUser.username}" ko delete karna chahte hain?`)) {
+      if (confirm(`Are you sure you want to delete user "${targetUser.username}"?`)) {
         appUsers.splice(idx, 1);
         localStorage.setItem('bwc_users', JSON.stringify(appUsers));
         renderUsersTable();
@@ -1881,7 +1881,7 @@ function recalculateQuoteAutoDiscount() {
     /* LINEAR VIEW EXCEL PARSER & SEARCH ENGINE */
     function handleLinearExcelUpload(event) {
       if (currentUser && currentUser.role !== 'Admin') {
-        return alert('Sirf Admin nayi Excel report upload kar sakta hai!');
+        return alert('Access Denied: Only Admin can upload Linear View Excel reports.');
       }
 
       const file = event.target.files[0];
@@ -1897,7 +1897,7 @@ function recalculateQuoteAutoDiscount() {
           const rawJson = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
 
           if (!rawJson || rawJson.length === 0) {
-            return alert('Uploaded Excel file me koi record nahi mila!');
+            return alert('No records found in the uploaded Excel file.');
           }
 
           linearData = rawJson.map(row => ({
@@ -1917,7 +1917,7 @@ function recalculateQuoteAutoDiscount() {
           localStorage.setItem('bwc_linear_updated', linearLastUpdated);
 
           pushDataToCloud();
-          alert(`Excel Report successfully upload ho gayi! Total ${linearData.length} records update huye.`);
+          alert(`Linear View Report uploaded successfully! Total ${linearData.length} records updated.`);
           renderLinearTable();
         } catch (err) {
           alert('Excel file read error: ' + err.message);
@@ -1928,8 +1928,8 @@ function recalculateQuoteAutoDiscount() {
     }
 
     function clearLinearReportData() {
-      if (currentUser && currentUser.role !== 'Admin') return alert('Sirf Admin Linear Report clear kar sakta hai!');
-      if (confirm('Kya aap Linear View Report ka data clear karna chahte hain?')) {
+      if (currentUser && currentUser.role !== 'Admin') return alert('Access Denied: Only Admin can clear Linear View Report.');
+      if (confirm('Are you sure you want to clear all Linear View Report data?')) {
         linearData = [];
         linearLastUpdated = '';
         localStorage.removeItem('bwc_linear_data');
@@ -1997,7 +1997,7 @@ function recalculateQuoteAutoDiscount() {
       }
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #94A3B8; padding: 25px;">${linearData.length === 0 ? 'No Linear View Report uploaded yet.' : 'Is search query ke anusar koi record nahi mila.'}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #94A3B8; padding: 25px;">${linearData.length === 0 ? 'No Linear View Report uploaded yet.' : 'No records found matching your search query.'}</td></tr>`;
         return;
       }
 
@@ -2135,7 +2135,7 @@ function recalculateQuoteAutoDiscount() {
 
     function openSyncModal() {
       if (currentUser && currentUser.role !== 'Admin') {
-        return alert('Cloud Sync Settings sirf Admin open kar sakta hai!');
+        return alert('Access Denied: Only Admin can access Cloud Sync Settings.');
       }
       document.getElementById('firebaseDbUrlInput').value = localStorage.getItem('bwc_fb_url') || '';
       document.getElementById('firebaseChannelInput').value = localStorage.getItem('bwc_fb_channel') || 'bwc_main_shop';
@@ -2152,20 +2152,20 @@ function recalculateQuoteAutoDiscount() {
       const channel = document.getElementById('firebaseChannelInput').value.trim() || 'bwc_main_shop';
 
       if (url && !url.startsWith('https://')) {
-        return alert('Kripya valid Firebase URL dalein (https:// se shuru hona chahiye)!');
+        return alert('Please enter a valid Firebase Realtime Database URL (must start with https://).');
       }
 
       localStorage.setItem('bwc_fb_url', url);
       localStorage.setItem('bwc_fb_channel', channel);
       closeSyncModal();
-      alert('Cloud settings save ho gayi! Page reload ho raha hai...');
+      alert('Cloud settings saved successfully! Reloading page...');
       location.reload();
     }
 
     /* COMPLETE FACTORY RESET (CLEANS LOCAL + PURGES CLOUD DB) */
     function openAdvSettingsModal() {
       if (currentUser && currentUser.role !== 'Admin') {
-        return alert('Master Reset ka access sirf Admin ke paas hai!');
+        return alert('Access Denied: Only Admin has permission to execute Master Reset.');
       }
       document.getElementById('resetPasscodeInput').value = '';
       document.getElementById('advSettingsModal').style.display = 'flex';
@@ -2176,14 +2176,14 @@ function recalculateQuoteAutoDiscount() {
     }
 
     function executeFactoryResetSecure() {
-      if (currentUser && currentUser.role !== 'Admin') return alert('Unauthorized!');
+      if (currentUser && currentUser.role !== 'Admin') return alert('Access Denied: Unauthorized action!');
 
       const typed = document.getElementById('resetPasscodeInput').value.trim();
       if (typed !== 'RESET') {
-        return alert('Security Passcode galat hai! Reset karne ke liye box me capital me RESET type karein.');
+        return alert('Invalid security passcode! Please type RESET in capital letters to confirm.');
       }
 
-      if (confirm('Kripya confirm karein: Kya aap sach me sara business data delete karke Stock ko ZERO (0) karna chahte hain?')) {
+      if (confirm('WARNING: Are you sure you want to delete all business data and reset live stock to ZERO (0)? This action is permanent.')) {
         sales = [];
         payments = [];
         coachLogs = [];
@@ -2223,7 +2223,7 @@ function recalculateQuoteAutoDiscount() {
         }
 
         closeAdvSettingsModal();
-        alert('Master Reset Successful! Sabhi bills clear ho gaye aur sara Stock 0 Units par reset ho gaya.');
+        alert('Master Reset Successful! All transactions cleared and inventory stock reset to 0 units.');
         
         resetStockFilters();
         renderDatalists();
@@ -2235,7 +2235,7 @@ function recalculateQuoteAutoDiscount() {
 
     function switchNav(tabId, el) {
       if (tabId === 'users-manage' && currentUser && currentUser.role !== 'Admin') {
-        return alert('Is page ka access sirf Admin ke paas hai!');
+        return alert('Access Denied: This section is restricted to Admin only.');
       }
 
       // Close mobile drawer on navigation
@@ -2387,11 +2387,11 @@ function recalculateQuoteAutoDiscount() {
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
-      alert('Backup file successfully download ho gayi!');
+      alert('Backup file downloaded successfully!');
     }
 
     function importDataBackup(event) {
-      if (currentUser && currentUser.role !== 'Admin') return alert('Sirf Admin data restore kar sakta hai!');
+      if (currentUser && currentUser.role !== 'Admin') return alert('Access Denied: Only Admin can restore data!');
 
       const file = event.target.files[0];
       if (!file) return;
@@ -2401,7 +2401,7 @@ function recalculateQuoteAutoDiscount() {
         try {
           const imported = JSON.parse(e.target.result);
           if (imported.inventory) {
-            if (confirm('Kya aap is backup file ka data restore karna chahte hain?')) {
+            if (confirm('Are you sure you want to restore data from this backup file? Existing data will be overwritten.')) {
               inventory = imported.inventory;
               sales = imported.sales || [];
               payments = imported.payments || [];
@@ -2429,7 +2429,7 @@ function recalculateQuoteAutoDiscount() {
               localStorage.setItem('bwc_linear_updated', linearLastUpdated);
 
               pushDataToCloud();
-              alert('Data successfully restore ho gaya!');
+              alert('Data restored successfully!');
               renderDatalists();
               renderTables();
               renderDashboard();
@@ -2446,8 +2446,8 @@ function recalculateQuoteAutoDiscount() {
     }
 
     function resetMasterToDefault() {
-      if (currentUser && currentUser.role !== 'Admin') return alert('Sirf Admin master price list reload kar sakta hai!');
-      if (confirm('Kya aap sabhi products ko standard price list ke according reload karna chahte hain? (Stock 0 Units ho jayega)')) {
+      if (currentUser && currentUser.role !== 'Admin') return alert('Access Denied: Only Admin can reload the master price list!');
+      if (confirm('Are you sure you want to reload standard catalog items? Note: Stock quantities will be reset to 0 units.')) {
         inventory = defaultCatalog.map(item => ({ ...item, qty: 0 }));
         localStorage.setItem('bwc_inventory', JSON.stringify(inventory));
         pushDataToCloud();
@@ -2602,7 +2602,7 @@ function recalculateQuoteAutoDiscount() {
   const customDisc = parseFloat(document.getElementById('billDiscount').value) || 0;
   const qty = parseInt(document.getElementById('billQty').value) || 1;
 
-  if (!item) return alert('Kripya valid product select karein!');
+  if (!item) return alert('Please select a valid product!');
 
   const unitVP = parseFloat(item.vp) || 0;
   const totalVP = unitVP * qty;
@@ -2620,16 +2620,16 @@ function recalculateQuoteAutoDiscount() {
   const currentInCart = existingIndex > -1 ? customerCart[existingIndex].qty : 0;
   
   if (item.qty < (currentInCart + qty)) {
-    return alert(`Stock kam hai! Total Stock: ${item.qty}`);
+    return alert(`Insufficient stock! Total Available Stock: ${item.qty}`);
   }
 
   if (existingIndex > -1) {
-    // Agar product pehle se hai, toh sirf Qty aur Total badhao (Nayi row nahi banegi)
+    // If product already in cart, increment quantity and total
     customerCart[existingIndex].qty += qty;
     customerCart[existingIndex].totalVP = customerCart[existingIndex].vp * customerCart[existingIndex].qty;
     customerCart[existingIndex].total = Math.round(customerCart[existingIndex].rate * customerCart[existingIndex].qty);
   } else {
-    // Naya product hai toh push karo
+    // Add new product entry
     const tierLabel = (document.getElementById('billTier').value === 'auto') ? `Auto (${tier}%)` : (tier === 'custom' ? `Custom (${customDisc}%)` : `${tier}% Slab`);
     customerCart.push({
       sku: item.sku, name: item.name, vp: unitVP, totalVP: totalVP, mrp: item.mrp,
@@ -2703,8 +2703,8 @@ function recalculateQuoteAutoDiscount() {
       const billTier = document.getElementById('billTier').value;
       const customDisc = parseFloat(document.getElementById('billDiscount').value) || 0;
 
-      if (!cust) return alert('Kripya Customer Name dalein!');
-      if (customerCart.length === 0) return alert('Bill banane ke liye kam se kam ek product add karein!');
+      if (!cust) return alert('Please enter customer name!');
+      if (customerCart.length === 0) return alert('Please add at least one product to generate invoice!');
 
       if (!savedCustomers.includes(cust)) {
         savedCustomers.push(cust);
@@ -2805,7 +2805,7 @@ function recalculateQuoteAutoDiscount() {
           document.body.className = '';
         }, 150);
       } else {
-        alert(isEditing ? '✅ Bill update ho gaya!' : '✅ Bill successfully save ho gaya!');
+        alert(isEditing ? '✅ Invoice updated successfully!' : '✅ Invoice saved successfully!');
       }
     }
 
@@ -2816,8 +2816,8 @@ function recalculateQuoteAutoDiscount() {
       
       const pvPayBadge = document.getElementById('pvPayType');
       if (pvPayBadge) {
-        const isPending = (saleRecord.paymentType === 'Udhaar' || saleRecord.status === 'Pending');
-        pvPayBadge.innerText = saleRecord.paymentType || (isPending ? 'Udhaar' : 'Cash');
+        const isPending = (saleRecord.paymentType === 'Udhaar' || saleRecord.paymentType === 'Credit' || saleRecord.status === 'Pending');
+        pvPayBadge.innerText = (saleRecord.paymentType === 'Udhaar' ? 'Credit' : saleRecord.paymentType) || (isPending ? 'Credit' : 'Cash');
         pvPayBadge.className = 'badge ' + (isPending ? 'badge-credit' : 'badge-cash');
       }
       
@@ -2896,7 +2896,7 @@ function recalculateQuoteAutoDiscount() {
       document.getElementById('rFooterNote').innerText = 'Thank You! To Your Good Health 🌿';
       document.getElementById('rDate').innerText = sale.date;
       document.getElementById('rCust').innerText = sale.customer;
-      document.getElementById('rPayType').innerText = sale.paymentType || (sale.status === 'Pending' ? 'Udhaar' : 'Cash');
+      document.getElementById('rPayType').innerText = (sale.paymentType === 'Udhaar' ? 'Credit' : sale.paymentType) || (sale.status === 'Pending' ? 'Credit' : 'Cash');
       document.getElementById('rTotal').innerText = sale.total;
       document.getElementById('rTotalItems').innerText = `${sale.qty} Units`;
       document.getElementById('rTotalVP').innerText = grandVP;
@@ -2936,7 +2936,7 @@ function recalculateQuoteAutoDiscount() {
       const sale = sales[index];
       if (!sale) return;
 
-      if (!confirm(`Kya aap "${sale.customer}" ka yeh bill edit karna chahte hain? Purana stock temporarily restore hokar cart me open ho jayega.`)) return;
+      if (!confirm(`Do you want to edit the invoice for "${sale.customer}"? Previous quantities will be temporarily restored to cart.`)) return;
 
       if (sale.items && sale.items.length > 0) {
         sale.items.forEach(cartItem => {
@@ -2947,12 +2947,12 @@ function recalculateQuoteAutoDiscount() {
 
       editingSaleIndex = index;
       document.getElementById('editingBanner').style.display = 'flex';
-      if (document.getElementById('btnSubmitBill')) document.getElementById('btnSubmitBill').innerText = '🚀 Update & Submit Bill';
+      if (document.getElementById('btnSubmitBill')) document.getElementById('btnSubmitBill').innerText = '🚀 Update & Submit Invoice';
       if (document.getElementById('btnFinalSaveBill')) document.getElementById('btnFinalSaveBill').innerText = '🖨️ Update & Print';
-      if (document.getElementById('btnFinalSaveOnly')) document.getElementById('btnFinalSaveOnly').innerText = '💾 Update Bill';
+      if (document.getElementById('btnFinalSaveOnly')) document.getElementById('btnFinalSaveOnly').innerText = '💾 Update Invoice';
 
       document.getElementById('custName').value = sale.customer;
-      document.getElementById('billPayType').value = sale.paymentType || (sale.status === 'Pending' ? 'Udhaar' : 'Cash');
+      document.getElementById('billPayType').value = (sale.paymentType === 'Credit' ? 'Udhaar' : sale.paymentType) || (sale.status === 'Pending' ? 'Udhaar' : 'Cash');
       
       customerCart = JSON.parse(JSON.stringify(sale.items || []));
       renderCustomerCart();
@@ -2974,21 +2974,21 @@ function recalculateQuoteAutoDiscount() {
       customerCart = [];
       renderCustomerCart();
       document.getElementById('editingBanner').style.display = 'none';
-      if (document.getElementById('btnSubmitBill')) document.getElementById('btnSubmitBill').innerText = '🚀 Submit Bill';
+      if (document.getElementById('btnSubmitBill')) document.getElementById('btnSubmitBill').innerText = '🚀 Submit Invoice';
       if (document.getElementById('btnFinalSaveBill')) document.getElementById('btnFinalSaveBill').innerText = '🖨️ Print & Save';
-      if (document.getElementById('btnFinalSaveOnly')) document.getElementById('btnFinalSaveOnly').innerText = '💾 Save Bill';
+      if (document.getElementById('btnFinalSaveOnly')) document.getElementById('btnFinalSaveOnly').innerText = '💾 Save Invoice';
       document.getElementById('custName').value = '';
     }
 
     function deleteCustomerSale(index) {
       if (currentUser && currentUser.role !== 'Admin') {
-        return alert('Bill delete karne ki permission sirf Admin ke paas hai!');
+        return alert('Access Denied: Only Admin has permission to delete sales invoices.');
       }
 
       const sale = sales[index];
       if (!sale) return;
 
-      if (confirm(`Kya aap "${sale.customer}" ka yeh bill delete karna chahte hain? Bill me use hua stock live inventory me automatic add ho jayega.`)) {
+      if (confirm(`Are you sure you want to delete the invoice for "${sale.customer}"? Invoiced quantities will be restored to live inventory.`)) {
         if (sale.items && sale.items.length > 0) {
           sale.items.forEach(cartItem => {
             const sItem = inventory.find(p => p.sku === cartItem.sku);
@@ -3001,7 +3001,7 @@ function recalculateQuoteAutoDiscount() {
         localStorage.setItem('bwc_sales', JSON.stringify(sales));
 
         pushDataToCloud();
-        alert('Bill delete ho gaya aur stock inventory me wapas restore ho gaya!');
+        alert('Invoice deleted successfully and stock restored to inventory!');
         renderTables();
         renderDashboard();
         if (currentSelectedCust) viewCustomerLedger(currentSelectedCust);
@@ -3043,8 +3043,8 @@ function recalculateQuoteAutoDiscount() {
       const refNo = document.getElementById('payRefNo').value.trim() || '—';
       const remarks = document.getElementById('payRemarks').value.trim() || 'Payment Received';
 
-      if (!cust) return alert('Kripya Customer Name dalein!');
-      if (amount <= 0) return alert('Kripya valid Amount dalein!');
+      if (!cust) return alert('Please enter customer name!');
+      if (amount <= 0) return alert('Please enter a valid payment amount!');
 
       if (!savedCustomers.includes(cust)) {
         savedCustomers.push(cust);
@@ -3088,7 +3088,7 @@ function recalculateQuoteAutoDiscount() {
           document.body.className = '';
         }, 150);
       } else {
-        alert(`Payment Receipt (${receiptRecord.receiptNo}) of ₹${amount} successfully save ho gayi!`);
+        alert(`Payment Receipt (${receiptRecord.receiptNo}) for ₹${amount} recorded successfully!`);
       }
 
       clearPaymentForm();
@@ -3150,13 +3150,13 @@ function recalculateQuoteAutoDiscount() {
 
     function deletePayReceipt(index) {
       if (currentUser && currentUser.role !== 'Admin') {
-        return alert('Payment delete karne ki permission sirf Admin ke paas hai!');
+        return alert('Access Denied: Only Admin has permission to delete payment receipts.');
       }
 
       const p = payments[index];
       if (!p) return;
 
-      if (confirm(`Kya aap "${p.customer}" ki Receipt (${p.receiptNo} - ₹${p.amount}) delete karna chahte hain?`)) {
+      if (confirm(`Are you sure you want to delete Payment Receipt (${p.receiptNo} - ₹${p.amount}) for "${p.customer}"?`)) {
         payments.splice(index, 1);
         localStorage.setItem('bwc_payments', JSON.stringify(payments));
         pushDataToCloud();
@@ -3222,7 +3222,7 @@ function recalculateQuoteAutoDiscount() {
   const customDisc = parseFloat(document.getElementById('quoteDiscount').value) || 0;
   const qty = parseInt(document.getElementById('quoteQty').value) || 1;
 
-  if (!item) return alert('Kripya valid product select karein!');
+  if (!item) return alert('Please select a valid product!');
 
   const unitVP = parseFloat(item.vp) || 0;
   const totalVP = unitVP * qty;
@@ -3310,8 +3310,8 @@ function recalculateQuoteAutoDiscount() {
       const quoteTier = document.getElementById('quoteTier').value;
       const customDisc = parseFloat(document.getElementById('quoteDiscount').value) || 0;
 
-      if (!cust) return alert('Kripya Customer Name dalein!');
-      if (quoteCart.length === 0) return alert('Quotation banane ke liye product add karein!');
+      if (!cust) return alert('Please enter customer name!');
+      if (quoteCart.length === 0) return alert('Please add at least one product to generate quotation!');
 
       if (!savedCustomers.includes(cust)) {
         savedCustomers.push(cust);
@@ -3378,7 +3378,7 @@ function recalculateQuoteAutoDiscount() {
           document.body.className = '';
         }, 150);
       } else {
-        alert('✅ Quotation successfully save ho gaya!');
+        alert('✅ Quotation saved successfully!');
       }
 
       quoteCart = [];
@@ -3462,8 +3462,8 @@ function recalculateQuoteAutoDiscount() {
     }
 
     function deleteQuotation(index) {
-      if (currentUser && currentUser.role !== 'Admin') return alert('Sirf Admin quotation delete kar sakta hai!');
-      if (confirm('Kya aap is quotation ko delete karna chahte hain?')) {
+      if (currentUser && currentUser.role !== 'Admin') return alert('Access Denied: Only Admin can delete quotations.');
+      if (confirm('Are you sure you want to delete this quotation?')) {
         quotations.splice(index, 1);
         localStorage.setItem('bwc_quotations', JSON.stringify(quotations));
         pushDataToCloud();
@@ -3477,14 +3477,14 @@ function recalculateQuoteAutoDiscount() {
   const qty = parseInt(document.getElementById('coachQty').value) || 1;
   const action = document.getElementById('coachAction').value;
 
-  if (!item) return alert('Kripya valid product dalein!');
+  if (!item) return alert('Please select a valid product!');
 
   const existingIndex = coachCart.findIndex(i => i.sku === item.sku);
   const currentInCart = existingIndex > -1 ? coachCart[existingIndex].qty : 0;
 
   if (action === 'Lend') {
     if (item.qty < (currentInCart + qty)) {
-      return alert(`Stock me utna maal nahi hai! Total Stock: ${item.qty}`);
+      return alert(`Insufficient stock! Total Available Stock: ${item.qty}`);
     }
   }
 
@@ -3544,8 +3544,8 @@ function recalculateQuoteAutoDiscount() {
       const coach = document.getElementById('coachName').value.trim();
       const action = document.getElementById('coachAction').value;
 
-      if (!coach) return alert('Kripya Coach Name dalein!');
-      if (coachCart.length === 0) return alert('List me product add karein!');
+      if (!coach) return alert('Please enter coach name!');
+      if (coachCart.length === 0) return alert('Please add at least one product to transaction list!');
 
       if (!savedCoaches.includes(coach)) {
         savedCoaches.push(coach);
@@ -3574,7 +3574,7 @@ function recalculateQuoteAutoDiscount() {
       localStorage.setItem('bwc_coach_logs', JSON.stringify(coachLogs));
 
       pushDataToCloud();
-      alert(`Coach transaction saved!`);
+      alert('Coach stock transaction recorded successfully!');
 
       coachCart = [];
       renderCoachCart();
@@ -3616,7 +3616,7 @@ function recalculateQuoteAutoDiscount() {
   const rate = parseFloat(document.getElementById('purchRate').value) || 0;
   const unitVP = parseFloat(item ? item.vp : 0) || 0;
 
-  if (!item) return alert('Kripya valid product select karein!');
+  if (!item) return alert('Please select a valid product!');
 
   const existingIndex = purchaseCart.findIndex(i => i.sku === item.sku);
 
@@ -3626,7 +3626,7 @@ function recalculateQuoteAutoDiscount() {
     purchaseCart[existingIndex].totalVP = purchaseCart[existingIndex].vp * purchaseCart[existingIndex].qty;
     purchaseCart[existingIndex].total = Math.round(purchaseCart[existingIndex].rate * purchaseCart[existingIndex].qty);
   } else {
-    // Naya product
+    // New product entry
     purchaseCart.push({
       sku: item.sku, name: item.name, vp: unitVP, totalVP: unitVP * qty,
       mrp: item.mrp, rate: rate, qty: qty, total: Math.round(qty * rate)
@@ -3689,7 +3689,7 @@ function recalculateQuoteAutoDiscount() {
       const pSupplier = document.getElementById('purchSupplier').value.trim() || 'Herbalife Order';
 
       if (!purchaseCart || purchaseCart.length === 0) {
-        return alert('Invoice me kam se kam ek product add karein!');
+        return alert('Please add at least one product to purchase invoice!');
       }
 
       let formattedDate = new Date().toLocaleDateString('en-IN');
@@ -3753,7 +3753,7 @@ function recalculateQuoteAutoDiscount() {
       localStorage.setItem('bwc_purchases', JSON.stringify(purchases));
 
       pushDataToCloud();
-      alert('Purchase Invoice successfully save ho gayi aur Live Stock update ho gaya!');
+      alert('Purchase Invoice saved successfully and live stock updated!');
 
       purchaseCart = [];
       renderPurchaseCart();
@@ -3765,8 +3765,8 @@ function recalculateQuoteAutoDiscount() {
     }
 
     function deletePurchaseInvoice(index) {
-      if (currentUser && currentUser.role !== 'Admin') return alert('Purchase invoice delete karne ki permission sirf Admin ke paas hai!');
-      if (confirm('Kya aap is purchase invoice record ko delete karna chahte hain?')) {
+      if (currentUser && currentUser.role !== 'Admin') return alert('Access Denied: Only Admin can delete purchase invoices.');
+      if (confirm('Are you sure you want to delete this purchase invoice record?')) {
         purchases.splice(index, 1);
         localStorage.setItem('bwc_purchases', JSON.stringify(purchases));
         pushDataToCloud();
@@ -3901,7 +3901,7 @@ function recalculateQuoteAutoDiscount() {
         listEl.innerHTML += `
           <li onclick="viewCustomerLedger('${cust}')" class="${currentSelectedCust === cust ? 'active' : ''}">
             <span>${cust}</span>
-            ${bal.netPending > 0 ? `<span style="color:#c62828; font-size:12px;">₹${bal.netPending} Udhaar</span>` : '<span style="color:var(--accent-green); font-size:12px;">Clear</span>'}
+            ${bal.netPending > 0 ? `<span style="color:#c62828; font-size:12px;">₹${bal.netPending} Pending</span>` : '<span style="color:var(--accent-green); font-size:12px;">Clear</span>'}
           </li>
         `;
       });
@@ -3931,7 +3931,7 @@ function recalculateQuoteAutoDiscount() {
             <td>${s.qty}</td>
             <td><strong style="color:#10B981;">${(parseFloat(s.totalVP) || 0).toFixed(2)} VP</strong></td>
             <td>₹${s.total}</td>
-            <td><span class="badge ${s.status === 'Paid' ? 'badge-cash' : 'badge-credit'}">${s.status === 'Pending' ? 'Udhaar' : 'Paid'}</span></td>
+            <td><span class="badge ${s.status === 'Paid' ? 'badge-cash' : 'badge-credit'}">${s.status === 'Pending' ? 'Credit' : 'Paid'}</span></td>
             <td style="display: flex; gap: 4px; align-items: center;">
               <button class="btn-reprint" onclick="reprintCustomerBill(${originalIndex})">🖨️</button>
               <button class="btn-edit" onclick="editCustomerSale(${originalIndex})">Edit</button>
@@ -3990,7 +3990,7 @@ function recalculateQuoteAutoDiscount() {
       document.getElementById('rptStatContainer').innerHTML = `
         <div><strong>Total Purchases:</strong> ₹${bal.totalPurchase}</div>
         <div style="color: #10B981;"><strong>Total Volume Points:</strong> ${bal.totalVP.toFixed(2)} VP</div>
-        <div style="color: #c62828;"><strong>Total Udhaar (Pending):</strong> ₹${bal.netPending}</div>
+        <div style="color: #c62828;"><strong>Total Outstanding (Credit):</strong> ₹${bal.netPending}</div>
         <div style="color: var(--accent-green);"><strong>Total Paid:</strong> ₹${bal.totalPaid}</div>
       `;
 
@@ -4177,7 +4177,7 @@ function recalculateQuoteAutoDiscount() {
       const pendingItems = getCoachPendingProductSummary(coachName);
       const pendingTbody = document.querySelector('#coachPendingTable tbody');
       if (pendingItems.length === 0) {
-        pendingTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--accent-green); font-weight: bold;">🎉 Sabhi products clear hain! Is coach par koi pending stock nahi hai.</td></tr>`;
+        pendingTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--accent-green); font-weight: bold;">🎉 All products cleared! No pending stock for this coach.</td></tr>`;
       } else {
         pendingTbody.innerHTML = pendingItems.map(p => `
           <tr>
@@ -4211,7 +4211,7 @@ function recalculateQuoteAutoDiscount() {
       const pendingItems = getCoachPendingProductSummary(currentSelectedCoach);
       
       if (pendingItems.length === 0) {
-        return alert('Is coach ke paas koi pending product nahi hai. Account clear hai!');
+        return alert('No pending stock items for this coach. Account is clear!');
       }
 
       const totalPendingUnits = pendingItems.reduce((sum, p) => sum + p.pending, 0);
@@ -4371,7 +4371,7 @@ function recalculateQuoteAutoDiscount() {
       }
 
       if (filtered.length === 0) {
-        stockBody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: #94A3B8; padding: 18px;">Is filter ke anusar koi product nahi mila.</td></tr>`;
+        stockBody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: #94A3B8; padding: 18px;">No products match the selected filter criteria.</td></tr>`;
         return;
       }
 
@@ -4479,7 +4479,7 @@ function recalculateQuoteAutoDiscount() {
             <td>${sale.qty}</td>
             <td><strong style="color:#10B981;">${(parseFloat(sale.totalVP) || 0).toFixed(2)} VP</strong></td>
             <td><strong>₹${sale.total}</strong></td>
-            <td><span class="badge ${sale.status === 'Paid' ? 'badge-cash' : 'badge-credit'}">${sale.status === 'Pending' ? 'Udhaar' : 'Paid'}</span></td>
+            <td><span class="badge ${sale.status === 'Paid' ? 'badge-cash' : 'badge-credit'}">${sale.status === 'Pending' ? 'Credit' : 'Paid'}</span></td>
             <td style="display: flex; gap: 4px; align-items: center;">
               <button class="btn-reprint" onclick="reprintCustomerBill(${i})">🖨️</button>
               <button class="btn-edit" onclick="editCustomerSale(${i})">Edit</button>
